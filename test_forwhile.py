@@ -34,22 +34,3 @@ while (i>=0):
         print(sum)
         break
 
-# 1~100 중에서 소수(약수가 1과 자기자신)의 합을 구하시오.
-i = 0
-n = 0
-
-for i in range(2,101):
-    
-    n = i - 1
-    n > 1 and n < i
-    if(i % n ==0):
-        continue
-    if(i % n !=0):
-        print(i)
-
-
-
-
-    i += 1
-while (i>=2)
-    if(i%n=0) #나머지가 1과 자기자신을 제외한 정수로 나눴을 때 0이 나오면 정수 아님.

@@ -36,12 +36,12 @@ while(True):
     def operator(a,b):
         if op == '+':
             return plus(a,b)
-        if op == "-"
+        if op == "-":
             return minus(a,b)
-        if op == "*"
+        if op == "*":
             return multiple(a,b)
-        if op == "/"
-            return divvide
+        if op == "/":
+            return divide
     if op == '+':
         r = plus(a,b)
     elif op == '-':

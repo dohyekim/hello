@@ -8,7 +8,7 @@ class Dog:
         print("왈왈", self.name)
 
     def wag(self):
-        print("살랑살랑 ", self.name)
+        print("살랑살랑")
 
     def __del__(self):
         print("안녕")

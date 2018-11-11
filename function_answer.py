@@ -42,4 +42,4 @@ else:
 if op = '/':
     print("Answer is {:.2f}".format(r))
 else:
-    print("Anwer is {:b}".format(r))
+    print("Anwer is {:d}".format(r))

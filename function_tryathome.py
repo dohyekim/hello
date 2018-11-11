@@ -21,7 +21,7 @@ while(True):
     
     # q.split(' ') 전에 나와야 "quit"이라는 str(split되지 않음)을 넣을 수 있다.
 
-    q = input("숫자 op 숫자>>> ")
+    q = input("num op num>>> ")
     
     # continue는 필요 없다. 어차피 while loop은 돌아가고 있고 여기서 continue하면 계속 input만 반복되기 때문.
     if q == "quit":
@@ -37,7 +37,7 @@ while(True):
         if op == '+':
             return plus(a,b)
         if op == "-":
-            return minus(a,b)
+            return subtract(a,b)
         if op == "*":
             return multiple(a,b)
         if op == "/":
@@ -51,8 +51,8 @@ while(True):
     elif op == '/':
         r = divide(a,b)
 
-    msg1 = "답은 {:f}입니다."
-    msg2 = "답은 {:d}입니다."
+    msg1 = "answer {:f}."
+    msg2 = "answer {:d}."
 
     if op == '/':
         print(msg1.format(r))

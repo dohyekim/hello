@@ -14,14 +14,23 @@ class Square:
 
     def input_data(self):
         datum = input(self.msg)
-        data = 
-    def area(self, x, y):
-        return to_int(x) * to_int(y)
+        data = datum.split(',')
+        x = Casting.to_int(data[0])
+        if len(x) < 2:
+            y = x
+        else:
+            y = Casting.to_int(data[1])
+        
+        self.__new_area(x,y)
+
+    def __new_are(self.x,y)
+        r = x * y
+        print("{}의 넓이는 {}입니다. ".format(self.name, r))
 
 class Rec(Square):
     def __init__(self):
         self.name = Rec
-
+name = "Rec"
 class Paral(Square):
     def __init__(self):
         self.name = Paral

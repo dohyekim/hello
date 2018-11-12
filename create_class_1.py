@@ -31,4 +31,5 @@ class Puppy(Dog):
 d = Dog()
 d.wag()
 
-
+p = Puppy()
+p.wag

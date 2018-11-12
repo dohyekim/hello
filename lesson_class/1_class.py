@@ -6,9 +6,15 @@ def to_int(s):
         return s
 
 class Square:
-    
-    x, y = 0, 0
+    namme = "square"
+    msg = "가로와 세로는?"
 
+    def __init__ (self):
+        print("square created")
+
+    def input_data(self):
+        datum = input(self.msg)
+        data = 
     def area(self, x, y):
         return to_int(x) * to_int(y)
 

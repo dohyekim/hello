@@ -20,7 +20,7 @@ class Square:
     def __init__(self):
         print("\n @@@2 square created\n")
     
-   # def set_msg(self, msg):         # msg는 평사랑 직사 ㅈ다르니까
+   # def set_msg(self, msg):         # msg는 평사랑 직사 다르니까
     #    self.msg = msg               # 방금 받은 msg self에는 msg라는 스트링을 넣겠다. 
 
     def input_data(self):               # 가로,세로 input은 모든 자식들이 받으니까 아예 부모Class에 놓는다.
@@ -59,7 +59,7 @@ first_msg = '사각형의 종류는?\n'
 for i, r in enumerate(all_rects):                   #enumerate: index와 value를 함께받을수있다.
     if i == 0:
         continue
-    first_msg += "{d}) {}\n".format(i+1, r.name)       #i는 0부터 시작    # 1)직사각형  얘를 만들려는 것 
+    first_msg += "{:d}) {}\n".format(i, r.name)       #i는 0부터 시작    # 1)직사각형  얘를 만들려는 것 
 
 first_msg += "(quit:q)\n"
 #사각형의 종류

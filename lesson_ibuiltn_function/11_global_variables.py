@@ -10,3 +10,4 @@ def change_x():
 
 change_x()
 print("222>>", g_x)
+

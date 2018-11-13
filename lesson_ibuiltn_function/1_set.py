@@ -52,6 +52,14 @@ len()
 input()
 print()
 
+s = "abc"
+list(s)  #str을 list로 만들기
+
+s = ['aaa', 'bbb', ...]
+"-".join(list(s))       #[aaa-bbb-ccc]형태로 잇겠다.
+
+
+
 dir()       # 현재 이 파일에서 접근할 수 있는 내장 method
 import random
 dir(random)              # random이 갖고 있는 method
@@ -72,8 +80,12 @@ class Test:
 test = Test()
 #instance가 생기는 순간 메모리에 잡힘
 
+#user_1 = 23
+#user-2 = 23
+#user_1 == user_2 (hash가 같으면 같은 사람이라고 보는 것) # 같은 값인지 판단해주는 게 hash
+
 hash(test)   # == memory 주소와 비슷하게 unique한 값을 만들어줌
-id(test)     # == memory 주소와 비슷하게 unique한 값을 만들어줌
+id(test)     # == memory의 주소
 
 test2 = Test()
 

@@ -59,7 +59,7 @@ getattr(TestClass, "static_method")()
 
 
 test.static_method() # error가 남. 왜냐하면 static_method는 self가 없는 static인데 instance를 줘서 오류
-TestClass.static_method() #error안 남/
+TestClass.static_method() #error안 남/ # 둘 다 같은 주소(메모리)에 있음.
 
 @staticmethod
 def static_method():

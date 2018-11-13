@@ -3,7 +3,7 @@ class Student:
         self.name = name
         self.score = score
     
-    def __str__(self):
+    def __str__(self):             # str화 해주세요.                   print(s)에서 s는 string
         return "{}:{}".format(self.name, self.score)
 
 students = [
@@ -12,8 +12,18 @@ students = [
     Student("김이수", 20)
 ]
 
+def print_students():
+    print("--------------------")
+    for s in students:
+        print(s)
 
-sort_students = sorted(students, key = lambda stu: stu.score)
+print_students()
+
+
+sort_students = sorted()
+# 점수순으로 sorting하기
+
+sort_students = sorted(students, key = lambda stu: stu.score)        #stu는 인자, 즉 def fn(stu): return stu.score의 의미. stu.score를 받아서 students에다 넣음.
 
 print_students()
 

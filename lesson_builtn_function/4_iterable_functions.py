@@ -82,3 +82,7 @@ list(z)
 
 l3 = [7,8]
 #이렇게 하고 zip하면 세 번째 값은 날려버림 (data 유실 주의)
+
+#iter는 불려지는 순간 datㅁ 사라짐
+#it=iter(l)
+#list(it) 한 후에 it(next)하면 error. 이미다 썼으니까

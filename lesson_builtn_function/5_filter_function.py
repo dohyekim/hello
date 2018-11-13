@@ -2,7 +2,7 @@
 
 # iter는 변수이름. list,tuple,dictionary,set 다 들어갈 수 있음.
 
-#filter된 object만 나온다.
+# filter된 object만 나온다.
 
 int_numbers = range(-5, 6) 
 

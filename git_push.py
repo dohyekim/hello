@@ -18,6 +18,8 @@ if has_msg == False:   # else:
         commit_msg = default_msg
     else:
         commit_msg = input_msg   # Default Message?라고 물었을 때 enter가 아닌 "first commit" 등으로 썼을 때)  ->argv[1]
+
+        # commit_msg자리에 input_msg를 담는다. 그리고 line 26에서 format자리에 넣어 쓰는 것.
 def git_push():
 
     os.system("git add --all")

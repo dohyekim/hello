@@ -12,8 +12,8 @@ sa = sys.argv
 now = datetime.datetime.now()
 
 
-default_msg = "{} 강의".format(now.strftime('%Y-%m-%d'))
-input_msg = default_msg
+default_msg = "{} 강의".format(now.strftime('%Y-%m-%d')) # default_msg가 여기서 먼저 선언된 후에 input_msg = default_msg가 되어야 한다.
+input_msg = default_msg                 # input_msg = default_msg가 없으면 input_msg가 defined되지 않았다고 뜬다. 
 
 if len(sa) == 2:
     input_msg = sa[1]

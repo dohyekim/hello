@@ -11,7 +11,9 @@ def git_push():
 sa = sys.argv
 now = datetime.datetime.now()
 
+
 default_msg = "{} 강의".format(now.strftime('%Y-%m-%d'))
+input_msg = default_msg
 
 if len(sa) == 2:
     input_msg = sa[1]

@@ -57,7 +57,7 @@ class Dealer(Part):
 #---------------Main Flow-------------------
 start = input("게임에 참석하시겠습니까? (Usage: Yes / No\n")
 if start == "Yes":
-    card = gamers_card.pop(1).append(gamers_card.pop(1))           #[].pop type은 str
+    card = gamers_card.pop(1).append(gamers_card.pop(1))           #[].pop type은 str # card []
     print(card)
     elif start == "No":
     print("Bye Bye")

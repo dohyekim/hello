@@ -13,7 +13,7 @@ if has_msg:      # len(sa) >= 2라면
     commit_msg = sa[1]  # sa[1]에 적은 걸 commit_msg로 받는다.
 
 if has_msg == False:   # else:
-    input_msg =input("Default Message?? (Yes:Enter or input message)")
+    input_msg =input("Default Message?? (Yes:Enter or No:input message)  ")
     if input_msg == '':
         commit_msg = default_msg
     else:

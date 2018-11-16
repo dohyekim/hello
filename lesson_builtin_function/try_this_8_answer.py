@@ -11,7 +11,7 @@ with open("students.csv", "r", encoding='utf8') as file:
 students.sort(key = lambda stu: stu.score, reverse = True)
 
 m = map(lambda stu: stu.make_grade(), students)           # map은 값을 가지고 있는 게 아니라 주소만 알고 있음. 
-list(m)                                                # map의 값을 출력
+print(list(m))                                                # map의 값을 출력
 
 print("이름\t성별\t나이\t학점")
 print("----\t----\t----\t----")

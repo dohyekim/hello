@@ -1,3 +1,4 @@
+
 # map(mapped_fn, iter) : map object
 
 #filter는 True인 것만 취함, map은 전부 다 처리하는데 make_double function사용 :2배로), 그때그때 쓸 거면 lambda사용

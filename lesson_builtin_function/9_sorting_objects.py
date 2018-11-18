@@ -20,7 +20,8 @@ def print_students():
 # students라고 하는 instance등을 str으로 만들어주세요.
 # print(instance)하면 __str__의 과정을 겪는다.
 
-print(students[0])
+print(students[0])  # >> 김일수 10
+# __str__ 없었다면 print(students[0]) >> student[0]의 주소값이 나왔을 것 
 
 
 sort_students = sorted(students)
@@ -30,15 +31,16 @@ sort_students = sorted(students, key = lambda stu: stu.score)
 # stu는 인자, 즉 def fn(stu): return stu.score의 의미.
 # stu.score를 받아서 students에다 넣음.
 # sort_students = sorted(stu.score)가 되는 셈
-# stu라는 인자를 가진 function을 받아서 stu.score를 return받는다. 
+# stu라는 인자를 가진 function을 받아서 stu.score를 return받는다 -> key에) 
+# sorted라는 내장함수 사용
+
+print(list(sorted_students))
+
+students.sort(key = lambda stu: stu.score) # list students에 sort함수를 쓴 것
 
 print_students()
 
-students.sort(key = lambda stu: stu.score)
-
-print_students()
-
-students.sort(key = lambda stu: stu.score, reverse=True)
+students.sort(key = lambda stu: stu.score, reverse=True) 
 
 print_students()
 

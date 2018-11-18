@@ -36,8 +36,10 @@ class Child(TestClass):
 #getattr(instance, 'fn') : self가 있는 경우
 #getattr(Class, 'fn') : static method인 경우
 
+#test.get_name과 같음
 getattr(test, 'get_name')()  # attribute = property + method, get_name은 method니까 ()를 붙여 실행해야함.
 getattr(TestClass, 'static_method')()  
+
 
 class DA:
 
@@ -46,3 +48,9 @@ class DA:
 
 cmd = input("A>> ")
 getattr(DA, cmd)()
+
+c = input("Input the function name>>> ")
+
+getattr(test, c)()
+
+#input에 get_name을 쓰면 get_name function이 실행됨

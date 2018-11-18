@@ -18,46 +18,7 @@ class TestClass:
         return x * y
 
 
-
-child = Child()
-
 # full_name을 실행시키고 싶을 때
 # print("FFFFFFFFF", test.full_name()) 
 print("FFFFFFFFF", test.full_name)  #property니까 () 없는 것.
 
-cmd = input("Input the function name>>> ")
-
-getattr(test, cmd)()
-
-#input에 get_name을 쓰면 get_name function이 실행됨
-
-getattr(test, "get_name")()           #test.get_name과 같음. # ()은 함수의 실행을 의미
-getattr(TestClass, "static_method")()
-
-#property와  method를 합친 게 attribute. TestClass의 get_name이라는 함수를 가져온다.
-#self가 있으면 instance
-#self가 없으면 class를 쓴다.
-#어떤 명령을 실행하고 싶을 때
-
-
-
-#print("11111111111>>", test.get_name(), child.get_name())
-
-#c = callable(test.get_name)
-
-#print("CCCCCCCC>>", c) 
-
-
-test.static_method() # error가 남. 왜냐하면 static_method는 self가 없는 static인데 instance를 줘서 오류
-TestClass.static_method() #error안 남/ # 둘 다 같은 주소(메모리)에 있음.
-
-@staticmethod
-def static_method():
-    print("ST")
-
-    # 이렇게 @staticmethod를 하면 instance로 부르든 class로 부르든 error 안 남
-    # @staticmethod를 붙이면 
-
-ord("aa")
-ord("한")
-bytearray("한글", UTF8)

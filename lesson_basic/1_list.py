@@ -48,8 +48,12 @@ print(fruits.insert(1, '청포도'))
 del fruits[1]
 print(fruits)
 
-fruits.pop(1)
-print(fruits.pop(1))
+fruits = ['orange', 'apple', 'banana']
+a = fruits.pop(1)
+
+print(fruits) # >>> ['orange', 'banana']
+print(a)      # >>> apple
+
 
 # a = del.fruits[1]           #del과 pop의 차이 : del은 아무 값도 리턴하지 않아서 이렇게 쓰면 error난다.
 a = fruits.pop(1)

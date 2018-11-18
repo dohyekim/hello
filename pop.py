@@ -1,3 +1,6 @@
-fruits = ['오렌지', '사과', '바나나']
+fruits = ['orange', 'apple', 'banana']
 a = fruits.pop(1)
-print(type(a))
+
+print(fruits)
+print(a)
+

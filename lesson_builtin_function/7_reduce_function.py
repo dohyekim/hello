@@ -1,7 +1,7 @@
 # reduce(reduce_fn, iter) : one result
 
-from functools import reduce       # reduce는 내장함수가 아닌 functools라는 곳에 있는 reduce를 가져온 것
-
+# reduce는 내장함수가 아닌 functools라는 곳에 있는 reduce를 가져온 것
+from functools import reduce      
 
 lst = [1, 2, 3, 4]
 product = lst[0]          #즉  product = 1
@@ -13,8 +13,8 @@ for num in lst:
 
 print("product1>>", product) #>>> product1>> 24
 
-
-product2 = reduce(lambda x, y: x * y, lst)  # 두 개의 값을 어떻게 할 건지를 돌리면 마지막 값만 준다. # 위에 써둔 값을 한 줄로 표현한 것.
+# 위에 써둔 값을 한 줄로 표현한 것.
+product2 = reduce(lambda x, y: x * y, lst)  # 두 개의 값을 어떻게 할 건지를 돌리면 마지막 값만 준다. 
 print("product2>>", product2) #>>> product2>> 24
 
 

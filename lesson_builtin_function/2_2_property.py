@@ -18,17 +18,7 @@ class TestClass:
         return x * y
 
 
-# 부모의 logic을 대부분 쓰고 조금만 바꾸고 싶을 때
-class Child(TestClass):
-    def get_name(self):
-        t = super().get_name()
-        return "Child Name" + self.name
-    
-    def area(self, x, y):
-        t = super().area(x, y)  ### t = super().areㅁ(x,y) 이렇게 하면 x*y는 부모 logic으로, 자식은 그 값을 /2하는 것만
-        return t / 2
 
-test = TestClass()
 child = Child()
 
 # full_name을 실행시키고 싶을 때

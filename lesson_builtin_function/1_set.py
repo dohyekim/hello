@@ -33,8 +33,8 @@ float
 str
 
 pow(x, y)  #x의 y승
-globals()   #현재 있는 전역 변수를 보여줌(이 파일 전체에 있는 변수)
-help(min)    #min함수 쓰는법을 잊어버렸을 때, q누르면 빠져나옴
+globals()  #현재 있는 전역 변수를 보여줌(이 파일 전체에 있는 변수)
+help(min)  #min함수 쓰는법을 잊어버렸을 때, q누르면 빠져나옴
 
 type(s1)
 
@@ -62,23 +62,15 @@ s = ['aaa', 'bbb', ...]
 
 dir()       # 현재 이 파일에서 접근할 수 있는 내장 method
 import random
-dir(random)              # random이 갖고 있는 method
+dir(random) # random이 갖고 있는 method
 import builtins
 dir(builtins)        # 내장 함수들 다 나온다.
 
 print("123")
 
-str = 
 
 eval("print("123")") #""안의 코드를 실행 (str을 code화한다/)
 
-hash() #주소값
-
-class Test:
-    name = "test"
-
-test = Test()
-#instance가 생기는 순간 메모리에 잡힘
 
 #user_1 = 23
 #user-2 = 23
@@ -86,10 +78,7 @@ test = Test()
 
 hash(test)   # == memory 주소와 비슷하게 unique한 값을 만들어줌
 id(test)     # == memory의 주소
-
-test2 = Test()
-
-hash(test)        # == hash(test) / id(test)와 다른 값 나옴
+             # == hash(test) / id(test)와 다른 값 나옴
 
 test3 = test
 #이 때는 test3이 새로 생기는 게 아님. test값을 참조하는 call by reference

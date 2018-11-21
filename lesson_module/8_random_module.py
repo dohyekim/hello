@@ -15,8 +15,7 @@ cards = [
 	Card('Clover', 3),
 	Card('Spade', 9),
 	Card('Heart', 13),
-	....
-]
+	]
 random.shuffle(cards) #cards (lisit)가 shuffled
 
 # dir(random) 하면 random 모듈에 있는 함수 다 보여준다. 

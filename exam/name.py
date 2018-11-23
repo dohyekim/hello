@@ -2,7 +2,7 @@ import sqlite3
 
 class Student:
 
-    def __init__(self, line):
+    def __init__(self):
         name, gender, age, score, address = line.split(',')
         self.name = name
         self.gender = gender
@@ -40,13 +40,15 @@ class Student:
 
     def __str__(self):
         return "{}**\t{}\t{}0대\t{}\t{}".format(self.name[0], self.gen, self.age[0], self.grade, self.addr)        
-    
+
+l = self.name, self.gender, self.age, self.score, self.address
+
 students = []
 with open("students.csv", "r", encoding='utf8') as file:
     for i, line in enumerate(file):
         if i == 0:
             continue
-        students.append(Student(line))
+        students.append(Student())
 
 def print_students():
     for s in students:
@@ -63,21 +65,21 @@ list(filter3)
 
 print_students()
 
-data = (students)
+# data = (students)
 
-conn = sqlite3.connect("exam.db")
+# conn = sqlite3.connect("exam.db")
 
-with conn:
+# with conn:
 
-    cur = conn.cursor()
-    sql = "insert into Student(name, gender, age, score, address) values(?,?,?,?,?)"
-    cur.executemany(sql, data)
-    conn.commit()
+#     cur = conn.cursor()
+#     sql = "insert into Student(name, gender, age, score, address) values(?,?,?,?,?)"
+#     cur.executemany(sql, data)
+#     conn.commit()
 
-    sql1 = "select * from Student order by score desc"
-    cur.execute(sql1)
-    rows = cur.fetchall()
+#     sql1 = "select * from Student order by score desc"
+#     cur.execute(sql1)
+#     rows = cur.fetchall()
 
-    for row in rows:
-        print(row)
-    conn.commit()
+#     for row in rows:
+#         print(row)
+#     conn.commit()

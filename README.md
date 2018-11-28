@@ -14,19 +14,19 @@ Try this 2. 1부터 100까지 홀수의 합 구하기<br />
 Try this 3. 1부터 100까지 소수의 합 구하기
 <hr/>
 
-### 2. Lesson Builtin Function에서는 python 내장함수에 대해 적혀 있습니다. <a href="https://github.com/dohyekim/hello/tree/master/lesson_builtin_function">여기</a>를 참고하세요. https://github.com/dohyekim/hello/tree/master/lesson_builtin_function
- <li> set <br />
- <li> super  <br />
- <li>  @property<br />
- <li> @attribute<br />
- <li>callable<br />
- <li>static<br />
- <li>join<br />
- <li>byte<br />
- <li>iterable<br />
- <li>filter<br />
- <li>map<br />
- <li>reduce<br />
- <li>sorted<br />
-   <li>Try this csv 파일을 활용해서 학생 목록 읽고 조건에 맞게 수정하기
+### 2. Lesson Builtin Function에서는 python 내장함수에 대해 적혀 있습니다. [여기]("https://github.com/dohyekim/hello/tree/master/lesson_builtin_function)를 참고하세요. https://github.com/dohyekim/hello/tree/master/lesson_builtin_function
+* set <br />
+*super  <br />
+ @property<br />
+ @attribute<br />
+ callable<br />
+ static<br />
+ join<br />
+ byte<br />
+ iterable<br />
+ filter<br />
+ map<br />
+ reduce<br />
+ sorted<br />
+   Try this csv 파일을 활용해서 학생 목록 읽고 조건에 맞게 수정하기
 <hr/>

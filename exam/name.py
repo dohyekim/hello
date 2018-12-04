@@ -65,21 +65,41 @@ list(filter3)
 
 print_students()
 
-# data = (students)
+# import sqlite3
+
+
+# params = []
+# with open('students.csv', 'r', encoding='utf-8') as file:
+#     for i, line in enumerate(file):
+#         if i == 0: continue
+#         stu = Student(line)
+#         t = stu.make_params()
+#         # print(type(t), list(t))
+#         params.append(t)
+
+# # print(params)
 
 # conn = sqlite3.connect("exam.db")
 
-# with conn:
+# def insert_data():
+#     with conn:
+#         cur = conn.cursor()
+#         sql = "insert into Student(name, gender, age, grade, addr) values(?,?,?,?,?)"
+#         cur.executemany(sql, params)
 
-#     cur = conn.cursor()
-#     sql = "insert into Student(name, gender, age, score, address) values(?,?,?,?,?)"
-#     cur.executemany(sql, data)
-#     conn.commit()
+#         conn.commit()
 
-#     sql1 = "select * from Student order by score desc"
-#     cur.execute(sql1)
-#     rows = cur.fetchall()
+# def select_data():
+#    with conn:
+#         cur = conn.cursor()
+#         # sql = "select id, name, gender, age, grade, addr from Student order by grade"
+#         sql = """select id, name, gender, age, grade, addr
+#                    from Student order by substr(grade,1,1), grade desc"""
+#         # print(sql)
+#         cur.execute(sql)
+#         rows = cur.fetchall();
+#         for row in rows:
+#             print(row)
 
-#     for row in rows:
-#         print(row)
-#     conn.commit()
+# insert_data()
+# select_data()

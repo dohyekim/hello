@@ -18,6 +18,11 @@ def make_name():
     return full_name
 
 
+def make_address():
+    address = ["서울", "경기", "전북","전남","경북","경남","대전","충북","충남","대구","제주", "강원"]
+
+    addr = random.choice(address)
+    return addr
 
 def make_phone():
     
@@ -63,8 +68,8 @@ def make_email():
 
 
 data = []
-for i in range(1000):
-    a = (make_name(), make_phone(), make_day(), make_email())
+for i in range(1001):
+    a = (make_address())
     data.append(a)
 
 conn = pymysql.connect(
@@ -77,11 +82,19 @@ conn = pymysql.connect(
 
 with conn:
     cur = conn.cursor()
-    sql = "insert into Student(name, phone, birthday, email) values(%s,%s,%s,%s)"
+    sql = "insert into Student(address) values(%s)"
     cur.executemany(sql, data)
     #print("AffectedRowCount is",cur.rowcount)??>..,,,,,,,.
 
     conn.commit()
+
+# with conn:
+#     cur = conn.cursor()
+#     sql = "insert into Student(name, phone, birthday, email) values(%s,%s,%s,%s)"
+#     cur.executemany(sql, data)
+#     #print("AffectedRowCount is",cur.rowcount)??>..,,,,,,,.
+
+#     conn.commit()
 
 
 # a = ['abcdefghijklmnopqrstuvwxyz0123456789']

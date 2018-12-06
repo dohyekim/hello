@@ -72,13 +72,15 @@ from Student s1, Subject s2 where s1.id > 10 and s1.id <= 200 and s2.id <= 5;
 
 -- subquery 규칙
 -- 컴퓨터는 from 뒤부터 작업한다.
--- select a, b from A, B라고 한다면 a와 b의 개수는 같아야 한다. a가 1000, b가 10이면 만 개의 data가 나오게 된다.
+-- select a, b from A, B라고 한다면 a와 b의 개수는 같아야 한다. a가 1000, b가 10이면 
+-- 만 개의 data가 나오게 된다.
 -- select stu.id, sbj.id from Student stu, Subject sbj
 -- from 뒤에 나오는 것은 파일(즉 파일에서 읽어오겠다).
 
 
 
-select s.name, sbj.id from Student s, (select id from Subject order by rand() limit 3) sbj 
+select s.name, sbj.id from Student s, (select id from Subject 
+				       order by rand() limit 3) sbj 
 where s.id > 200 and s.id < 205;
 
 -- select s.name, from Student s, 
@@ -87,16 +89,19 @@ where s.id > 200 and s.id < 205;
 
 select id from Subject order by rand() limit 3;
 
-select s.name, sbj1.id from Student s, (select id from Subject order by rand() limit 3) sbj1 
+select s.name, sbj1.id from Student s, (select id from Subject 
+					order by rand() limit 3) sbj1 
 where s.id > 200 and s.id < 205;
 
 select s.name, sbj2.id from Student s, 
 (select id not in (select id from Subject order by rand() limit 3) 
 from Subject order by rand() limit 3) sbj2 where s.id >= 205 and s.id < 210;
 
-select id from Subject where Subject.id not in (select id from Subject order by rand() limit 3);
+select id from Subject where Subject.id not in (select id from Subject 
+						order by rand() limit 3);
 
-select s.name, sbj.id from Student s, (select id from Subject order by rand() limit 3) sbj 
+select s.name, sbj.id from Student s, (select id from Subject 
+				       order by rand() limit 3) sbj 
 where s.id > 200 and s.id < 205;
 
 
@@ -104,7 +109,8 @@ where s.id > 200 and s.id < 205;
 -- 과목별 학생수
 select subject, count(*) from Enroll group by subject;
 -- 한 과목에 중복 학생 존재 여부 체크
-select subject, student, count(*) from Enroll group by subject, student having count(*) > 1;
+select subject, student, count(*) 
+from Enroll group by subject, student having count(*) > 1;
 
 select student from Enroll group by subject;
 

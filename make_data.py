@@ -69,8 +69,9 @@ def make_email():
 
 data = []
 for i in range(1001):
-    a = (make_address())
+    a = (make_name(), make_phone(), make_day(), make_email(), make_address())
     data.append(a)
+
 
 conn = pymysql.connect(
     host='localhost', 
@@ -82,7 +83,7 @@ conn = pymysql.connect(
 
 with conn:
     cur = conn.cursor()
-    sql = "insert into Student(address) values(%s)"
+    sql = "insert into Student(name, phone, birthday, email, address) values(%s,%s,%s,%s,%s)"
     cur.executemany(sql, data)
     #print("AffectedRowCount is",cur.rowcount)??>..,,,,,,,.
 

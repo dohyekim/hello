@@ -12,18 +12,14 @@ insert into Club(name, leader) values ('요트부', 100);
 insert into Club(name, leader) values ('밴드부', 200);
 insert into Club(name, leader) values ('봉사부', 300);
 
-select c.*, s.name as 'student name' 
-from Club as c inner join Student as s on c.leader = s.id;
+select c.*, s.name as 'student name' from Club as c inner join Student as s on c.leader = s.id;
 
-insert into Prof(name, likecnt) select name, ceil(rand() * 100) 
-from Student order by rand() limit 100;
-
-select name, ceil(rand() * 100) 
-from Student order by rand() limit 100;
+insert into Prof(name, likecnt) select name, ceil(rand() * 100) from Student order by rand() limit 100;
+select name, ceil(rand() * 100) from Student order by rand() limit 100;
 
 insert into Subject(name, prof) select '국어', id from Prof order by rand() limit 10;
 update Subject set name='물리' where id = 3;
-update Subject set namename='미술' where name='국어' and id <> 10 limit 1;
+update Subject set name='미술' where name='국어' and id <> 10 limit 1;
 
 select * from Subject;
 
@@ -66,51 +62,90 @@ CREATE TABLE Enroll(
     on delete restrict
 );
 
--- 밑의 쿼리문은 cross join의 개념과 비슷
-insert into Enroll(student, subject) select s1.id, s2.id 
-from Student s1, Subject s2 where s1.id > 10 and s1.id <= 200 and s2.id <= 5;
+select s1.id, s2.id from Student s1, Subject s2 where s1.id <= 10 order by rand();
+select en.*, s.name as 'student name', sub.name as 'subject name' from Enroll as en inner join Student as s on en.student = s.id inner join Subject as sub on en.subject = sub.id order by id;
+select c.*, s.name as 'sub name' from Club as c inner join Student as s on sub.id = sub.name;
+
+
+-- 밑의 쿼리문은 cross join의 개념과 비슷 (From a, b 하면 cross join)
+insert into Enroll(student, subject) select s1.id, s2.id from Student s1, Subject s2 where s1.id > 10 and s1.id <= 200 and s2.id <= 5;
 
 -- subquery 규칙
 -- 컴퓨터는 from 뒤부터 작업한다.
--- select a, b from A, B라고 한다면 a와 b의 개수는 같아야 한다. a가 1000, b가 10이면 
--- 만 개의 data가 나오게 된다.
+-- select a, b from A, B라고 한다면 a와 b의 개수는 같아야 한다. a가 1000, b가 10이면 만 개의 data가 나오게 된다.
 -- select stu.id, sbj.id from Student stu, Subject sbj
 -- from 뒤에 나오는 것은 파일(즉 파일에서 읽어오겠다).
 
+select * from Subject;
+select id from Subject;
 
-
-select s.name, sbj.id from Student s, (select id from Subject 
-				       order by rand() limit 3) sbj 
-where s.id > 200 and s.id < 205;
+select s.name, sbj.id from Student s, (select id from Subject order by rand() limit 3) sbj where s.id > 200 and s.id < 205;
 
 -- select s.name, from Student s, 
 
 -- not in (select subject from Enroll) ;
 
-select id from Subject order by rand() limit 3;
+select subject from Enroll;
 
-select s.name, sbj1.id from Student s, (select id from Subject 
-					order by rand() limit 3) sbj1 
-where s.id > 200 and s.id < 205;
+select id from Subject order by rand();
 
-select s.name, sbj2.id from Student s, 
-(select id not in (select id from Subject order by rand() limit 3) 
-from Subject order by rand() limit 3) sbj2 where s.id >= 205 and s.id < 210;
+select s.name, sbj1.id from Student s, (select id from Subject order by rand() limit 3) sbj1 where s.id > 200 and s.id < 205;
 
-select id from Subject where Subject.id not in (select id from Subject 
-						order by rand() limit 3);
+select s.name, sbj2.id from Student s, (select id not in (select id from Subject order by rand() limit 3) from Subject order by rand() limit 3) sbj2 where s.id >= 205 and s.id < 210;
 
-select s.name, sbj.id from Student s, (select id from Subject 
-				       order by rand() limit 3) sbj 
-where s.id > 200 and s.id < 205;
+select id from Subject where Subject.id not in (select id from Subject order by rand() limit 3);
+
+truncate Student;
+
+update Club set leader = null where id > 0;
+
+select s.name, sbj.id from Student s, (select id from Subject order by rand() limit 3) sbj where s.id > 200 and s.id < 205;
+
+insert into Enroll (student, subject)
+select s.id, sbj1.id from Student s, (select id from Subject order by rand() limit 3) sbj1 where s.id <= 300;
+
+insert into Enroll (student, subject) 
+select s.id, sbj2.id
+from Student s, (select id from Subject where id not in (select subject from Enroll) order by rand() limit 3) sbj2 
+where s.id > 300 and s.id <= 600;
+
+insert into Enroll (student, subject)
+select s.id, sbj3.id
+from Student s, (select id from Subject where id not in (select subject from Enroll) order by rand() limit 4) sbj3
+where s.id > 600 and s.id <= 1001;
+ 
+
+select en.*, stu.name as 'student name', sub.name as 'subject name' 
+from Enroll as en inner join Student as stu on en.student = stu.id
+				  inner join Subject as sub on en.subject = sub.id order by id;
 
 
+
+
+select en.*, s.name as 'student name', sub.name as 'subject name' from Enroll as en inner join Student as s on en.student = s.id inner join Subject as sub on en.subject = sub.id order by id;
+
+
+select en.*, stu.name as 'student name', sub.name as 'subject name' from Enroll as en inner join Student as stu on en.student = stu.id inner join Subject as sub on en.subject = sub.id order by id;
+
+
+select * from Enroll;
+
+
+truncate Enroll;
+
+-- (select id from Subject not in sbj1 order by rand() limit 3) sbj2
+-- (select if from Subject not in sbj2 order by rand() limit4)
+
+
+
+-- 작업중
+select s1.id, s1.name, s2.id, s2.name from Student s1, Subject s2 where s1.id > 10 and s1.id <= 200 and s2.id <= 5 order by s1.name;
+select s1.id, s2.id from Student s1, Subject s2 where s1.id > 10 and s1.id <= 200 and s2.id <= 5;
 
 -- 과목별 학생수
 select subject, count(*) from Enroll group by subject;
 -- 한 과목에 중복 학생 존재 여부 체크
-select subject, student, count(*) 
-from Enroll group by subject, student having count(*) > 1;
+select subject, student, count(*) from Enroll group by subject, student having count(*) > 1;
 
 select student from Enroll group by subject;
 

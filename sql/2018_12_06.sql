@@ -4,6 +4,7 @@
 
 select * from Subject;
 -- 1) 과목별 담당 교수명
+
 select s.*, p.name as 'Prof name' from Subject s inner join Prof p on s.prof = p.id;
 
 -- 2) 과목별 학생수
@@ -34,6 +35,8 @@ from Enroll en inner join Subject sub on en.subject = sub.id
 			   inner join Student stu on en.student = stu.id
 where sub.name = '역사'
 group by stu.address;
+
+-- > join이 되면 테이블이 합쳐진다고 생각하면 됨.
 
 -- 6) 과목별 수강중인 지역별 학생수
 select sub.id, sub.name, stu.address, count(*)

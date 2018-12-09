@@ -62,6 +62,31 @@ from Temp group by subject) a
 inner join Temp on a.subject = Temp.subject and a.max = Temp.total;
 
 commit;
+-- 서브쿼리
+select max(sub.name) subject, s.name, max(midterm), max(final)
+		from Enroll as en inner join Student s on en.student = s.id
+						  inner join Subject sub on en.subject = sub.id
+					      inner join Grade gd on gd.enroll = en.id
+		group by en.subject, s.id;
+-- 실패
+select a.subject, (a.m + a.f), a.name
+from (select max(sub.name) subject, s.name, max(midterm) m, max(final) f
+		from Enroll as en inner join Student s on en.student = s.id
+						  inner join Subject sub on en.subject = sub.id
+					      inner join Grade gd on gd.enroll = en.id
+		group by en.subject, s.id) a
+	inner join Grade gd on a.m = gd.midterm and a.f = gd.final
+    inner join Subject sub on a.subject = sub.name
+    inner join Student s on a.name = s.name
+group by a.subject;
+
+-- 실패
+select max(sub.name) subject, s.name, max(gd.midterm + gd.final) total
+		from Enroll as en inner join Student s on en.student = s.id
+						  inner join Subject sub on en.subject = sub.id
+					      inner join Grade gd on gd.enroll = en.id
+		group by en.subject, s.id;
+        
 
 
 start transaction;

@@ -28,20 +28,20 @@ update Grade set midterm = ceil((0.5 + rand()/2) * 100) where id > 0;
 update Grade set final = ceil((0.5 + rand()/2) * 100) where id > 0;
 
 -- Report 1
-select sub.name as 'subject name', 
-s.name as 'student name', 
-gd.midterm, gd.final, 
-(gd.midterm + gd.final) total, 
-cast((gd.midterm + gd.final) as signed integer) average,
-(case when cast((gd.midterm + gd.final) as signed integer) >= 90 then 'A'
-	when cast((gd.midterm + gd.final) as signed integer) >= 80 then 'B'
-    when cast((gd.midterm + gd.final) as signed integer) >= 70 then 'C'
-    when cast((gd.midterm + gd.final) as signed integer) >= 60 then 'D'
-else 'F' end) grade
+select sub.name as 과목명, 
+s.name as 학생, 
+gd.midterm 중간 , gd.final 기말 , 
+(gd.midterm + gd.final) 총점, 
+cast((gd.midterm + gd.final) / 2 as signed integer) 평균,
+(case when cast((gd.midterm + gd.final) / 2 as signed integer)>= 90 then 'A'
+	when cast((gd.midterm + gd.final ) / 2 as signed integer) >= 80 then 'B'
+    when cast((gd.midterm + gd.final ) / 2 as signed integer) >= 70 then 'C'
+    when cast((gd.midterm + gd.final ) / 2 as signed integer) >= 60 then 'D'
+else 'F' end) 학점
 from Enroll as en inner join Student s on en.student = s.id
                   inner join Subject sub on en.subject = sub.id
                   inner join Grade gd on gd.enroll = en.id
-                  order by sub.name asc;
+                  order by sub.name , 학점 asc;
 
 START TRANSACTION;
 -- Report 2 (과목, 평균, 최고 득점자, 총 학생수 [정렬] 과목 (가나다 순))
@@ -61,6 +61,8 @@ select Temp.student, Temp.subject, Temp.total from
 from Temp group by subject) a
 inner join Temp on a.subject = Temp.subject and a.max = Temp.total;
 
+select * from Subject;
+select subject from Temp group by subject;
 commit;
 -- 서브쿼리
 select max(sub.name) subject, s.name, max(midterm), max(final)
@@ -69,17 +71,18 @@ select max(sub.name) subject, s.name, max(midterm), max(final)
 					      inner join Grade gd on gd.enroll = en.id
 		group by en.subject, s.id;
 -- 실패
-select a.subject, (a.m + a.f), a.name
+select a.subject, a.name, max(a.m + a.f)
 from (select max(sub.name) subject, s.name, max(midterm) m, max(final) f
 		from Enroll as en inner join Student s on en.student = s.id
 						  inner join Subject sub on en.subject = sub.id
 					      inner join Grade gd on gd.enroll = en.id
 		group by en.subject, s.id) a
 	inner join Grade gd on a.m = gd.midterm and a.f = gd.final
-    inner join Subject sub on a.subject = sub.name
-    inner join Student s on a.name = s.name
+    -- inner join Subject sub on a.subject = sub.name
+    -- inner join Student s on a.name = s.name
 group by a.subject;
 
+select * from Grade;
 -- 실패
 select max(sub.name) subject, s.name, max(gd.midterm + gd.final) total
 		from Enroll as en inner join Student s on en.student = s.id
@@ -88,11 +91,47 @@ select max(sub.name) subject, s.name, max(gd.midterm + gd.final) total
 		group by en.subject, s.id;
         
 
+select sub.name 과목, (select midterm + final from Grade order by midterm + final desc limit 1) 총점
+from Enroll as en inner join Student s on en.student = s.id
+                inner join Subject sub on en.subject = sub.id
+                inner join Grade gd on gd.enroll = en.id     
+                group by sub.name;
+
+select sub.name 과목, s.name 학생명,  (midterm + final) 총점
+from Enroll as en inner join Student s on en.student = s.id
+                inner join Subject sub on en.subject = sub.id
+                inner join Grade gd on gd.enroll = en.id
+order by midterm + final desc;
+
+
+
+
 
 start transaction;
 -- 과목 이름, 평균, 총 학생수
-select max(sub.name) as subject, (sum(midterm) + sum(final)) / count(*) / 2 as 'average',
-count(*) as total
+
+select sub.name as 과목명, 
+s.name as 학생, 
+gd.midterm 중간 , gd.final 기말 , 
+(gd.midterm + gd.final) 총점, 
+cast((gd.midterm + gd.final) / 2 as signed integer) 평균,
+(case when cast((gd.midterm + gd.final) / 2 as signed integer)>= 90 then 'A'
+	when cast((gd.midterm + gd.final ) / 2 as signed integer) >= 80 then 'B'
+    when cast((gd.midterm + gd.final ) / 2 as signed integer) >= 70 then 'C'
+    when cast((gd.midterm + gd.final ) / 2 as signed integer) >= 60 then 'D'
+else 'F' end) 학점,
+select max(sub.name) 과목명, 
+(sum(midterm) + sum(final)) / count(*) / 2 as 평균,
+count(*) as '수강생 수'
+from Enroll as en inner join Student s on en.student = s.id
+                  inner join Subject sub on en.subject = sub.id
+                  inner join Grade gd on gd.enroll = en.id
+                  
+                  group by sub.id
+                  order by sub.name , 학점 asc;
+                  
+select max(sub.name) as 과목명, cast((sum(midterm) + sum(final)) / count(*) / 2 as signed integer ) as 평균,
+count(*) as '총 학생수'
 from Enroll as en inner join Student s on en.student = s.id
                   inner join Subject sub on en.subject = sub.id
                   inner join Grade gd on gd.enroll = en.id
@@ -102,14 +141,13 @@ group by sub.id;
 COMMIT;
 rollback;
 
-
 -- Report 3 (학생명, 학교명, 과목수, 총점, 평균, 평점)
 start transaction;
 
-select min(s.name) as student, 
-count(*) as 'num_subject', 
-sum(midterm + final) as total, 
-cast(sum(gd.midterm + gd.final) / (count(en.subject) * 2) as signed integer) as average,
+select min(s.name) as 학생명, 
+count(*) as 과목수, 
+sum(midterm + final) as 총점, 
+cast(sum(gd.midterm + gd.final) / (count(en.subject) * 2) as signed integer) as 평균,
 (case when 
 cast(sum(gd.midterm + gd.final) / (count(en.subject) * 2) as signed integer) >= 90 then 'A'
 when
@@ -118,12 +156,12 @@ when
 cast(sum(gd.midterm + gd.final) / (count(en.subject) * 2) as signed integer) >= 70 then 'C'
 when
 cast(sum(gd.midterm + gd.final) / (count(en.subject) * 2) as signed integer) >= 60 then 'D'
-else 'F' end) as grade 
+else 'F' end) as 학점
 from Enroll en inner join Grade gd on gd.enroll = en.id
 			   inner join Student s on en.student = s.id
 			   inner join Subject sub on en.subject = sub.id
 group by en.student
-order by min(s.name);
+order by 학점, 학생명;
 
 commit;
-                  
+            

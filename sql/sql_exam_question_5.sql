@@ -42,11 +42,3 @@ ADD CONSTRAINT `fk_classroom_classroom`
   ON UPDATE NO ACTION;
 
 select * from Subject;
-
-https://github.com/dohyekim/Study_blog/blob/master/SQL_exam_2.sql
-
-https://github.com/dohyekim/Study_blog/blob/master/SQL_exam_3.sql
-
-https://github.com/dohyekim/Study_blog/blob/master/SQL_exam_4.sql
-
-https://github.com/dohyekim/Study_blog/blob/master/SQL_exam_5.sql

@@ -82,6 +82,9 @@ from (select max(sub.name) subject, s.name, max(midterm) m, max(final) f
     -- inner join Student s on a.name = s.name
 group by a.subject;
 
+
+
+
 select * from Grade;
 -- 실패
 select max(sub.name) subject, s.name, max(gd.midterm + gd.final) total

@@ -89,6 +89,8 @@ CHANGE COLUMN `prof` `prof` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' ;
 ALTER TABLE `dooodb`.`Dept` 
 ADD INDEX `fk_prof_prof_idx` (`prof` ASC);
 
+
+
 ALTER TABLE `dooodb`.`Dept` 
 ADD CONSTRAINT `fk_prof_prof`
   FOREIGN KEY (`prof`)

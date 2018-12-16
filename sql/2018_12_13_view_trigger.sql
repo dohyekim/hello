@@ -84,3 +84,18 @@ end //
 delimiter ;
 
 -- Try this 3
+
+-- 과목테이블 추가시 교수가 null이면 불특정 교수로 자동 등록하는 Trigger를 작성하시오.
+delimiter //
+create trigger tr_sub_prof
+before insert
+on Subject for each row
+begin
+if new.prof is null
+then
+set new.prof = (select id from Prof order by rand() limit 1);
+end if;
+end //
+
+delimiter ;
+

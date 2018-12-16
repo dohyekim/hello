@@ -46,50 +46,41 @@ select 과목명, 학생명, 총점, 학점
  order by 총점 DESC, 학점;    
  
 -- Try this 1(Trigger)
- 
- ALTER table Subject add column students smallint default 0 not null;
- desc Subject;
- 
- update Subject sub set students =
-(select count(*)
-from Enroll en
-where en.subject = sub.id
-group by subject) ;
 
-select * from Student;
-
-update Student stu set subjects =
-(select count(*) from Enroll en
-where en.student = stu.id
-group by student);
-
-select * from Student;
-
-
+-- AFTER INSERT
+drop trigger if exists tr_sub_stu;
 delimiter //
 create trigger tr_sub_stu 
 after insert
 on Enroll for each row
 begin
 update Subject sub set students = students + 1
-where subject = sub.id;
-update Student set subjects = subjects + 1
-where student = stu.id;
+where id = new.subject;
+
+update Student
+set subjects = subjects + 1
+where id = new.student;
 
 end //
 
 delimiter ;
 
-select * from Subject where id = 1;
+-- BEFORE DELETE
+drop trigger if exists tr_sub_stu_delete;
+delimiter //
+create trigger tr_sub_stu_delete
+before delete on Enroll for each row
+begin
+delete from Grade where enroll = old.id;
+update Subject sub set students =
+(select count(*) - 1 from Enroll where subject = (select subject from Enroll where id = old.id)
+)
+where id = (select subject from Enroll where id = old.id);
 
+update Student stu set subjects = subjects - 1
+where id = (select student from Enroll where id = old.id);
 
-insert into Enroll(subject, student) values(1,200);
+end //
+delimiter ;
 
-select count(*) from Enroll where subject = (select subject from Enroll where id = old.id);
-
-
-delete from Enroll where id = 1101;
-select * from Student;
-select * from Subject;
-select * from Grade;
-select * from Enroll;
+-- Try this 3

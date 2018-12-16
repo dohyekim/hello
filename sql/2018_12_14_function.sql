@@ -23,6 +23,23 @@ where id = (select student from Enroll where id = old.id);
 END //
 delimiter ;
 
+delimiter //
+CREATE DEFINER=`dooo`@`172.17.0.1` trigger tr_enroll_subject_students_delete
+    before delete on Enroll For Each Row
+BEGIN
+    delete from Grade
+     where enroll = OLD.id;
+     
+    update Subject
+       set students = 
+           (
+            select count(*) - 1 from Enroll
+             where subject = (select subject from Enroll where id = OLD.id)
+           )
+     where id = (select subject from Enroll where id = OLD.id);
+END //
+delimiter ;
+
 -- Try this 3번
 
 delimiter //

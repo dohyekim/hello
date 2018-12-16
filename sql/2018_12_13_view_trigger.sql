@@ -45,22 +45,40 @@ select 과목명, 학생명, 총점, 학점
  where 과목명 = '역사'
  order by 총점 DESC, 학점;    
  
+-- Try this 1(Trigger)
  
  ALTER table Subject add column students smallint default 0 not null;
  desc Subject;
  
  update Subject sub set students =
- (select count(*)
- from Enroll
- where subject = sub.id
- group by subject);
+(select count(*)
+from Enroll en
+where en.subject = sub.id
+group by subject) ;
 
-delimiter // 
- create trigger tr_enroll_subject_students
-	after insert on Enroll for each row
+select * from Student;
+
+update Student stu set subjects =
+(select count(*) from Enroll en
+where en.student = stu.id
+group by student);
+
+select * from Student;
+
+
+delimiter //
+create trigger tr_sub_stu 
+after insert
+on Enroll for each row
 begin
+update Subject sub set students = students + 1
+where subject = sub.id;
+update Student set subjects = subjects + 1
+where student = stu.id;
+
 end //
-delimiter ;    
+
+delimiter ;
 
 select * from Subject where id = 1;
 

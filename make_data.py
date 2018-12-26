@@ -87,6 +87,7 @@ with conn:
     cur.executemany(sql, data)
     #print("AffectedRowCount is",cur.rowcount)??>..,,,,,,,.
 
+sql2 = "update Table set "
     conn.commit()
 
 # with conn:

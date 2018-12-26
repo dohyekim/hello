@@ -52,8 +52,9 @@ open try_cursor;
 
 close try_cursor;      
 
-
-
-
 end //
 delimiter ;
+
+call sp_try_cursor();
+select * from temp_try;
+select t_sub_name from temp_try group by t_sub_name;

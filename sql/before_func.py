@@ -1,7 +1,16 @@
 import pymysql
-import mysql_migration as mm
 
-conn_dooodb = mm.get_mysql_conn('dooodb')
+def get_conn(db):
+    return pymysql.connect(
+        host = 'localhost', 
+        user = 'dooo', 
+        password = '1234', 
+        port = 3307, 
+        db = db, 
+        charset = 'utf8'
+        )
+
+conn_dooodb = get_conn('dooodb')
 
 
 with conn_dooodb:
@@ -11,12 +20,12 @@ with conn_dooodb:
     rows = cur.fetchall()
 
 
-conn_dadb = mm.get_mysql_conn('dadb')
+conn_dadb = get_conn('dadb')
 
 
 with conn_dadb:
     cur = conn_dadb.cursor()
-    mm.trun_table(conn_dadb, 'Subject')
+    cur.execute('truncate dadb.Subject')
     sql = "insert into Subject(name, prof, classroom) values(%s, %s, %s)"
     cur.executemany(sql, rows)
     print("AffectedRowsCount-->", cur.rowcount)

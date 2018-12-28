@@ -24,41 +24,10 @@ def get_count(conn, tbl, where = ''):
 
     return cur.fetchone()[0]
 
+import cx_Oracle
+
+def get_oracle_conn():
+    return cx_Oracle.connect("hr", "hrpw", "localhost:1521/xe")
     
 
-# # dooodb (target)
-# conn_dooodb = get_conn('dooodb')
 
-# # "select name, prof, classroom from Subject"
-# with conn_dooodb:
-#     cur = conn_dooodb.cursor()
-#     cnt = "select count(*) from Subject"
-#     cur.execute(cnt)
-#     cnt_dooodb = cur.fetchall()
-#     rand = "select id from Subject order by rand() limit 5"
-#     cur.execute(rand)
-#     rand_dooodb = cur.fetchall()
-#     print(rand_dooodb)
-    
-# # dadb (source)
-# conn_dadb = get_conn('dadb')
-
-# with conn_dadb:
-#     cur = conn_dadb.cursor()
-#     cnt = "select count(*) from Subject"
-#     cur.execute(cnt)
-#     cnt_dadb = cur.fetchall()
-
-
-
-# print("AffectedRowsDooodb-->", cnt_dooodb, "AffectedRowsDadb-->", cnt_dadb)
-
-# conn_dadb_valid = get_conn('dadb')
-# with conn_dadb_valid:
-#     cur = conn_dadb_valid.cursor()
-    
-#     for i in rand_dooodb:
-#         valid = "select id, name from Subject where id = "
-#         cur.execute(valid)
-#         valid_dadb = cur.fetchall()
-#         print(valid_dadb)

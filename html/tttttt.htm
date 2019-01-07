@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Made with Thimble</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+        text-align:center
+      }
+      input {
+        width:500px;
+        height:30px;
+      }
+
+      div {
+        display: inline;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Spotify is currently not available<br>in your country.<br></h1>
+    <h3>Be the first to know when we launch.</h3>
+    <form>
+
+      <div>
+        Email address<br>       
+
+          <input type="text" name="emailaddress">
+          <button type="button" onclick="getid()">Check the ID</button>
+          <p id="getid22">555</p>
+
+        <script> 
+          function getid() {
+            document.getElementById("getid22").innerHTML="Checke55d";
+          }
+        </script>
+      </div>
+      <br>
+      <button onclick="this.innerHTML=Date()">Time</button>
+      <button id="mouseover" onmouseover=showdate()>date
+      </button>
+      <script> 
+        function showdate() {
+          document.getElementById("mouseover").innerHTML=Date();
+        }
+      </script>
+
+    </form>
+    <p>
+      <a href="www.facebook.com">Sign up with Facebook</a>
+    </p>
+    <p style="color:red">The emaill address you supplied is invalid, please check to ensure it is correct.
+    </p>
+  </body>
+</html>

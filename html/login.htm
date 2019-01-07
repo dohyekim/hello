@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            font-size: 20px;
+            text-align: center;
+          }
+
+        pre {
+            font-weight: bold;
+        }
+    </style>
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js">
+    </script>
+    <script>
+        $( window ).on( "load", alert('onload!!') );
+        $( document ).ready(function() {
+            console.log( "ready!" );
+            $('#fail').hide();
+            $('#id').val('a');
+            $('#pw').val('1');
+            
+            $('#evt_button').on("click", function(evt) {
+                console.log("event ---> ", evt)
+                evt.preventDefault();
+                evt.stopPropagation();
+                getjson();
+                useajax();
+
+            });
+        });
+
+        function login() {
+            var login_id = $("#id").val()
+            var login_pw = $("#pw").val()
+
+            if (login_id === "a" && login_pw === "1") {
+                $("#login").hide();
+                $("#ok").show();
+                $("#fail").hide();
+            }
+            else {
+                $("#ok").hide();
+                $("#fail").show();
+            }
+
+            return "Sign_in";
+
+        }
+
+        var url = "http://berryservice.net:8080/Berry/g/tests";
+        function getjson(){
+            $.get(url).then( function(json) {
+                var content = JSON.stringify(json, null, "  ");
+                $("<h1>").text(json.areagroup.length).appendTo("body");
+                $("<pre class=\"content\">").html(content).appendTo("body");
+    
+            }, function(err) {
+                console.error("Sorry, there was a problem!", err.status, err);
+            });
+        }
+
+        function useajax(){
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType : "json"
+
+            }).done(function( json ) {
+                var content = JSON.stringify(json, null, "  ");
+                $("<pre class=\"content\">").html(content).appendTo("body");
+
+            }).fail(function( xhr, status, errorThrown ) {
+            console.error("Error>>", xhr.responseJSON);
+            var $fail = $('#fail');
+            $fail.text(xhr.responseJSON.message);
+            $fail.show();
+            }).always(function( xhr, status ) {
+                console.log( "The request is complete!" );
+            });
+        }
+            
+    </script>
+</head>
+
+<body>
+    <form id="login" method="post">
+        ID: <input id="id" type="text" value="" placeholder="id">
+        PW: <input id="pw" type="password" value="" placeholder="password">
+            <button id="button" type=button onclick="this.innerHTML=login()">Sign_in</button>
+    </form>
+   
+    <p id="ok" style="color:Tomato; display:none;"><strong>로그인 성공!!</strong></p>
+    <p id="fail" style="color:Tomato; display:none;" ><strong>!! 로그인 실패 !!</strong></p>
+
+    <div>
+        <button id="evt_button">Button</button>
+    </div>
+</body>
+</html>

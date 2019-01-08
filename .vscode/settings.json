@@ -2,5 +2,6 @@
 	"editor.tabCompletion": "on",
 	"python.linting.pylintEnabled": true,
 	"python.pythonPath": "C:\\Python37\\python.exe",
-	"emmet.triggerExpansionOnTab": true
+	"emmet.triggerExpansionOnTab": true,
+	"editor.wordWrap": "on"
 }

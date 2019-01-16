@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+import csv, codecs
 
 url = "https://www.melon.com/chart/index.htm"
 headers = {
@@ -42,22 +43,22 @@ htmlj = requests.get(urlj, params = params, headers = headersj).text
 jsonData = json.loads(htmlj, encoding='utf-8')
 
 
-
-def melon(rank):
+def melon(rank,writemode,least):
 
     trs = rank
     song_info = {}
+
     for tr in trs:
-        t = tr.select_one('div.ellipsis.rank01 a')
+        t = tr.select_one('div.ellipsis.rank01 a').text
         songno = tr.get('data-song-no')
-        s = tr.select_one('div.ellipsis.rank02 span a')
+        s = tr.select_one('div.ellipsis.rank02 span a').text
         r = tr.select_one('span.rank').text
         if len(s) >= 2:
                 s1 = []
                 for j in s:
-                    s1.append(j.text)
+                    s1.append(j)
                 s1 = ",".join(s1)
-        aaaa = {"rank----->" : r, "title" : t, "singer" :s}
+        aaaa = {"ranking" : r, "title" : t, "singer" :s}
         song_info[songno] = aaaa
 
     song_id = []
@@ -66,8 +67,35 @@ def melon(rank):
         x = song_info.get(song_id)
         if x == None:
             continue    
-        x['♡'] = j['SUMMCNT']
-        print(x)
+        x['Like'] = j['SUMMCNT']
 
-melon(rank_50)
-melon(rank_100)
+    dic = sorted(song_info.items(), key=lambda d: d[1]['ranking'])
+    print(dic)
+    like = sorted(song_info.items(), key=lambda d: d[1]['Like'])
+    least_like = like[0][1]['Like']
+    least_like_a = min(x['Like'] for x in dic.items())
+
+    
+    with codecs.open('./melon_top.csv', writemode, 'utf-8') as ff:
+        writer = csv.writer(ff, delimiter=',', quotechar='"')
+        writer.writerow(['랭킹','제목','가수명','좋아요','좋아요 차이'])
+
+        least_like_100 = min(lst)
+
+        like_sum = 0
+        least_like_sum = 0
+
+        for i in dic:
+            writer.writerow([i[1]['ranking'], i[1]['title'], i[1]['singer'], i[1]['Like'], (i[1]['Like'] - least_like_100)])
+            like_sum = like_sum + i[1]['Like']
+            least_like_sum = least_like_sum + (i[1]['Like'] - least_like_100)
+
+        writer.writerow(['계', '', '', like_sum, least_like_sum])
+
+melon(rank_50, 'w')
+melon(rank_100, 'a')
+    
+
+
+
+

@@ -43,7 +43,7 @@ htmlj = requests.get(urlj, params = params, headers = headersj).text
 jsonData = json.loads(htmlj, encoding='utf-8')
 
 
-def melon(rank,writemode,least):
+def melon(rank,writemode):
 
     trs = rank
     song_info = {}
@@ -68,27 +68,26 @@ def melon(rank,writemode,least):
         if x == None:
             continue    
         x['Like'] = j['SUMMCNT']
+    
+    # print(song_info)
 
-    dic = sorted(song_info.items(), key=lambda d: d[1]['ranking'])
+    dic = sorted(song_info.items(), key=lambda d: int(d[1]['ranking']))
     print(dic)
-    like = sorted(song_info.items(), key=lambda d: d[1]['Like'])
-    least_like = like[0][1]['Like']
-    least_like_a = min(x['Like'] for x in dic.items())
+    # like = sorted(song_info.items(), key=lambda d: d[1]['Like'])
+    # least_like = like[0][1]['Like']
+    least_like_a = min(x[1]['Like'] for x in song_info.items())
 
+    like_sum = 0
+    least_like_sum = 0
     
     with codecs.open('./melon_top.csv', writemode, 'utf-8') as ff:
         writer = csv.writer(ff, delimiter=',', quotechar='"')
         writer.writerow(['랭킹','제목','가수명','좋아요','좋아요 차이'])
 
-        least_like_100 = min(lst)
-
-        like_sum = 0
-        least_like_sum = 0
-
         for i in dic:
-            writer.writerow([i[1]['ranking'], i[1]['title'], i[1]['singer'], i[1]['Like'], (i[1]['Like'] - least_like_100)])
+            writer.writerow([i[1]['ranking'], i[1]['title'], i[1]['singer'], i[1]['Like'], (i[1]['Like'] - least_like_a)])
             like_sum = like_sum + i[1]['Like']
-            least_like_sum = least_like_sum + (i[1]['Like'] - least_like_100)
+            least_like_sum = least_like_sum + (i[1]['Like'] - least_like_a)
 
         writer.writerow(['계', '', '', like_sum, least_like_sum])
 

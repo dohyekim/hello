@@ -80,7 +80,7 @@ def melon(rank,writemode):
     like_sum = 0
     least_like_sum = 0
     
-    with codecs.open('./melon_top.csv', writemode, 'utf-8') as ff:
+    with codecs.open('./melon_top.csv', writemode, 'euc-kr') as ff:
         writer = csv.writer(ff, delimiter=',', quotechar='"')
         writer.writerow(['랭킹','제목','가수명','좋아요','좋아요 차이'])
 

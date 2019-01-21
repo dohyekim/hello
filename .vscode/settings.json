@@ -1,8 +1,8 @@
 {
-	"editor.tabCompletion": "on",
 	"python.linting.pylintEnabled": true,
 	"python.pythonPath": "C:\\Python37\\python.exe",
 	"emmet.triggerExpansionOnTab": true,
 	"editor.wordWrap": "on",
-	"window.title": "${activeEditorLong}"
+	"window.title": "${activeEditorLong}",
+	"editor.renderWhitespace": "all"
 }

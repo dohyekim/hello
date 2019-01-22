@@ -3,9 +3,6 @@ from PIL import Image
 import requests
 import urllib.request as ur
 from bs4 import BeautifulSoup
-import time
-# from pprint import pprint
-
 
 url = "https://www.melon.com/chart/index.htm"
 headers = {
@@ -16,8 +13,7 @@ html = requests.get(url, headers = headers).text
 soup = BeautifulSoup(html, 'html.parser')
 song_lsts = soup.select('div#tb_list table tbody tr[data-song-no]')
 
-# src = soup.select_one('#lst50 > td:nth-of-type(4) > div > a > img[src]').attrs['src']
-# print(src)
+
 load_book = openpyxl.load_workbook("./meltop100.xlsx")
 sheet2 = load_book.create_sheet()
 sheet2.title = "Sheet 2"

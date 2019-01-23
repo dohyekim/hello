@@ -35,6 +35,6 @@ for p in parameter:
     div = soup1.select_one('div.entry')
     # print(div)?
     genre = div.select_one('dl.list dd:nth-of-type(3)').text
-    genres.append(genre)
+    genres.append
     time.sleep(3)
     

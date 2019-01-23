@@ -9,10 +9,7 @@ def request(url, param_header, argv={}):
     soup = BeautifulSoup(html, 'html.parser')
     return soup
 
-
-
-
-def crawl_data():
+def song_data():
     header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
     url = "https://www.melon.com/chart/index.htm"
     
@@ -51,7 +48,8 @@ def crawl_data():
         for i in get_data:
             genre.append(i.select_one('dl.list dd:nth-of-type(3)').text)
             lst.append([song_no[num],song_name[num],singer[num],genre[num],album_name[num]])
-            
+    
+    print ("Finished Crawling Songs!!!!!")        
     return (lst)
 
 ## MySql 함수
@@ -71,15 +69,16 @@ def get_conn(db):
        db=db,
        charset='utf8')
 
-sql_truncate = "truncate table Meltop"
-sql_insert = "insert into MS_Song(song_no, title, singer, genre, album) values (%s, %s, %s, %s, %s)"
-isStart = True
+# sql_truncate = "truncate table Meltop"
 
-def save(lst):
+
+
+def save(lst, sql_insert):
     try:
         conn = get_conn('melondb')
         conn.autocommit = False
         cur = conn.cursor()
+       
         cur.executemany(sql_insert, lst)
         print("Affected RowCount is", cur.rowcount, "/", len(lst))
         conn.commit()
@@ -98,17 +97,3 @@ def save(lst):
             print ("OOKKKK")
         except Exception as err2:
             print("Fail to connect!!", err2)
-
-
-
-
-# lst = []
-
-
-# save(lst)
-
-
-
-
-
-

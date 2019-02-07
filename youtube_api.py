@@ -2,7 +2,7 @@ from apiclient.discovery import build
 from pprint import pprint
 from pymongo import MongoClient, DESCENDING
 
-API_KEY = '123456'
+API_KEY = 'AIzaSyAbaVo3R-1EjRp1p6W2HzncCVtuIk02WDA'
 
 def main():
     saveMongo(search())
@@ -20,7 +20,7 @@ def search():
         maxResults = 1
     )
     i = 0
-    while req and i < 5:
+    while req and i < 3:
         search_res = req.execute()
 
         results = search_res['items']
@@ -37,8 +37,6 @@ def search():
         # for k, v in resultItems.items():
         #     resultItems[k] = int(v)
         yield items
-        for item in items:
-            item['statistics']['viewCount'] = int(item['statistics']['viewCount'])    
         # 기존 req와 기존 search_res값의 다음 것을 주세요
         req = youtube.search().list_next(req, search_res)
         i += 1
@@ -48,12 +46,20 @@ def search():
 def saveMongo(items):
     mongo_client = MongoClient('localhost', 27017)
     collection = mongo_client.dooodb.pythons
-    # collection.delete_many({})
+    collection.delete_many({})
+    for item in items:
+        # pprint(item)
+        for k, v in item[0]['statistics'].items():
+            item[0]['statistics'][k] = int(v)
+            print(k, v)
+        # item['statistics']['viewCount'] = int(item['statistics']['viewCount'])    
     dbresult = collection.insert_many(items)
     print('Affected docs is {}'.format(len(dbresult.inserted_ids)))
-    # lst = collection.find().sort('statistics.viewCount', DESCENDING).limit(10)
-    # for l in lst:
-    #     print (l)
+    lst = collection.find().sort('statistics.viewCount', DESCENDING).limit(10)
+    for l in lst:
+        stts = item['statistics']
+        snp = item['snippet']
+        print(stts['ViewCount'], snp['title'])
 
 
 if __name__ == '__main__':

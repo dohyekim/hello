@@ -2,7 +2,7 @@ from apiclient.discovery import build
 from pprint import pprint
 from pymongo import MongoClient, DESCENDING
 
-API_KEY = 'AIzaSyAbaVo3R-1EjRp1p6W2HzncCVtuIk02WDA'
+API_KEY = 'A234'
 
 def main():
     saveMongo(search())

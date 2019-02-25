@@ -2,7 +2,7 @@
 import re
 
 
-def map():
+def mapdata():
     data ='''0067011990999991950051507004+68750+023550FM-12+038299999V0203301N00671220001CN9999999N9+00001+99999999999
     0043011990999991945051512004+68750+023550FM-12+038299999V0203201N00671220001CN9999999N9+00225+99999999999
     0043011990999991950051518004+68750+023550FM-12+038299999V0203201N00261220001CN9999999N9-00111+99999999999
@@ -16,7 +16,7 @@ def map():
     0043012650999991943032412004+62300+010750FM-12+048599999V0202701N00461220001CN0500001N9-00114+99999999999
     0043012650999991943032412004+62300+010750FM-12+048599999V0202701N00461220001CN0500001N9+00191+99999999999
     0043012650999991949032412004+62300+010750FM-12+048599999V0202701N00461220001CN0500001N9+00131+99999999999'''
-    # l2 = re.findall("(.*) is.* better than (.*)",zen,re.MULTILINE)
+
     sdata = data.split('\n')
     pattern = re.compile("099999(19.*)0[1-9]\+")
     dpattern = re.compile("N9(.*)\+99999999999")
@@ -33,28 +33,30 @@ def map():
         data = data[0]
         data = data[-6:-1]
         datas.append(data)
-        
+
+    # 유효한 데이터만 추출하기    
+    mapdata = []
     for idx, d in enumerate(datas):
         if d[-1] in '0,1,4,5,9':
             years.pop(idx)
-            datas.pop(idx) 
+            datas.pop(idx)
+        mapdata.append((years[idx], datas[idx])) 
 
-    # print(years)
-    # print(datas)
+    return mapdata
+    
 
-    lsts = []
-    for i in range(len(years)):
-        lsts.append((years[i], datas[i]))
-    # print(lsts)
-
+def reducedata():
+    
+    # 연도를 key로, 온도를 value로 하는 dictionary 만들기
     dic = {}
-    for l in lsts:
+    for l in mapdata():
         if l[0] not in dic.keys():
             dic[l[0]] = [l[1]]
         else:
             lst = dic[l[0]]
             lst.append(l[1])
-    # print(dic)
+
+    # 연도별 최고기온을 구하고 결과를 string type으로 return하기
     s = ''
     for k, v in dic.items():
         v.sort()
@@ -63,4 +65,6 @@ def map():
             
     print(s)
     return s
-map()
+
+# mapdata()
+reducedata()

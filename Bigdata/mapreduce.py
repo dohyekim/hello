@@ -18,7 +18,7 @@ def mapdata():
     0043012650999991949032412004+62300+010750FM-12+048599999V0202701N00461220001CN0500001N9+00131+99999999999'''
 
     sdata = data.split('\n')
-    pattern = re.compile("099999(19.*)0[1-9]\+")
+    pattern = re.compile(".099999(19.*)004\+")
     dpattern = re.compile("N9(.*)\+99999999999")
 
     #year, data

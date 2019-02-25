@@ -1,13 +1,13 @@
 import pymysql
 import bigquery
-import sys
+import sys, os
 
-
+passwd = os.getenv('passwd')
 def get_conn(db):
     return pymysql.connect(
         host='35.243.112.23',
         user='root',
-        password='eileen',
+        password=passwd,
         port=3306,
         db=db,
         cursorclass=pymysql.cursors.DictCursor,
@@ -54,8 +54,8 @@ with conn:
 
 # # ---------------------bigquery--------------------------------
 
-
-client = bigquery.get_client(json_key_file='../../bigquery.json', readonly = False)
+keyfile = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+client = bigquery.get_client(json_key_file=keyfile, readonly = False)
 print("identification success")
 
 DATABASE='bqdb'

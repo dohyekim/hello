@@ -1,6 +1,6 @@
 import bigquery
 import sys
-client = bigquery.get_client(json_key_file='./bigquery.json', readonly = False)
+client = bigquery.get_client(json_key_file='../../bigquery.json', readonly = False)
 # print("identification success")
 
 DATABASE='bqdb'

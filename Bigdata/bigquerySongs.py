@@ -18,12 +18,15 @@ conn = get_conn('melondb')
 
 with conn:
     cur = conn.cursor()
+
+    # Song table 데이터 가져오기
     song_sql = "select s.song_no, s.title, s.genre, a.album_id from MS_Song s inner join Album a on s.album_id = a.album_id "
     cur.execute(song_sql)
     songs = cur.fetchall()
-    # print(songs)
+
     print ("Song data collected")
 
+    # Ablum table 데이터 가져오기
     album_sql = '''select album_id, album_title, album_genre, 
                 cast(rating as char(30)) as rating,
                 cast(releasedt as char(30)) as releasedt,
@@ -31,21 +34,24 @@ with conn:
                 cast(crawldt as char(30)) as crawldt from Album'''
     cur.execute(album_sql)
     albums = cur.fetchall()
-    # print(rows2)
+
     print ("Album data collected")
+
+    # albumid 가져오기
     albumids = []
     for i in albums:
         albumid = i['album_id']
         albumids.append(albumid)
 
+    # songs에 albumdetail이라는 key를 만들고 value값으로 album 데이터 집어넣기
     albumdetail = {}
     for i in range(len(albumids)):
         albumdetail[albumids[i]] = albums[i]
-    # print(albumdetail)
+
     for song in songs:
         song['albumdetail'] = albumdetail[song['album_id']]
     
-    # print(songs)
+
 # # ---------------------bigquery--------------------------------
 
 

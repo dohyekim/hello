@@ -83,7 +83,7 @@ def readData():
     for row in rows:
         print(row)
 
-# createTable()
-# insertData()
+createTable()
+insertData()
 readData()
     

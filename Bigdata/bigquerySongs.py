@@ -3,6 +3,13 @@ import bigquery
 import sys, os
 
 passwd = os.getenv('passwd')
+song_sql = "select s.song_no, s.title, s.genre, a.album_id from MS_Song s inner join Album a on s.album_id = a.album_id "
+album_sql = '''select album_id, album_title, album_genre, 
+            cast(rating as char(30)) as rating,
+            cast(releasedt as char(30)) as releasedt,
+            album_comp, entertainment,
+            cast(crawldt as char(30)) as crawldt from Album'''
+
 def get_conn(db):
     return pymysql.connect(
         host='35.243.112.23',
@@ -20,18 +27,13 @@ with conn:
     cur = conn.cursor()
 
     # Song table 데이터 가져오기
-    song_sql = "select s.song_no, s.title, s.genre, a.album_id from MS_Song s inner join Album a on s.album_id = a.album_id "
     cur.execute(song_sql)
     songs = cur.fetchall()
 
     print ("Song data collected")
 
     # Ablum table 데이터 가져오기
-    album_sql = '''select album_id, album_title, album_genre, 
-                cast(rating as char(30)) as rating,
-                cast(releasedt as char(30)) as releasedt,
-                album_comp, entertainment,
-                cast(crawldt as char(30)) as crawldt from Album'''
+
     cur.execute(album_sql)
     albums = cur.fetchall()
 

@@ -53,3 +53,4 @@ def requestJson(url):
     rjson = requests.get(url).text
     jsonData = json.loads(rjson, encoding = "utf-8")
     return jsonData
+

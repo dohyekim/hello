@@ -23,6 +23,8 @@ album_insert = "insert ignore into Album (album_id, album_title, album_genre, ra
 mf.save(album_lst, album_insert)
 
 
+
+
 # MS_Song(Master Table)
 songs = ms.song_data()
 mssong_insert = "insert ignore into MS_Song (song_no, title, genre, album_id) values (%s, %s, %s, %s) "

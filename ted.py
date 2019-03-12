@@ -1,28 +1,61 @@
 from bs4 import BeautifulSoup
 import requests
+import re
 import json
-from pprint import pprint
-import time
-import pymysql
+# from pprint import pprint
+# import time
+# import pymysql
 
-url = 'https://www.ted.com/talks/minda_dentler_what_i_learned_when_i_conquered_the_world_s_toughest_triathlon/transcript'
+def getDetail(num):
 
-html = requests.get(url).text
-soup = BeautifulSoup(html, 'html.parser')
-bigdiv = soup.select_one('div.bg:gray-ll.c:black.p-x:2.p-y:.5.bg:white@md')
-lecturer = bigdiv.select_one('div.f:.9.m-b:.4.m-t:.5.d:i-b').text
-topic = bigdiv.select_one('div.d:i-b.f:.9')
-title = bigdiv.select_one('hi.f-w:900.l-h:t.l-s:t.m-y:0.f:3')
+    details = {}
 
-tagdiv = soup.select_one('f:.9.p-x:3@md.c:black.t-a:l')
-tags = tagdiv.select('ul.l-s-t:n.p-l:0.m-y:0 li.t-t:c')
-taglist = []
-for tag in tags:
-    tag = tag.text
-    taglist.append(tag)
+    url = 'https://www.ted.com/talks/' + str(num) + '/details'
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, 'html.parser')
+    # with open("lecturer.htm", "r", encoding='utf8') as file:
+    #     soup = BeautifulSoup(file, 'html.parser')
+    script = str(soup.find_all('script'))
 
-print(title)
 
+    #---------------------------------title json------------------------------------
+    pattern = re.compile('"player_talks":(.*),\"ratings')
+    plyrtalks = re.findall(pattern, script)
+    jsonTitle = json.loads(plyrtalks[0])
+    jsonData = jsonTitle[0]
+    title = jsonData['title']
+
+    #---------------------------------detailinfo json------------------------------------
+    targeting = jsonData['targeting']
+    talkid = targeting['id']
+    tags = targeting['tag']
+    year = targeting['year']
+    genre = targeting['event'] 
+
+    #---------------------------------speaker json------------------------------------
+    pattern = re.compile('"speakers":(.*),\"url')
+    speakers = re.findall(pattern, script)
+
+    spkJson = json.loads(speakers[0])
+    spkid = spkJson[0]['id']
+    spkname = spkJson[0]['firstname'] + ' ' + spkJson[0]['lastname']
+
+    details['talkId'] = talkid
+    details['title'] = title
+    details['speakerId'] = spkid
+    details['speakerName'] = spkname
+    details['genre'] = genre
+    details['tags'] = tags
+    details['year'] = year
+    print(details)
+    return details
+
+# url = 'https://www.ted.com/talks/minda_dentler_what_i_learned_when_i_conquered_the_world_s_toughest_triathlon/details'
+# html = requests.get(url).text
+# with open("details.htm", 'w', encoding='utf-8') as file2:
+#     file2.write(html)
+# with open("details.htm", 'r', encoding='utf-8') as file:
+#     soup = BeautifulSoup(file, 'html.parser')
 def getData(num, lang):
     resultpg = {}
     pgnum = 1
@@ -48,68 +81,59 @@ def getData(num, lang):
             else :
                 t = t + text + ' ' 
                 t = t.replace('\n', ' ')
-        # print ([pgnum, t])
-        # print((pgnum, t))
-        
-        resultpg['topic'] = topic
-        # resultpg['year'] = 
-        resultpg['title'] = title
-        resultpg['lecturer'] = lecturer
-        resultpg['tags'] = taglist
 
         resultpg[pgnum] = t
-        # resultpg['eng'] = resultpg[pgnum]
-        # resultpg['kor'] = resultpg[pgnum]
         pgnum += 1
         t = ''
         
-    # print(resultpg)
+    print(resultpg)
     return resultpg[1]
 
+getData(1, 'en')
+getDetail(1)
+# # ----------------------------------db connection -------------------------------
+# def get_conn():
+#    return pymysql.connect(
+#        host='127.0.0.1',
+#        user='dooo',
+#        password='1234',
+#        port=3307,
+#        db='dooodb',
+#        charset='utf8')
 
-# ----------------------------------db connection -------------------------------
-def get_conn():
-   return pymysql.connect(
-       host='127.0.0.1',
-       user='dooo',
-       password='1234',
-       port=3307,
-       db='dooodb',
-       charset='utf8')
 
-
-# -----------------------------------db insert ------------------------------------
-data = getData(9,'en')
-insert_sql = "insert into AAA (text1) values (%s)"
-def save(sql, data):
-    try:
-        conn = get_conn()
-        conn.autocommit = False
-        cur = conn.cursor()
+# # -----------------------------------db insert ------------------------------------
+# data = getData(9,'en')
+# insert_sql = "insert into AAA (text1) values (%s)"
+# def save(sql, data):
+#     try:
+#         conn = get_conn()
+#         conn.autocommit = False
+#         cur = conn.cursor()
         
-        cur.execute(sql, data)
-        print("Affected RowCount is", cur.rowcount)
-        conn.commit()
+#         cur.execute(sql, data)
+#         print("Affected RowCount is", cur.rowcount)
+#         conn.commit()
 
-        sql = "select text1 from AAA"
-        cur.execute(sql)
-        aaa = cur.fetchall()
-        print(aaa[0][0].replace('\\',''))
+#         sql = "select text1 from AAA"
+#         cur.execute(sql)
+#         aaa = cur.fetchall()
+#         print(aaa[0][0].replace('\\',''))
 
 
-    except Exception as err:
-        conn.rollback()
-        print("Error!!", err)
+#     except Exception as err:
+#         conn.rollback()
+#         print("Error!!", err)
 
-    finally:
-        try:
-            cur.close()
-        except:
-            print("Error on close cursor")
-        try:
-            conn.close()
-            print ("OOKKKK")
-        except Exception as err2:
-            print("Fail to connect!!", err2)
+#     finally:
+#         try:
+#             cur.close()
+#         except:
+#             print("Error on close cursor")
+#         try:
+#             conn.close()
+#             print ("OOKKKK")
+#         except Exception as err2:
+#             print("Fail to connect!!", err2)
 
-save(insert_sql, data)
+# save(insert_sql, data)

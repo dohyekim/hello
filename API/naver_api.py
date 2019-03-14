@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import pymysql
 import re
 
+# --------------------------------------------------------SQL Query to Drop/Create Table-----------------------------------------------
 # drop table Blogger;
 # create table dadb.Blogger(
 # id int not null auto_increment primary key,

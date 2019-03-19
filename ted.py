@@ -3,7 +3,7 @@ import requests
 import re
 import json
 # from pprint import pprint
-# import time
+import time
 # import pymysql
 
 def getDetail(num):
@@ -56,15 +56,21 @@ def getDetail(num):
 #     file2.write(html)
 # with open("details.htm", 'r', encoding='utf-8') as file:
 #     soup = BeautifulSoup(file, 'html.parser')
-def getData(num, lang):
+def getData(num, lang='en'):
     resultpg = {}
-    pgnum = 1
+    # pgnum = 1
     # texts = []
     url = 'https://www.ted.com/talks/' + str(num) + '/transcript.json?language=' + lang
-    params = {
-        'language' : lang
-    }
-    jjson = requests.get(url, params = params).text
+    # params = {
+    #     'language' : lang
+    # }
+    stat_json = requests.get(url)
+    jjson = stat_json.text
+    if stat_json.status_code != 200:
+        print("Korean translation does not exist    ")
+        return None
+    else:
+        print("Requests succeess")
     jsonData = json.loads(jjson, encoding="utf-8")
     t = ''
     #paragraphs
@@ -82,15 +88,23 @@ def getData(num, lang):
                 t = t + text + ' ' 
                 t = t.replace('\n', ' ')
 
-        resultpg[pgnum] = t
-        pgnum += 1
+        resultpg[cues] = t
+        # pgnum += 1
         t = ''
         
     print(resultpg)
-    return resultpg[1]
 
-getData(1, 'en')
-getDetail(1)
+    return resultpg
+
+getData(1)
+# for i in range(1,10):
+#     getData(i)
+#     time.sleep(2)
+#     getData(i, 'ko')
+#     time.sleep(2)
+#     getDetail(i)
+#     time.sleep(2)
+    
 # # ----------------------------------db connection -------------------------------
 # def get_conn():
 #    return pymysql.connect(

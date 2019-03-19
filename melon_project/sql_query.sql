@@ -6,10 +6,12 @@ truncate Singer;
 truncate Song_Rank;
 */
 
+
 select * from Album;
 select * from MS_Song;
 select * from Singer;
 select * from Song_Rank;
+select rank, genre from Song_Rank sr inner join MS_Song s on sr.song_no = s.song_no limit 99;
 update Song_Rank set rankdt = "20190125";
 
 
@@ -67,3 +69,7 @@ select * from blogdb.User;
 desc Post;
 -- truncate User;
 drop table User;
+
+show processlist;
+
+select

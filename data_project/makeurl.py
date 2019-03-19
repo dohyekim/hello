@@ -15,3 +15,14 @@ def request_url(site, uri):
     print (iframe)
     return iframe
 
+
+def getHostname(url, withProtocol = False):
+    p = parse.urlparse(url)
+    if withProtocol:
+        return "{}://{}".format(p.scheme, p.hostname)
+    else:
+        return p.hostname
+
+def urljoin(url, p):
+    return parse.urljoin(url, p)
+

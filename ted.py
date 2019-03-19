@@ -58,7 +58,7 @@ def getDetail(num):
 #     soup = BeautifulSoup(file, 'html.parser')
 def getData(num, lang='en'):
     resultpg = {}
-    pgnum = 1
+    # pgnum = 1
     # texts = []
     url = 'https://www.ted.com/talks/' + str(num) + '/transcript.json?language=' + lang
     # params = {
@@ -88,21 +88,22 @@ def getData(num, lang='en'):
                 t = t + text + ' ' 
                 t = t.replace('\n', ' ')
 
-        resultpg[pgnum] = t
-        pgnum += 1
+        resultpg[cues] = t
+        # pgnum += 1
         t = ''
         
-    # print(resultpg)
+    print(resultpg)
 
-    return resultpg[1]
+    return resultpg
 
-for i in range(1,10):
-    getData(i)
-    time.sleep(2)
-    getData(i, 'ko')
-    time.sleep(2)
-    getDetail(i)
-    time.sleep(2)
+getData(1)
+# for i in range(1,10):
+#     getData(i)
+#     time.sleep(2)
+#     getData(i, 'ko')
+#     time.sleep(2)
+#     getDetail(i)
+#     time.sleep(2)
     
 # # ----------------------------------db connection -------------------------------
 # def get_conn():

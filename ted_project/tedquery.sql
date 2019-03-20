@@ -2,15 +2,15 @@
 
 drop table Talk;    
 create table Talk(
-	talk_id int not null primary key,
+	talk_id int not null,
     title varchar(256),
     genre varchar(125),
     talk_year smallint,
-    tags varchar(125)
+    tags varchar(256)
     );
 drop table Speaker;    
 create table Speaker(
-	speaker_id int not null primary key,
+	speaker_id int not null,
     name varchar(50)
     );
     
@@ -20,8 +20,7 @@ drop table Korean;
 create table Korean(
 	talk_id int not null,
     korcue smallint,
-    kor text,
-    primary key(talk_id, korcue)
+    kor text    
     );
 
 drop table English;
@@ -29,8 +28,7 @@ drop table English;
 create table English(
 	talk_id int not null,
     engcue smallint,
-    eng text,
-    primary key(talk_id, engcue)
+    eng text
    );
     
 drop table TalkSpeaker;
@@ -39,10 +37,16 @@ create table TalkSpeaker(
     speaker_id int not null
     );
     
-/*
+
+
+truncate table Talk;
+truncate table Speaker;
+truncate table Korean;
+truncate table English;
+truncate table TalkSpeaker;
+
 select * from Talk;
 select * from Speaker;
 select * from Korean;
 select * from English;
 select * from TalkSpeaker;
-*/

@@ -20,16 +20,20 @@ def getLastId(sql):
     cur = conn.cursor()    
     cur.execute(sql)
     lastid = cur.fetchall()
+    cur.close()
     return lastid        
 
-sqllastid = 'select talk_id from Talk order by talk_id desc limit 1'
-sqlTalk = '''insert into Talk(talk_id, title, genre, talk_year, tags) 
+sqltalklastid = 'select talk_id from Talk order by talk_id desc limit 1'
+
+sqlTalk = '''insert into Talk(talk_id, title, event, talk_year, tags) 
                         values( %s,%s,%s,%s,%s)'''
-sqlSpeaker = "insert into Speaker(speaker_id, name) values(%s, %s)"
+sqlSpeaker = "insert into Speaker(speaker_id, name, field) values(%s, %s, %s)"
 sqlEnglish = "insert into English(talk_id, engcue, eng) values(%s,%s,%s)"
 sqlKorean = "insert into Korean(talk_id, korcue, kor) values(%s,%s,%s)"
 sqlTalkSpeaker = "insert into TalkSpeaker (talk_id, speaker_id) values (%s, %s)"
 
+error = []
+nfound = []
 # 값 비우기(쿼리문, num = lastid + 1)
 # lastid 가져오기
 
@@ -38,11 +42,7 @@ sqlTalkSpeaker = "insert into TalkSpeaker (talk_id, speaker_id) values (%s, %s)"
 # exit()
 class Ted:
 
-    lastid = getLastId(sqllastid)
-    if len(lastid) == 0:
-        num = 1
-    else:
-        num = lastid[0][0] + 1
+    num = 0
 
     talk = []
     speaker = []
@@ -52,109 +52,148 @@ class Ted:
     isEng = True
 
     def __init__(self):
+
+        lastid = getLastId(sqltalklastid)
+        if len(lastid) == 0:
+            self.num = 1
+        else:
+            self.num = lastid[0][0] + 1
+
+        if len(nfound) != 0:
+            self.num = nfound[0] + 1
+        # print(self.num)
+        # return
+
+    def getDetail(self):
+
         print('----------------------{} started --------------------'.format(self.num))
         # exit()
-        url = 'https://www.ted.com/talks/' + str(self.num) + '/details'
-        html = requests.get(url).text
-        soup = BeautifulSoup(html, 'html.parser')
-        # with open("lecturer.htm", "r", encoding='utf8') as file:
-        #     soup = BeautifulSoup(file, 'html.parser')
-        script = str(soup.find_all('script'))
+        url = 'https://www.ted.com/talks/' + str(self.num)
+        req = requests.get(url)
+        if req.status_code == 404:
+            print("----------------------------PAGE DO NOT EXIST----------------------------")
+            nfound.append(self.num)
+            return
+
+        else:
+            # global nfound
+            nfound.clear()
+            html = req.text
+            soup = BeautifulSoup(html, 'html.parser')
+            # with open("lecturer.htm", "r", encoding='utf8') as file:
+            #     soup = BeautifulSoup(file, 'html.parser')
+            script = str(soup.find_all('script'))
+            # print(script)
 
 
         #---------------------------------title json------------------------------------
         pattern = re.compile('"player_talks":(.*),\"ratings')
         plyrtalks = re.findall(pattern, script)
-        jsonTitle = json.loads(plyrtalks[0])
-        jsonData = jsonTitle[0]
-        title = jsonData['title']
+        try:
+            jsonTitle = json.loads(plyrtalks[0])
+            jsonData = jsonTitle[0]
+            title = jsonData['title']
+            #---------------------------------detailinfo json------------------------------------
+            targeting = jsonData['targeting']
+            #talk_id == num
+            # talk_id = targeting['id']
+            tags = targeting['tag']
+            talk_year = targeting['year']
+            event = targeting['event'] 
+            
+            self.talk=[(self.num, title, event, talk_year, tags)]
 
-        #---------------------------------detailinfo json------------------------------------
-        targeting = jsonData['targeting']
-        #talk_id == num
-        # talk_id = targeting['id']
-        tags = targeting['tag']
-        talk_year = targeting['year']
-        genre = targeting['event'] 
-        
-        self.talk=[(self.num, title, genre, talk_year, tags)]
+            #---------------------------------speaker json------------------------------------
+            pattern = re.compile('"speakers":(.*),\"url')
+            speakers = re.findall(pattern, script)
+            spkJson = json.loads(speakers[0])
+            speaker_id = spkJson[0]['id']
+            name = spkJson[0]['firstname'] + ' ' + spkJson[0]['lastname']
+            field = spkJson[0]['description']
+            self.speaker=[(speaker_id, name, field)]
+            self.talkspeaker=[(self.num, speaker_id)]
 
-        #---------------------------------speaker json------------------------------------
-        pattern = re.compile('"speakers":(.*),\"url')
-        speakers = re.findall(pattern, script)
-        spkJson = json.loads(speakers[0])
-        speaker_id = spkJson[0]['id']
-        name = spkJson[0]['firstname'] + ' ' + spkJson[0]['lastname']
-        self.speaker=[(speaker_id, name)]
-        self.talkspeaker=[(self.num, speaker_id)]
-        self.saveTalk()
-        print('-----------------save Talk Done----------------')
+            self.saveTalk()
+            self.saveSpeaker()
+            self.saveTalkSpeaker()
+
+        except Exception as err:
+            error.append(self.num)
+            print("error >>>>>>>>>>>> ", err)
+            print(plyrtalks)
     
     def getEngData(self, lang='en'):
-        
-        pgnum = 1
+        # print(self.num)
+        # return
+        eng = []
+        cue = 1
 
         url = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
 
         stat_json = requests.get(url)
         jjson = stat_json.text
         if stat_json.status_code != 200:
-            print("{} translation does not exist".format(lang))
             self.isEng = False
+            print("{} translation does not exist".format(lang), stat_json.status_code)
             return 
         else:
             print("Requests succeess")
-        jsonData = json.loads(jjson, encoding="utf-8") 
+            jsonData = json.loads(jjson, encoding="utf-8") 
 
-        t = ''
-        #paragraphs
-        pgs = jsonData['paragraphs']
-        for cues in pgs:
-            texts = cues['cues']
-            for text in texts:
-                t = text['text']
+            t = ''
+            #paragraphs
+            pgs = jsonData['paragraphs']
+            for cues in pgs:
+                texts = cues['cues']
+                for text in texts:
+                    t = text['text']
 
-                if '\n' in t:
-                    t = t.replace('\n',' ')
-                self.english.append((self.num, pgnum, t))
-                pgnum += 1
-        
-        self.saveEnglish()
-        print("-----------------save English Done----------------")
+                    if '\n' in t:
+                        t = t.replace('\n',' ')
+                    eng.append((self.num, cue, t))
+                    cue += 1
+            self.english = eng
+            
+            self.saveEnglish()
+            print("-----------------save English Done----------------")
 
 
 
     def getKorData(self, lang='ko'):
+        kor = []
+        # print(self.num)
+
         if self.isEng == False:
+            print("---------DO NOT NEED TO GET KOREAN TRANSLATION----------------")
             return
-        kpgnum = 1
-
-        kurl = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
-
-        kstat_json = requests.get(kurl)
-        kjjson = kstat_json.text
-        if kstat_json.status_code != 200:
-            print("{} translation does not exist".format(lang))
-            pass
         else:
-            print("Requests succeess")
-        kjsonData = json.loads(kjjson, encoding="utf-8") 
+            kcue = 1
 
-        t = ''
-        pgs = kjsonData['paragraphs']
-        for cues in pgs:
-            texts = cues['cues']
-            for text in texts:
-                t = text['text']
+            kurl = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
 
-                if '\n' in t:
-                    t = t.replace('\n',' ')
-                self.korean.append((self.num, kpgnum, t))
-                kpgnum += 1
+            kstat_json = requests.get(kurl)
+            kjjson = kstat_json.text
+            if kstat_json.status_code != 200:
+                print("{} translation does not exist".format(lang))
+                return
+            
+            else:
+                print("Requests succeess")
+            kjsonData = json.loads(kjjson, encoding="utf-8") 
 
-        self.saveKorean()
-        print('-----------------save Korean Done----------------')
+            t = ''
+            pgs = kjsonData['paragraphs']
+            for cues in pgs:
+                texts = cues['cues']
+                for text in texts:
+                    t = text['text']
 
+                    if '\n' in t:
+                        t = t.replace('\n',' ')
+                    kor.append((self.num, kcue, t))
+                    kcue += 1
+            self.korean = kor
+            self.saveKorean()
 
     def save(self,sql, data):
         try:
@@ -193,34 +232,35 @@ class Ted:
 
     def saveTalk(self):
         self.save(sqlTalk, self.talk)
+        print('@@@@@@@@@@@@@@@@@@@@@@@@ Talk Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
     def saveSpeaker(self):
         self.save(sqlSpeaker, self.speaker)
+        print('@@@@@@@@@@@@@@@@@@@@@@@@ Speaker Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
     def saveEnglish(self):
         self.save(sqlEnglish, self.english)
+        print('@@@@@@@@@@@@@@@@@@@@@@@@ English Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
     def saveKorean(self):
         self.save(sqlKorean, self.korean)
+        print('@@@@@@@@@@@@@@@@@@@@@@@@ Korean Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
     def saveTalkSpeaker(self):
         self.save(sqlTalkSpeaker, self.talkspeaker)
+        print('@@@@@@@@@@@@@@@@@@@@@@@@ TalkSpeaker Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
-    
 
-
-for i in range(1,5):
+for i in range(1,10):
+    time.sleep(3)
     ted = Ted()
-    time.sleep(2)
+    ted.getDetail()
+
+    time.sleep(3)
     ted.getEngData()
-    print('-----------------English Done----------------')
-    time.sleep(2)
+    time.sleep(3)
     ted.getKorData()
-    print('-----------------Korean Done----------------')
 
-    ted.saveSpeaker()
-    print('-----------------save Speaker Done----------------')
 
-    ted.saveTalkSpeaker()
-    print('-----------------save Talkspeaker Done----------------')
-
+print(error)
+print(nfound)

@@ -6,13 +6,13 @@ create table Talk(
     title varchar(256),
     event varchar(125),
     talk_year smallint,
-    tags varchar(256)
+    tags varchar(1024)
     );
 drop table Speaker;    
 create table Speaker(
 	speaker_id int not null primary key,
     name varchar(50),
-    field varchar(125)
+    field varchar(256)
     );
     
 drop table Korean;
@@ -21,7 +21,7 @@ drop table Korean;
 create table Korean(
 	talk_id int not null,
     korcue smallint,
-    kor text    
+    kor varchar(1024)    
     );
 
 drop table English;
@@ -29,7 +29,7 @@ drop table English;
 create table English(
 	talk_id int not null,
     engcue smallint,
-    eng text
+    eng varchar(1024)
    );
     
 drop table TalkSpeaker;
@@ -47,14 +47,15 @@ truncate table English;
 truncate table TalkSpeaker;
 */
 
-
 select * from Talk;
+delete from Talk where talk_id = 16;
+select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id;
 select * from Speaker;
 select * from Korean where talk_id = 1 and korcue = 1;
 select * from English where talk_id = 1 and engcue = 1;
 select * from English where talk_id = 9;
-select * from Korean where talk_id = 1;
-select * from Korean;
-select * from English;
-select * from English;
+select * from Korean where talk_id = 6;
+select * from Korean order by talk_id desc;
+select * from English where talk_id = 6;
+select * from English order by talk_id desc;
 select * from TalkSpeaker;

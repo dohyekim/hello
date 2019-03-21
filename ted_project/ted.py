@@ -5,13 +5,14 @@ import json
 # from pprint import pprint
 import time
 import pymysql
+import os
 
 def get_conn():
     return pymysql.connect(
         host='127.0.0.1',
         user='dooo',
         password='1234',
-        port=3306,
+        port=3307,
         db='corpusdb',
         charset='utf8')
 
@@ -66,24 +67,32 @@ class Ted:
 
     def getDetail(self):
 
-        print('----------------------{} started --------------------'.format(self.num))
+        print('============================={} started ============================='.format(self.num))
         # exit()
-        url = 'https://www.ted.com/talks/' + str(self.num)
-        req = requests.get(url)
-        if req.status_code == 404:
-            print("----------------------------PAGE DO NOT EXIST----------------------------")
-            nfound.append(self.num)
-            return
+        if os.path.exists("html/{}.html}".format(self.num)) == True:
+            with open("html/{}.html".format(self.num), 'r', encoding='utf-8') as rfile:
+                req = rfile 
 
         else:
-            # global nfound
-            nfound.clear()
+            url = 'https://www.ted.com/talks/' + str(self.num)
+            req = requests.get(url)
             html = req.text
-            soup = BeautifulSoup(html, 'html.parser')
-            # with open("lecturer.htm", "r", encoding='utf8') as file:
-            #     soup = BeautifulSoup(file, 'html.parser')
-            script = str(soup.find_all('script'))
-            # print(script)
+            if req.status_code == 404:
+                print("----------------------------PAGE DO NOT EXIST----------------------------")
+                nfound.append(self.num)
+                time.sleep(1)
+                exit()
+            else:
+                nfound.clear()
+                with open("html/{}.html".format(self.num), 'w', encoding='utf-8') as file:
+                    file.write(html)
+
+
+        soup = BeautifulSoup(html, 'html.parser')
+        # with open("lecturer.htm", "r", encoding='utf8') as file:
+        #     soup = BeautifulSoup(file, 'html.parser')
+        script = str(soup.find_all('script'))
+        # print(script)
 
 
         #---------------------------------title json------------------------------------
@@ -119,7 +128,7 @@ class Ted:
 
         except Exception as err:
             error.append(self.num)
-            print("error >>>>>>>>>>>> ", err)
+            print("error >>>>>>>>>>>> ", err, "Status code >> ", req.status_code)
             print(plyrtalks)
     
     def getEngData(self, lang='en'):
@@ -128,72 +137,87 @@ class Ted:
         eng = []
         cue = 1
 
-        url = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
-
-        stat_json = requests.get(url)
-        jjson = stat_json.text
-        if stat_json.status_code != 200:
-            self.isEng = False
-            print("{} translation does not exist".format(lang), stat_json.status_code)
-            return 
+        if os.path.exists("html/eng{}.html}".format(self.num)) == True:
+            with open("html/eng{}.html".format(self.num), 'r', encoding='utf-8') as rengfile:
+                jjson = rengfile 
         else:
-            print("Requests succeess")
-            jsonData = json.loads(jjson, encoding="utf-8") 
-
-            t = ''
-            #paragraphs
-            pgs = jsonData['paragraphs']
-            for cues in pgs:
-                texts = cues['cues']
-                for text in texts:
-                    t = text['text']
-
-                    if '\n' in t:
-                        t = t.replace('\n',' ')
-                    eng.append((self.num, cue, t))
-                    cue += 1
-            self.english = eng
+            url = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
+            stat_json = requests.get(url)
+            jjson = stat_json.text
             
-            self.saveEnglish()
-            print("-----------------save English Done----------------")
+            with open("html/eng{}.html".format(self.num), 'w', encoding='utf-8') as k_file:
+                k_file.write(jjson)
+
+            if stat_json.status_code != 200:
+                self.isEng = False
+                print("{} translation does not exist".format(lang), stat_json.status_code)
+                return 
+            else:
+                print("Requests succeess")
+        
+        jsonData = json.loads(jjson, encoding="utf-8") 
+
+        t = ''
+        #paragraphs
+        pgs = jsonData['paragraphs']
+        for cues in pgs:
+            texts = cues['cues']
+            for text in texts:
+                t = text['text']
+
+                if '\n' in t:
+                    t = t.replace('\n',' ')
+                eng.append((self.num, cue, t))
+                cue += 1
+        self.english = eng
+        
+        self.saveEnglish()
+        print("-----------------save English Done----------------")
 
 
 
     def getKorData(self, lang='ko'):
         kor = []
+        kcue = 1
         # print(self.num)
 
         if self.isEng == False:
             print("---------DO NOT NEED TO GET KOREAN TRANSLATION----------------")
             return
         else:
-            kcue = 1
 
-            kurl = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
-
-            kstat_json = requests.get(kurl)
-            kjjson = kstat_json.text
-            if kstat_json.status_code != 200:
-                print("{} translation does not exist".format(lang))
-                return
+            if os.path.exists("html/kor{}.html}".format(self.num)) == True:
+                with open("html/kor{}.html".format(self.num), 'r', encoding='utf-8') as rengfile:
+                    kjjson = rengfile 
             
             else:
-                print("Requests succeess")
-            kjsonData = json.loads(kjjson, encoding="utf-8") 
 
-            t = ''
-            pgs = kjsonData['paragraphs']
-            for cues in pgs:
-                texts = cues['cues']
-                for text in texts:
-                    t = text['text']
+                kurl = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
 
-                    if '\n' in t:
-                        t = t.replace('\n',' ')
-                    kor.append((self.num, kcue, t))
-                    kcue += 1
-            self.korean = kor
-            self.saveKorean()
+                kstat_json = requests.get(kurl)
+                kjjson = kstat_json.text
+                with open("html/kor{}.html".format(self.num), 'w', encoding='utf-8') as e_file:
+                    e_file.write(kjjson)
+                if kstat_json.status_code != 200:
+                    print("{} translation does not exist".format(lang))
+                    return
+                else:
+                    print("Requests succeess")
+        kjsonData = json.loads(kjjson, encoding="utf-8") 
+
+        t = ''
+        pgs = kjsonData['paragraphs']
+        for cues in pgs:
+            texts = cues['cues']
+            for text in texts:
+                t = text['text']
+
+                if '\n' in t:
+                    t = t.replace('\n',' ')
+                kor.append((self.num, kcue, t))
+                kcue += 1
+        self.korean = kor
+        self.saveKorean()
 
     def save(self,sql, data):
         try:
@@ -252,7 +276,7 @@ class Ted:
 
 
 for i in range(1,10):
-    time.sleep(3)
+    time.sleep(5)
     ted = Ted()
     ted.getDetail()
 

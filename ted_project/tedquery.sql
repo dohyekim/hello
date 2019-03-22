@@ -47,10 +47,16 @@ truncate table English;
 truncate table TalkSpeaker;
 */
 
+
 select * from Talk;
+select * from Speaker;
+select * from English;
+select * from Korean;
+select * from TalkSpeaker;
+
 delete from Talk where talk_id = 16;
 select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id;
-select * from Speaker;
+
 select * from Korean where talk_id = 1 and korcue = 1;
 select * from English where talk_id = 1 and engcue = 1;
 select * from English where talk_id = 9;

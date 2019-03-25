@@ -29,7 +29,8 @@ drop table English;
 create table English(
 	talk_id int not null,
     engcue smallint,
-    eng varchar(1024)
+    eng varchar(1024),
+    isKorean tinyint
    );
     
 drop table TalkSpeaker;
@@ -37,7 +38,7 @@ create table TalkSpeaker(
 	talk_id int not null,
     speaker_id int not null
     );
-    
+
 
 /*
 truncate table Talk;
@@ -50,18 +51,24 @@ truncate table TalkSpeaker;
 
 select * from Talk;
 select * from Speaker;
-select * from English;
+select * from English where isKorean = 0;
 select * from Korean;
 select * from TalkSpeaker;
 
-delete from Talk where talk_id = 16;
-select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id;
+delete from Talk where talk_id = 24;
+delete from English where talk_id = 24;
+delete from Korean where talk_id = 6;
+
+select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id
+		inner join Speaker s on ts.speaker_id = s.speaker_id
+		where ts.speaker_id = 30;
 
 select * from Korean where talk_id = 1 and korcue = 1;
 select * from English where talk_id = 1 and engcue = 1;
 select * from English where talk_id = 9;
-select * from Korean where talk_id = 6;
+select * from Korean where talk_id = 24;
 select * from Korean order by talk_id desc;
-select * from English where talk_id = 6;
+select * from English where talk_id = 9;
 select * from English order by talk_id desc;
 select * from TalkSpeaker;
+select * from Speaker where speaker_id = 24;

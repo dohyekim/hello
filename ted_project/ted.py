@@ -36,6 +36,7 @@ sqlTalkSpeaker = "insert into TalkSpeaker (talk_id, speaker_id) values (%s, %s)"
 
 error = []
 nfound = []
+# print("nfound defined")
 # 값 비우기(쿼리문, num = lastid + 1)
 # lastid 가져오기
 
@@ -53,6 +54,7 @@ class Ted:
     talkspeaker = []
     isEng = True
     isNF = True
+    nfound = []
 
     def __init__(self):
 
@@ -61,22 +63,25 @@ class Ted:
             self.num = 1
         else:
             self.num = lastid[0][0] + 1
-
+        global nfound
         if len(nfound) != 0:
             self.num = nfound[0] + 1
+        nfound = []
         # print(self.num)
         # return
 
     def ifexist(self,lang):
         if os.path.exists("html/" + lang + str(self.num) + ".json") == True:
+            print("html/" + lang + str(self.num) + ".json")
             with open("html/" + lang + str(self.num) + ".json", encoding='utf-8') as kjson:
-                prejson = json.load(kjson)
-                jjson = json.loads(prejson)
+                jjson = json.load(kjson)
+                # jjson = json.loads(prejson)
                 print(" ################### Used existing data ##############") 
-            if jjson['status'] and jjson['status'] == 404:
-                nfound.append(self.num)
-                return
+            # if jjson['status'] and jjson['status'] == 404:
+            #     nfound.append(self.num)
+            #     return
         else:
+            print("html/" + lang + str(self.num) + ".json")
             url = 'https://www.ted.com/talks/' + str(self.num) + '/transcript.json?language=' + lang
             stat_json = requests.get(url)
             if stat_json.status_code == 404:
@@ -88,8 +93,9 @@ class Ted:
                 jjson = False
                 return self.isNF
             else:
+                print(stat_json.status_code)
                 # 저장하기
-                jjson = stat_json.text
+                jjson = stat_json.json()
                 print("Requests succeess")
                 with open("html/" + lang + str(self.num) + ".json", 'w') as engjson:
                     json.dump(jjson, engjson)
@@ -99,13 +105,15 @@ class Ted:
         print('============================={} started ============================='.format(self.num))
         # if len(nfound) != 0:
         #     return
-        jjson = {}
-
-        jjson = self.ifexist('en') 
+        # jjson = {}
+        if self.isNF == False:
+            return
+        jjson = self.ifexist('en')
+        print(type(jjson)) 
         if jjson == False:
             return
         else:
-            jsonData = json.loads(jjson, encoding="utf-8") 
+            jsonData = jjson
         # print(self.num)
         # return
         eng = []
@@ -129,6 +137,9 @@ class Ted:
 
     def getDetail(self):
         if self.isEng == False:
+            return
+        elif self.isNF == False:
+            # self.isNF == True
             return
         html = ''
         # print('============================={} started ============================='.format(self.num))
@@ -205,8 +216,9 @@ class Ted:
         #     return
         kor = []
         kcue = 1
-        kjjson = {}
-
+        # kjjson = {}
+        if self.isNF == False:
+            return
 
         if self.isEng == True:
             kjjson = self.ifexist('ko')
@@ -215,7 +227,7 @@ class Ted:
         else:
             print("---------DO NOT NEED TO GET KOREAN TRANSLATION----------------")
             try: 
-                sqlifkor = "update English set isKorean = 0 where talk_id = " + str(self.num)
+                sqlifkor = "update Talk set isKorean = 0 where talk_id = " + str(self.num)
                 conn = get_conn()
                 cur = conn.cursor()
                 cur.execute(sqlifkor)
@@ -242,7 +254,9 @@ class Ted:
             #     return
             # else:
             #     print("Requests succeess")
-        kjsonData = json.loads(kjjson, encoding="utf-8") 
+        kjsonData = kjjson
+        print(type(kjsonData)) 
+        # print(type(kjsonData))
 
         t = ''
         pgs = kjsonData['paragraphs']
@@ -314,14 +328,14 @@ class Ted:
         print('@@@@@@@@@@@@@@@@@@@@@@@@ TalkSpeaker Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
 
-for i in range(1,10):
+for i in range(1,45):
     ted = Ted()
     ted.getEngData()
-    time.sleep(random.randrange(3, 6))
+    time.sleep(random.randrange(5, 10))
     ted.getKorData()
-    time.sleep(random.randrange(3, 6))
+    time.sleep(random.randrange(5, 10))
     ted.getDetail()
-    time.sleep(random.randrange(3, 6))
+    time.sleep(random.randrange(5, 10))
 
 
 

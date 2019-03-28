@@ -1,6 +1,6 @@
 with open("chart", "w", encoding="utf-8") as chartfile:
     chartfile.write("D1 ,K1 ,E1  ,\n")
-for i in range(2,113):
+for i in range(2,145):
     with open("chart", "a", encoding="utf-8") as addfile:
         addfile.write("D{},K{},E{}, \n".format(i,i,i))
 # a = []

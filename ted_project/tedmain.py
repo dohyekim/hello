@@ -1,17 +1,17 @@
-import Ted_crawl as T
+import Ted_crawl as t
+import TedSql as td
+import tedfunctions as f
 
-# for i in range(1, 10):
-#     tedcrawl = T.TedCrawl()
-#     tedcrawl.engcrawl()
-#     tedcrawl.korcrawl()
-#     tedcrawl.getDetail()
-
-
+for i in range(1, 10):
+    tedcrawl = t.TedCrawl()
+    tedcrawl.engcrawl()
+    tedcrawl.korcrawl()
+    tedcrawl.getDetail()
 
 for i in range(1,10):
-    ted = T.Ted()
+    ted = td.Ted()
     ted.sqlEngData()
     ted.sqlKorData()
     ted.sqlDetail()
 
-# updateTalk(123)
+f.updateTalk()

@@ -328,7 +328,7 @@ class Ted:
         print('@@@@@@@@@@@@@@@@@@@@@@@@ TalkSpeaker Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
 
-for i in range(1,45):
+for i in range(1,11):
     ted = Ted()
     ted.getEngData()
     time.sleep(random.randrange(5, 10))

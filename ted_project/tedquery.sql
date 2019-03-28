@@ -81,3 +81,19 @@ select * from English where talk_id = 9;
 select * from English order by talk_id desc;
 select * from TalkSpeaker;
 select * from Speaker where speaker_id = 24;
+
+select * from English where talk_id = 1;
+
+select talk_id, engcue 
+	from English 
+	where eng like '%Thank you%';
+
+select talk_id, korcue, kor from Korean 
+	where kor like '%감사합니다%';
+    
+select * from Korean where talk_id = 2;
+select * from English where talk_id = 2;
+
+select korcue, kor from Korean
+	where talk_id =1 and
+    korcue between 289 and 293;

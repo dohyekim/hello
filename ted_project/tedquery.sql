@@ -51,9 +51,18 @@ truncate table TalkSpeaker;
 
 select * from Talk;
 select * from Speaker;
-select * from English where isKorean = 0;
-select * from Korean;
-select * from TalkSpeaker;
+select k.kor from English e left outer join Korean k on e.talk_id = k.talk_id;
+
+update Talk t set isKorean = (select case when max(k.kor) is null then 0 else 1 end
+                               from English e left outer join Korean k on e.talk_id = k.talk_id
+							  where e.talk_id = t.talk_id)
+where talk_id > 0;
+
+select talk_id from Talk where isKorean is null;
+select * from Talk order by talk_id desc;
+select * from English where talk_id = 122;
+select * from Korean where talk_id = 122;
+select * from TalkSpeaker where talk_id = 122;
 
 delete from Talk where talk_id = 24;
 delete from English where talk_id = 24;
@@ -61,7 +70,7 @@ delete from Korean where talk_id = 6;
 
 select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id
 		inner join Speaker s on ts.speaker_id = s.speaker_id
-		where ts.speaker_id = 30;
+		where t.talk_id = 122;
 
 select * from Korean where talk_id = 1 and korcue = 1;
 select * from English where talk_id = 1 and engcue = 1;

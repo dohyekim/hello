@@ -72,9 +72,9 @@ select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id
 		inner join Speaker s on ts.speaker_id = s.speaker_id
 		where t.talk_id = 122;
 
-select * from Korean where talk_id = 1 and korcue = 1;
-select * from English where talk_id = 1 and engcue = 1;
-select * from English where talk_id = 9;
+select * from Korean where talk_id = 1;
+select * from English where talk_id = 1;
+select * from English where talk_id = 24;
 select * from Korean where talk_id = 24;
 select * from Korean order by talk_id desc;
 select * from English where talk_id = 9;
@@ -82,7 +82,8 @@ select * from English order by talk_id desc;
 select * from TalkSpeaker;
 select * from Speaker where speaker_id = 24;
 
-select * from English where talk_id = 1;
+
+select * from English where talk_id = 4;
 
 select talk_id, engcue 
 	from English 
@@ -97,3 +98,15 @@ select * from English where talk_id = 2;
 select korcue, kor from Korean
 	where talk_id =1 and
     korcue between 289 and 293;
+    
+select (@rownum := @rownum + 1) r
+                        from Talk t, (select @rownum := 0) rn
+                        order by r desc
+                        limit 1;
+                        
+                        
+select talk_id, engcue, eng from English 
+                        where eng like '%Thank you%'
+                        and talk_id = 4;
+                        
+select engcue from English where talk_id = 1 order by engcue desc limit 1;

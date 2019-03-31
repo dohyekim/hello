@@ -27,11 +27,15 @@ class Ted():
     num = 0
 
     def __init__(self):
-        self.num = f.getLastId(sqllastid)[0][0] + 1
-        global nos
-        if len(nos) != 0:
-            self.num = nos[0] + 1
-            nos = []
+        lastid = f.getLastId(sqllastid)
+        if len(lastid) == 0:
+            self.num = 1 
+        else:
+            self.num = f.getLastId(sqllastid)[0][0] + 1
+            global nos
+            if len(nos) != 0:
+                self.num = nos[0] + 1
+                nos = []
 
     def save(self,sql, data):
         try:

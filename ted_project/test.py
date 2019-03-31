@@ -10,11 +10,11 @@ import requests
 # # jjson = json.load("html/eng24.js", encoding='utf-8')
 # # print(type(jjson))
 
-if os.path.exists("html/" + 'ko' + str(6) + ".json"):
-   print("html/" + 'ko' + str(6) + ".json")
-   with open("html/" + 'ko' + str(6) + ".json", encoding='utf-8') as kjson:
-         jjson = json.load(kjson)
-         print(type(jjson))
+# if os.path.exists("html/" + 'ko' + str(6) + ".json"):
+#    print("html/" + 'ko' + str(6) + ".json")
+#    with open("html/" + 'ko' + str(6) + ".json", encoding='utf-8') as kjson:
+#          jjson = json.load(kjson)
+#          print(type(jjson))
          
          
          # jjson = json.loads(prejson)
@@ -25,3 +25,12 @@ if os.path.exists("html/" + 'ko' + str(6) + ".json"):
 # # jjson = stat_json.text
 # jjson = stat_json.json()
 # print(type(jjson))
+
+
+# with open("chart", "w", encoding="utf-8") as chartfile:
+#     chartfile.write("D1 ,K1 ,E1  ,\n")
+
+url = 'https://www.ted.com/talks/24/transcript.json?language=en'
+stat_json = requests.get(url)
+print(stat_json)
+print(stat_json.status_code)

@@ -38,6 +38,10 @@ class TedCrawl():
 
     def __init__(self):
         a = []
+        if os.path.exists("chart") == False:
+            with open("chart","w",encoding='utf-8') as newfile:
+                newfile.write("D1 \n")
+            
         with open("chart","r",encoding="utf-8") as readfile:
             for line in readfile:
                 a.append(line[1])
@@ -101,30 +105,33 @@ class TedCrawl():
 
     
     def getDetail(self):
+
         if self.isEng == False:
             with open("chart", "a", encoding="utf-8") as addfile:
                 addfile.write("D{}\n".format(self.num))
             return
-
-        if os.path.exists("html/" + str(self.num) + ".htm"):
-            print(" Detail page already exists")
-            with open("chart", "a", encoding="utf-8") as addfile:
-                addfile.write("D{}\n".format(self.num))
-            return
-
+            
         else:
-            time.sleep(random.randrange(5,10))
-            url = 'https://www.ted.com/talks/' + str(self.num)
-            req = requests.get(url)
-            print(req.status_code)
-            html = req.text
 
-            print("{} Detail requests success ".format(self.num))
+            if os.path.exists("html/" + str(self.num) + ".htm"):
+                print(" Detail page already exists")
+                with open("chart", "a", encoding="utf-8") as addfile:
+                    addfile.write("D{}\n".format(self.num))
+                return
 
-            with open("html/{}.htm".format(self.num), 'w', encoding='utf-8') as file:
-                file.write(html)
-            with open("chart", "a", encoding="utf-8") as addfile:
-                addfile.write("D{}\n".format(self.num))
+            else:
+                time.sleep(random.randrange(5,10))
+                url = 'https://www.ted.com/talks/' + str(self.num)
+                req = requests.get(url)
+                print(req.status_code)
+                html = req.text
+
+                print("{} Detail requests success ".format(self.num))
+
+                with open("html/{}.htm".format(self.num), 'w', encoding='utf-8') as file:
+                    file.write(html)
+                with open("chart", "a", encoding="utf-8") as addfile:
+                    addfile.write("D{}\n".format(self.num))
 
 
 

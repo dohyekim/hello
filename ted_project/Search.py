@@ -89,7 +89,7 @@ class ElasticSearch():
         print(kstrs, ksearch)
 
     def kortoEng(self, search):
-        for t in range(1, 5):
+        for t in range(1, 10):
             sqlseleng = "select engcue from English where talk_id = {} order by engcue desc limit 1".format(t)
             sqlselkor = "select korcue from Korean where talk_id = {} order by korcue desc limit 1".format(t)
 
@@ -124,22 +124,23 @@ class ElasticSearch():
                         talkcue = (rows[i][0], rows[i][1], rows[i][2])
                         self.kortalk.append(talkcue)
             print("--------------- NEXT TURN -----------------")
-        print(self.kortalk)
+        print("kortalk >>>", self.kortalk)
 
     def kortoEngequiv(self):
-        res = []
+        talkids = []
         tags = []
         for k in range(len(self.kortalk)):
             cue = self.kortalk[k][1]
             if self.kortalk[k][1] == 1:
                 sqlEngSearch = '''select engcue, eng from English 
                     where engcue between {} and {}
-                    and talk_id = {}'''.format(cue, cue+2, self.kortalk[k][0])
+                    and talk_id = {}'''.format(cue, cue+1, self.kortalk[k][0])
             else:     
                 sqlEngSearch = '''select engcue, eng from English 
                     where engcue between {} and {}
-                    and talk_id = {}'''.format(cue-2, cue+2, self.kortalk[k][0])
-
+                    and talk_id = {}'''.format(cue-1, cue+1, self.kortalk[k][0])
+            talkid = self.kortalk[k][0]
+            talkids.append(talkid) # talk_id
             ktagSearch = 'select tags from Talk where talk_id = {}'.format(self.kortalk[k][0])
             conn = f.get_conn()
             cur = conn.cursor()
@@ -148,20 +149,26 @@ class ElasticSearch():
             cur.execute(ktagSearch)
             esearch = cur.fetchall()
             for j in erows:
-                self.findEng.append(j[1])
+                self.findEng.append(j[1]) # eng
             for m in esearch:
-                tags.append(str(m))
+                tag = m[0]
+                if tag in tags:
+                    continue
+                else:
+                    tags.append(tag)
             searchstrs = ", ".join(tags)
             estrs = " ".join(self.findEng)
-            # print(type(searchstrs))
-            # print(type(estrs))
-            res.append("... " + estrs + "... \n" + searchstrs + "\n")
             
-
+            res = "..." + estrs + "..." + "\nTags >>>> " + searchstrs
         print(res)
 
 s = ElasticSearch()
 # s.get('inspire')
 # s.korequiv()
-s.kortoEng('감사합니다')
+# s.kortoEng('긴장감')
+# s.kortoEngequiv()
+
+s.kortoEng('비합리')
 s.kortoEngequiv()
+
+# 구분해서 출력하는 코드 짜기

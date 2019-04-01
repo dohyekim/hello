@@ -30,3 +30,4 @@ with open("chart", "w", encoding="utf-8") as chartfile:
 for k in range(2,190):
     with open("chart", "a", encoding="utf-8") as chartfile:
         chartfile.write("D{} \n".format(k))
+

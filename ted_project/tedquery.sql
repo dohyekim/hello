@@ -60,14 +60,15 @@ where talk_id > 0;
 
 select talk_id from Talk where isKorean is null;
 select * from Talk order by talk_id desc;
-select * from English where talk_id = 122;
+select * from English where talk_id = 102;
 select * from Korean where talk_id = 122;
 select * from TalkSpeaker where talk_id = 122;
 
-delete from Talk where talk_id = 24;
+/*
+delete from Talk where talk_id = ;
 delete from English where talk_id = 24;
 delete from Korean where talk_id = 6;
-
+*/
 select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id
 		inner join Speaker s on ts.speaker_id = s.speaker_id
 		where t.talk_id = 122;
@@ -95,6 +96,7 @@ select talk_id, korcue, kor from Korean
 select * from Korean where talk_id = 2;
 select * from English where talk_id = 2;
 
+
 select korcue, kor from Korean
 	where talk_id =1 and
     korcue between 289 and 293;
@@ -105,8 +107,9 @@ select (@rownum := @rownum + 1) r
                         limit 1;
                         
                         
-select talk_id, engcue, eng from English 
+select t.talk_id, t.field, max(engcue), max(eng) from English e inner join Talk t on t.talk_id = e.talk_id   
                         where eng like '%Thank you%'
-                        and talk_id = 4;
+                        and t.talk_id = 7
+                        group by t.talk_id;
                         
 select engcue from English where talk_id = 1 order by engcue desc limit 1;

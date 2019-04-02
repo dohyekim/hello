@@ -25,9 +25,14 @@ import requests
 # # jjson = stat_json.text
 # jjson = stat_json.json()
 # print(type(jjson))
-with open("chart", "w", encoding="utf-8") as chartfile:
-    chartfile.write("D1, \n")
-for k in range(2,190):
-    with open("chart", "a", encoding="utf-8") as chartfile:
-        chartfile.write("D{} \n".format(k))
+# with open("chart", "w", encoding="utf-8") as chartfile:
+#     chartfile.write("D1, \n")
+# for k in range(2,190):
+#     with open("chart", "a", encoding="utf-8") as chartfile:
+#         chartfile.write("D{} \n".format(k))
+strs = ''
+a = ['a', 'b', 'c', 'd']
+for i in a:
+    strs += (i + ' ')
 
+print(strs)

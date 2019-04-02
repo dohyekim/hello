@@ -9,6 +9,19 @@ def get_conn():
         db='corpusdb',
         charset='utf8')
 
+def conncursor():
+    conn = pymysql.connect(
+        host='127.0.0.1',
+        user='dooo',
+        password='1234',
+        port=3307,
+        db='corpusdb',
+        charset='utf8'
+    )
+    cur = conn.cursor()
+    return cur
+    
+
 def getLastId(sql):
     conn = get_conn()
     cur = conn.cursor()    
@@ -36,6 +49,7 @@ def updateTalk():
                                 from English e left outer join Korean k on e.talk_id = k.talk_id
                                 where e.talk_id = t.talk_id)
                     where talk_id >= ''' + str(uplastid) + ';'
+    
 
     try: 
         print(" UPDATE STARTED ")
@@ -60,3 +74,87 @@ def updateTalk():
         except Exception as err2:
             print("Fail to connect!!", err2)
 
+def updateDiff():
+    print(" ============ Update Diff Started ==================")
+    sqlupdateId = "select talk_id from Talk where diff is null"
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(sqlupdateId)
+    uid = cur.fetchall()
+
+    if len(uid) == 0:
+        return
+
+    uplastid = uid[0][0]
+
+    sqlseleng = "select engcue from English where talk_id = {} order by engcue desc limit 1".format(uplastid)
+    sqlselkor = "select korcue from Korean where talk_id = {} order by korcue desc limit 1".format(uplastid)
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(sqlseleng)
+    
+    # English table의 row수
+    engcnt = cur.fetchall()
+    if len(engcnt) != 0:
+        engs = engcnt[0][0]
+    cur.execute(sqlselkor)
+
+    # Korean table의 row수
+    korcnt = cur.fetchall()
+    if len(korcnt) != 0:
+        kors = korcnt[0][0]
+
+    # 3개 이상 차이가 나면 skip
+    sqlupdate_0 = 'update Talk set diff = 0 where talk_id >= {}'.format(uplastid)
+    sqlupdate_1 = 'update Talk set diff = 1 where talk_id >= {}'.format(uplastid)
+    print("Hard to match those two")
+
+    if abs(engs - kors) > 3:
+        try: 
+            print(" DIFF UPDATE STARTED ")
+            conns = get_conn()
+            curs = conns.cursor()  
+            curs.execute(sqlupdate_0)
+            conns.commit()
+            print(" DIFF UPDATE SUCCESS >> ", curs.rowcount)
+            # continue
+
+        except Exception as err:
+            conns.rollback()
+            print("Error!!", err)
+
+        finally:
+            try:
+                curs.close()
+            except:
+                print("Error on close cursor")
+            try:
+                conns.close()
+                print ("OOKKKK")
+            except Exception as err2:
+                print("Fail to connect!!", err2)
+    else:
+        try: 
+            print(" DIFF UPDATE STARTED ")
+            conns = get_conn()
+            curs = conns.cursor()  
+            curs.execute(sqlupdate_1)
+            conns.commit()
+            print(" DIFF UPDATE SUCCESS >> ", curs.rowcount)
+            # continue
+
+        except Exception as err:
+            conns.rollback()
+            print("Error!!", err)
+
+        finally:
+            try:
+                curs.close()
+            except:
+                print("Error on close cursor")
+            try:
+                conns.close()
+                print ("OOKKKK")
+            except Exception as err2:
+                print("Fail to connect!!", err2)

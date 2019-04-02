@@ -30,9 +30,15 @@ import requests
 # for k in range(2,190):
 #     with open("chart", "a", encoding="utf-8") as chartfile:
 #         chartfile.write("D{} \n".format(k))
-strs = ''
-a = ['a', 'b', 'c', 'd']
-for i in a:
-    strs += (i + ' ')
+# strs = ''
+# a = ['a', 'b', 'c', 'd']
+# for i in a:
+#     strs += (i + ' ')
 
-print(strs)
+# print(strs)
+
+a = 'Thank you'
+print(a[1:])
+s = a[0]
+print(s.lower())
+print(s.upper())

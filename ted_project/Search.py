@@ -33,14 +33,21 @@ class ElasticSearch():
 
     def engtoKor(self, search):
         # 전체 row 수만큼 loop 돌리도록 수정(int(self.talkcnt)+1)
-        for t in range(1, 10):
+        for t in range(1, 20):
             if (t,) in self.diffs:
                 continue
 
             # 검색
+            s = ''
+            s = search[0]
+            if s.isupper() == False:
+                search.capitalize()
             sqlEngSearch = '''select engcue from English 
-                        where eng like '%{}%'
-                        and talk_id = {}'''.format(search, t)
+                        where eng regexp '([{}{}]{})'
+                        and talk_id = {}'''.format(s.lower(), s.upper(), search[1:], t)
+            # sqlEngSearch = '''select engcue from English 
+            #                     where eng like '%{}%'
+            #                     and talk_id = {}'''.format(search, t)
             conn = f.get_conn()
             cur = conn.cursor()
             cur.execute(sqlEngSearch)
@@ -67,12 +74,6 @@ class ElasticSearch():
                         sentence += (r[0]+' ')
                     # print(sentence)
                     self.engsentences.append([sentence])
-            # if 
-
-            
-            # print(self.engsentences)
-            # print(len(self.engsentences))
-            
     def engtoKorequiv(self):
         tags = []
         res=[]
@@ -222,8 +223,10 @@ class ElasticSearch():
 
 
 s = ElasticSearch()
+s.engtoKor('the most important')
 # s.engtoKor('start off')
-s.engtoKor('start on')
+# s.engtoKor('start on')
+# s.engtoKor('Thank you')
 s.engtoKorequiv()
 
 # s.kortoEng('감사합니다')

@@ -58,11 +58,11 @@ def updateTalk():
 
     uplastid = uid[0][0]
 
-
     sqlUpdate = '''update Talk t set isKorean = (select case when max(k.kor) is null then 0 else 1 end
                                 from English e left outer join Korean k on e.talk_id = k.talk_id
                                 where e.talk_id = t.talk_id)
                     where talk_id >= ''' + str(uplastid) + ';'
+
     saveUpdata(sqlUpdate, uplastid)
 
 
@@ -99,7 +99,6 @@ def updateDiff():
     else:
         sqlupdate_2 = 'update Talk set diff = 2 where talk_id = {}'.format(uplastid)
         saveUpdata(sqlupdate_2, uplastid, '2222222')
-
         return
 
     # 3개 이상 차이가 나면 skip

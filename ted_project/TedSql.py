@@ -86,7 +86,6 @@ class Ted():
         self.save(sqlTalkSpeaker, self.talkspeaker)
         print('@@@@@@@@@@@@@@@@@@@@@@@@ TalkSpeaker Done @@@@@@@@@@@@@@@@@@@@@@@@')
 
-
     def sqlEngData(self, lang='en'):
         if os.path.exists("html/" + lang + str(self.num) + ".json") == False:
             return

@@ -6,7 +6,8 @@ create table Talk(
     title varchar(256),
     event varchar(125),
     talk_year smallint,
-    tags varchar(1024)
+    tags varchar(1024),
+    diff tinyint
     );
 drop table Speaker;    
 create table Speaker(
@@ -49,20 +50,45 @@ truncate table TalkSpeaker;
 */
 
 
-select * from Talk;
+
+
+
+select * from Talk order by talk_id desc;
+select * from Korean where talk_id = 3 and korcue = 3;
+select * from English where talk_id = 4;
+
+
+select * from English where eng regexp '([Tt]hank you)' and talk_id between 1 and 5;
+
+select engcue from English
+                        where eng regexp '([tT]hank you)'
+                        and talk_id = 3;
+                        
+select talk_id from Talk where diff = 0;
 select * from Speaker;
 select k.kor from English e left outer join Korean k on e.talk_id = k.talk_id;
 
+/*
 update Talk t set isKorean = (select case when max(k.kor) is null then 0 else 1 end
                                from English e left outer join Korean k on e.talk_id = k.talk_id
 							  where e.talk_id = t.talk_id)
 where talk_id > 0;
+*/
+
+select * from Talk order by talk_id desc;
+select engcue from English where talk_id = 578 order by engcue desc;
+select korcue from Korean where talk_id = 578 order by korcue desc;
 
 select talk_id from Talk where isKorean is null;
+select eng from English where talk_id = 360;
 select * from Talk order by talk_id desc;
 select * from English where talk_id = 102;
 select * from Korean where talk_id = 122;
 select * from TalkSpeaker where talk_id = 122;
+
+/*
+update Talk t set diff = null;
+*/
 
 /*
 delete from Talk where talk_id = ;
@@ -89,18 +115,23 @@ select * from English where talk_id = 4;
 select talk_id, engcue 
 	from English 
 	where eng like '%Thank you%';
+    
+select talk_id, eng, engcue from English where talk_id = 6 and engcue = 357;
 
 select talk_id, korcue, kor from Korean 
 	where kor like '%감사합니다%';
     
-select * from Korean where talk_id = 2;
-select * from English where talk_id = 2;
+select * from Korean where talk_id = 361;
+select * from English where talk_id = 361;
 
 
 select korcue, kor from Korean
 	where talk_id =1 and
     korcue between 289 and 293;
     
+select korcue, kor from Korean where talk_id = 4 and
+korcue between 205 and 207;
+
 select (@rownum := @rownum + 1) r
                         from Talk t, (select @rownum := 0) rn
                         order by r desc
@@ -113,3 +144,8 @@ select t.talk_id, t.field, max(engcue), max(eng) from English e inner join Talk 
                         group by t.talk_id;
                         
 select engcue from English where talk_id = 1 order by engcue desc limit 1;
+
+select talk_id, korcue, kor from Korean 
+                        where kor like '%비합리%'
+                        and talk_id = 5;
+                        

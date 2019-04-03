@@ -16,4 +16,5 @@ for i in range(1,20):
 
 f.updateTalk()
 
-f.updateDiff()
+for i in range(1, 20):
+    f.updateDiff()

@@ -40,8 +40,6 @@ class ElasticSearch():
             # 검색
             s = ''
             s = search[0]
-            if s.isupper() == False:
-                search.capitalize()
             sqlEngSearch = '''select engcue from English 
                         where eng regexp '([{}{}]{})'
                         and talk_id = {}'''.format(s.lower(), s.upper(), search[1:], t)
@@ -127,7 +125,6 @@ class ElasticSearch():
             res.append("Kor >>>> ..." + strs + "..." + "\nTags >>>> " + tags[0] + "\n")
             print(tid, cue, "\n", self.engsentences[k], "\n", res[k], "\n")
 
-# -------------------------------------- 여기까지 refac!!! --------------------------------------
 
     def kortoEng(self, search):
         # int(self.talkcnt)+1
@@ -165,7 +162,6 @@ class ElasticSearch():
                         sentence += (r[0]+' ')
                     # print(sentence)
                     self.korsentences.append([sentence])
-
 
     def kortoEngequiv(self):
         tags = []
@@ -222,12 +218,12 @@ class ElasticSearch():
             print(tid, cue, "\n", self.korsentences[k], "\n", res[k], "\n")
 
 
-s = ElasticSearch()
-s.engtoKor('the most important')
+# s = ElasticSearch()
+# s.engtoKor('the most important')
 # s.engtoKor('start off')
 # s.engtoKor('start on')
 # s.engtoKor('Thank you')
-s.engtoKorequiv()
+# s.engtoKorequiv()
 
 # s.kortoEng('감사합니다')
 # s.kortoEngequiv()

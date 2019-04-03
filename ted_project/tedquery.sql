@@ -75,6 +75,8 @@ update Talk t set isKorean = (select case when max(k.kor) is null then 0 else 1 
 where talk_id > 0;
 */
 
+
+select * from Talk where talk_id = 3;
 select * from Talk order by talk_id desc;
 select engcue from English where talk_id = 578 order by engcue desc;
 select korcue from Korean where talk_id = 578 order by korcue desc;

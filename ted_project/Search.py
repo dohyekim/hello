@@ -1,7 +1,7 @@
 # 이후 Elastic Search로 Refac
 
 import tedfunctions as f
-
+from pprint import pprint
 class ElasticSearch():
 
     talkcnt = 0    
@@ -10,7 +10,7 @@ class ElasticSearch():
     kortalk = []
     korsentences = []
     engsentences=[]
-
+    shows={}
     def __init__ (self):
 
         # 전체 Talk의 수 구하기
@@ -71,13 +71,14 @@ class ElasticSearch():
                     for r in rows2:
                         sentence += (r[0]+' ')
                     # print(sentence)
-                    self.engsentences.append([sentence])
+                    self.engsentences.append(sentence)
     def engtoKorequiv(self):
         tags = []
-        res=[]
-        strs = ''
+
+        n=0
         # print(len(self.engtalk))
         for k, engt in enumerate(self.engtalk):
+            strs = ''
             cue = engt[1]
             tid = engt[0]
 
@@ -108,7 +109,7 @@ class ElasticSearch():
             a=[]
 
             for korean in korows:
-                a.append(korean) # eng
+                a.append(korean[0]) # eng
 
             for m in tagrows:
                 tag = m[0]
@@ -121,9 +122,12 @@ class ElasticSearch():
 
             # 세 개의 문장을 하나의 string으로 만들기
             for i in a:
-                strs += (i[0] + ' ')
-            res.append("Kor >>>> ..." + strs + "..." + "\nTags >>>> " + tags[0] + "\n")
-            print(tid, cue, "\n", self.engsentences[k], "\n", res[k], "\n")
+                strs += i + ' '
+            show = {'tid' : tid, 'cue':cue, 'engsentences':self.engsentences[k], 'result':strs}
+            self.shows[n] = show
+            n += 1
+        pprint(self.shows)
+        return self.shows
 
 
     def kortoEng(self, search):
@@ -161,15 +165,18 @@ class ElasticSearch():
                     for r in rows2:
                         sentence += (r[0]+' ')
                     # print(sentence)
-                    self.korsentences.append([sentence])
+                    self.korsentences.append(sentence)
 
     def kortoEngequiv(self):
+        # print("self.korsentences>>", self.korsentences)
         tags = []
-        res=[]
-        strs = ''
+        # res=[]
+        # eng=[]
+        n=1
 
-        # print(len(self.engtalk))
+        print(self.kortalk)
         for k, kort in enumerate(self.kortalk):
+            strs = ''
             cue = kort[1]
             tid = kort[0]
 
@@ -198,10 +205,10 @@ class ElasticSearch():
             cur.close()
             
             a=[]
-
+            # print("english >>>", enrows)
             for english in enrows:
-                a.append(english) # eng
-
+                a.append(english[0]) # eng
+            # print("aa>>", a)
             for m in tagrows:
                 tag = m[0]
                 
@@ -213,17 +220,20 @@ class ElasticSearch():
             # print("aaa>>", a)
             # 세 개의 문장을 하나의 string으로 만들기
             for i in a:
-                strs += (i[0] + ' ')
-            res.append("Eng >>>> ..." + strs + "..." + "\nTags >>>> " + tags[0] + "\n")
-            print(tid, cue, "\n", self.korsentences[k], "\n", res[k], "\n")
-
-
-# s = ElasticSearch()
+                strs += i + ' '
+            show = {'number' : n, 'tid' : tid, 'cue':cue, 'korsentences':self.korsentences[k], 'result':strs}
+            self.shows[n] = show
+            self.shows['number'] = n
+            n += 1
+        pprint(self.shows)
+        return self.shows
+                
+s = ElasticSearch()
 # s.engtoKor('the most important')
 # s.engtoKor('start off')
 # s.engtoKor('start on')
-# s.engtoKor('Thank you')
-# s.engtoKorequiv()
+s.engtoKor('Thank you')
+s.engtoKorequiv()
 
 # s.kortoEng('감사합니다')
 # s.kortoEngequiv()

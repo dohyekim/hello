@@ -1,6 +1,6 @@
 
 
-drop table Talk;    
+/*drop table Talk;*/    
 create table Talk(
 	talk_id int not null primary key,
     title varchar(256),
@@ -9,14 +9,16 @@ create table Talk(
     tags varchar(1024),
     diff tinyint
     );
-drop table Speaker;    
+/*drop table Speaker;*/    
 create table Speaker(
 	speaker_id int not null primary key,
     name varchar(50),
     field varchar(256)
     );
-    
+
+/*    
 drop table Korean;
+*/
 
 /* unique key: talk_id/korcue */
 create table Korean(
@@ -25,7 +27,7 @@ create table Korean(
     kor varchar(1024)    
     );
 
-drop table English;
+/*drop table English;*/
 /* unique key: talk_id/engcue */    
 create table English(
 	talk_id int not null,
@@ -34,12 +36,22 @@ create table English(
     isKorean tinyint
    );
     
-drop table TalkSpeaker;
+/*drop table TalkSpeaker;*/
 create table TalkSpeaker(
 	talk_id int not null,
     speaker_id int not null
     );
-
+  
+/*  
+drop table User;
+*/
+create table User(
+	id int auto_increment not null primary key,
+    passwd varchar(256),
+    email varchar(256),
+    username varchar(256)
+);
+    
 
 /*
 truncate table Talk;
@@ -50,8 +62,14 @@ truncate table TalkSpeaker;
 */
 
 
+desc User;
+desc Talk;
+desc Korean;
+desc English;
+desc Speaker;
+desc TalkSpeaker;
 
-
+show processlist;
 
 select * from Talk order by talk_id desc;
 select * from Korean where talk_id = 3 and korcue = 3;

@@ -71,11 +71,16 @@ desc TalkSpeaker;
 
 show processlist;
 
+select tags from Talk where talk_id = 4;
 select * from Talk order by talk_id desc;
 select * from Korean where talk_id = 3 and korcue = 3;
 select * from English where talk_id = 4;
 
+select * from Korean where kor like '%안녕하세요%' and talk_id between 1 and 10;
+select korcue from Korean where talk_id = 7 order by korcue desc limit 1;
+select engcue from English where talk_id = 7 order by engcue desc limit 1;
 
+select * from Korean where talk_id = 4;
 select * from English where eng regexp '([Tt]hank you)' and talk_id between 1 and 5;
 
 select engcue from English
@@ -120,7 +125,7 @@ select * from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id
 		where t.talk_id = 122;
 
 select * from Korean where talk_id = 1;
-select * from English where talk_id = 1;
+select * from English where talk_id = 5;
 select * from English where talk_id = 24;
 select * from Korean where talk_id = 24;
 select * from Korean order by talk_id desc;

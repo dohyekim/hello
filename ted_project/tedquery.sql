@@ -162,6 +162,11 @@ select (@rownum := @rownum + 1) r
                         order by r desc
                         limit 1;
                         
+
+select * from Talk;
+
+select * from Korean where talk_id = 683 and korcue between 72 and 78;
+select * from Korean where talk_id = 601;
                         
 select t.talk_id, t.field, max(engcue), max(eng) from English e inner join Talk t on t.talk_id = e.talk_id   
                         where eng like '%Thank you%'

@@ -28,6 +28,9 @@ testset = [[0, 1], [1, 0], [1, 1], [2, -1]]
 pred = clf.predict(testset)
 print("pred>>>>>", pred)
 
+
+
+
 # () 안에다가는 정답을 줌
 score = metrics.accuracy_score([1,1,0, 1], pred)
 print("score>>> ", score)

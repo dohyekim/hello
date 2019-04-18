@@ -1,15 +1,12 @@
-from sklearn import svm, metrics    
+from sklearn import svm, metrics
 import pandas as pd
 from sklearn.externals import joblib
 from pathlib import Path
 
-from sklearn import svm, metrics
-import pandas as pd
-
 def readCsv(file, maxcnt):
     labels = []
     images = []
-    with open(file, "r") as f:
+    with open(file, "r", encoding="utf-8") as f:
         for i, line in enumerate(f):
             if i >= maxcnt:
                 break
@@ -19,14 +16,21 @@ def readCsv(file, maxcnt):
     return {"labels": labels, "images": images}
 
 
-train = readCsv('./data/train.csv', 60000)   # 학습용 데이터가 많아질수록 스코어 상승!
 test = readCsv('./data/t10k.csv', 10000)
 
 # print(test['images'])
+pklFile = "./data/mnist.pkl"
+clf = None
+if Path(pklFile).exists():              # from pathlib import Path
+    print("File Exists!!")
+    clf = joblib.load(pklFile)
 
 # training ---------------------------
-clf = svm.SVC(gamma='auto')
-clf.fit(train['images'], train['labels'])
+if not clf:
+    train = readCsv('./data/train.csv', 60000)   # 학습용 데이터가 많아질수록 스코어 상승!
+    clf = svm.SVC(gamma='auto')
+    clf.fit(train['images'], train['labels'])
+    joblib.dump(clf, pklFile)
 
 # test -------------------------
 pred = clf.predict(test['images'])

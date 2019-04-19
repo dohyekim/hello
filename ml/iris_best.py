@@ -27,11 +27,21 @@ clfBest = svm.SVC(C=1, cache_size=200, class_weight=None, coef0=0.0,
   kernel='linear', max_iter=-1, probability=False, random_state=None,
   shrinking=True, tol=0.001, verbose=False)
 
+clfBest2 = svm.SVC(C=1, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+  kernel='linear', max_iter=-1, probability=False, random_state=None,
+  shrinking=True, tol=0.001, verbose=False)
 
 clfBest.fit(trainData, trainLabel)
-
 pred = clfBest.predict(testData)
 score = metrics.accuracy_score(testLabel, pred)
 
+clfBest2.fit(trainData, trainLabel)
+pred2 = clfBest2.predict(testData)
+score2 = metrics.accuracy_score(testLabel, pred)
+
+# 결과가 별 차이 없음
 print(score)
+print(score2)
+
 

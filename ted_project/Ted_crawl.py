@@ -37,7 +37,9 @@ class TedCrawl():
     talkspeaker = []
 
     def __init__(self):
+
         a = []
+<<<<<<< HEAD
         if os.path.exists("chart") == False:
             with open("chart","w",encoding='utf-8') as newfile:
                 newfile.write("D1 \n")
@@ -47,6 +49,19 @@ class TedCrawl():
                 a.append(line[1])
             number = len(a)
         self.num = number
+=======
+
+        if os.path.exists("chart") == False:
+            self.num = 0
+            # with open("chart","w",encoding="utf-8") as writefile:
+            #     writefile.write("D1")
+        else:
+            with open("chart","r",encoding="utf-8") as readfile:
+                for line in readfile:
+                    a.append(line[1])
+                number = len(a)
+            self.num = number
+>>>>>>> 97e557429b08ffdb80f9227f2de91259c4e30523
 
 
     def engcrawl(self, lang='en'):
@@ -105,6 +120,16 @@ class TedCrawl():
 
     
     def getDetail(self):
+<<<<<<< HEAD
+=======
+        # if os.path.exists("chart") == False:
+        #     with open("chart","w",encoding="utf-8") as writefile:
+        #         writefile.write("D1")
+        if self.isEng == False:
+            with open("chart", "a", encoding="utf-8") as addfile:
+                addfile.write("D{}\n".format(self.num))
+            return
+>>>>>>> 97e557429b08ffdb80f9227f2de91259c4e30523
 
         if self.isEng == False:
             with open("chart", "a", encoding="utf-8") as addfile:
@@ -112,6 +137,17 @@ class TedCrawl():
             return
             
         else:
+<<<<<<< HEAD
+=======
+            time.sleep(random.randrange(5,10))
+            url = 'https://www.ted.com/talks/' + str(self.num)
+            req = requests.get(url)
+            print(req.status_code)
+            if req.status_code == 429:
+                time.sleep(10)
+                req = requests.get(url)
+            html = req.text
+>>>>>>> 97e557429b08ffdb80f9227f2de91259c4e30523
 
             if os.path.exists("html/" + str(self.num) + ".htm"):
                 print(" Detail page already exists")
@@ -119,6 +155,7 @@ class TedCrawl():
                     addfile.write("D{}\n".format(self.num))
                 return
 
+<<<<<<< HEAD
             else:
                 time.sleep(random.randrange(5,10))
                 url = 'https://www.ted.com/talks/' + str(self.num)
@@ -130,6 +167,14 @@ class TedCrawl():
 
                 with open("html/{}.htm".format(self.num), 'w', encoding='utf-8') as file:
                     file.write(html)
+=======
+            with open("html/{}.htm".format(self.num), 'w', encoding='utf-8') as file:
+                file.write(html)
+            if os.path.exists("chart") == False:
+                with open("chart","w",encoding="utf-8") as writefile:
+                    writefile.write("D1")
+            else:
+>>>>>>> 97e557429b08ffdb80f9227f2de91259c4e30523
                 with open("chart", "a", encoding="utf-8") as addfile:
                     addfile.write("D{}\n".format(self.num))
 

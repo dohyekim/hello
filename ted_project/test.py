@@ -25,6 +25,7 @@ import requests
 # # jjson = stat_json.text
 # jjson = stat_json.json()
 # print(type(jjson))
+<<<<<<< HEAD
 
 
 # with open("chart", "w", encoding="utf-8") as chartfile:
@@ -34,3 +35,22 @@ url = 'https://www.ted.com/talks/24/transcript.json?language=en'
 stat_json = requests.get(url)
 print(stat_json)
 print(stat_json.status_code)
+=======
+# with open("chart", "w", encoding="utf-8") as chartfile:
+#     chartfile.write("D1, \n")
+# for k in range(2,190):
+#     with open("chart", "a", encoding="utf-8") as chartfile:
+#         chartfile.write("D{} \n".format(k))
+# strs = ''
+# a = ['a', 'b', 'c', 'd']
+# for i in a:
+#     strs += (i + ' ')
+
+# print(strs)
+
+a = 'Thank you'
+print(a[1:])
+s = a[0]
+print(s.lower())
+print(s.upper())
+>>>>>>> 97e557429b08ffdb80f9227f2de91259c4e30523

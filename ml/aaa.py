@@ -59,14 +59,25 @@ with tf.name_scope('conv2') as scope:
 with tf.name_scope('pool2') as scope:
     h_pool2 = max_pool(h_conv2)
 
+# Convolution(합성곱) Layer L3
+with tf.name_scope('conv3') as scope:
+    # 5 X 5 filter, 32개 입력, 64개 필터(출력)
+    W_conv3 = weight_variable('conv3', [5, 5, 64, 128])
+    b_conv3 = bias_variable('conv3', 128)
+    h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
+
+# Max-Pooling Layer2
+with tf.name_scope('pool3') as scope:
+    h_pool3 = max_pool(h_conv3)
+
 # fully-connect (1차원으로 펼치기)
 with tf.name_scope('fully_connected') as scope:
-    W_fc = weight_variable('fc', [7 * 7 * 64, 1024])  # 7 = 28 % 2 % 2  (2개의 Hidden Layer)
+    W_fc = weight_variable('fc', [3 * 3 * 128, 1024])  
     b_fc = bias_variable('fc', 1024)
 
     # -1(n개)를 1차원 list로 펼치기
-    h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 64])
-    h_fc = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc) + b_fc)
+    h_pool3_flat = tf.reshape(h_pool3, [-1, 3 * 3 * 128])
+    h_fc = tf.nn.relu(tf.matmul(h_pool3_flat, W_fc) + b_fc)
 
 # dropout (과잉적합 막기, fast-forward, split-merge, RNN)
 with tf.name_scope('dropout') as scope:
@@ -102,7 +113,7 @@ def set_feed(images, labels, prob):
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     test_fd = set_feed(mnist.test.images, mnist.test.labels, 1) 
-    for step in range(1000):
+    for step in range(500):
         batch = mnist.train.next_batch(50)
         fd = set_feed(batch[0], batch[1], 0.5)  # test: 0.5
         _, loss = sess.run([train_step, cross_entropy], feed_dict=fd)

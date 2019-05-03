@@ -7,13 +7,15 @@ from keras.utils import np_utils
 # data 준비
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
+# type 맞추기(float32)
 X_train = X_train.reshape(60000, 28 * 28).astype('float32')
 X_test = X_test.reshape(10000, 28 * 28).astype('float32')
 
+# 작은 수로 만들기
 X_train = X_train / 255
 X_test = X_test / 255
 
-# label 범주화
+# label 범주화(categorical)
 y_train = np_utils.to_categorical(y_train, 10)
 y_test = np_utils.to_categorical(y_test, 10)
 

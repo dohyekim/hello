@@ -61,22 +61,22 @@ with tf.name_scope('pool2') as scope:
 
 # Convolution(합성곱) Layer L3
 with tf.name_scope('conv3') as scope:
-    # 5 X 5 filter, 32개 입력, 64개 필터(출력)
+    # 5 X 5 filter, 64개 입력, 64개 필터(출력)
     W_conv3 = weight_variable('conv3', [5, 5, 64, 128])
     b_conv3 = bias_variable('conv3', 128)
     h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
 
-# Max-Pooling Layer2
+# Max-Pooling Layer3
 with tf.name_scope('pool3') as scope:
     h_pool3 = max_pool(h_conv3)
 
 # fully-connect (1차원으로 펼치기)
 with tf.name_scope('fully_connected') as scope:
-    W_fc = weight_variable('fc', [3 * 3 * 128, 1024])  
+    W_fc = weight_variable('fc', [4 * 4 * 128, 1024])  
     b_fc = bias_variable('fc', 1024)
 
     # -1(n개)를 1차원 list로 펼치기
-    h_pool3_flat = tf.reshape(h_pool3, [-1, 3 * 3 * 128])
+    h_pool3_flat = tf.reshape(h_pool3, [-1, 4 * 4 * 128])
     h_fc = tf.nn.relu(tf.matmul(h_pool3_flat, W_fc) + b_fc)
 
 # dropout (과잉적합 막기, fast-forward, split-merge, RNN)

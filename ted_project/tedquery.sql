@@ -180,3 +180,27 @@ select talk_id, korcue, kor from Korean
                         where kor like '%비합리%'
                         and talk_id = 5;
                         
+
+select * from Memo where user_id=11 order by id desc;
+select content from Checklist where id = 75;
+desc Checklist;
+select * from Checklist;
+
+select * from TalkSpeaker;
+select t.talk_id, e.eng, e.engcue from English e
+	inner join Talk t on t.talk_id = e.talk_id
+	where e.engcue between 1 and 5 and e.talk_id=1;
+ 
+ select t.title, t.tags, s.name from Talk t inner join TalkSpeaker ts on t.talk_id = ts.talk_id
+	inner join Speaker s on ts.speaker_id= s.speaker_id where t.talk_id=1;
+    
+    
+desc Talk;
+desc Speaker;
+desc TalkSpeaker;
+desc Korean;
+desc English;
+desc User;
+desc Post;
+desc Memo;
+desc Checklist;

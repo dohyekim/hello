@@ -4,12 +4,4 @@ youtube_api.py
 ted_project/html
 *.log
 jspractice/public/dist
-
-
-
-
-
-
-
-
-
+node_modules

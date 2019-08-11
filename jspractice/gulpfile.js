@@ -17,8 +17,13 @@ const gulp = require('gulp');
 // //   done();
 // // });
 const babel = require('gulp-babel');
+const eslint = require('gulp-eslint')
 
 gulp.task('default', function(done) {
+	gulp.src(["es6/**/*.js", "public/es6/**/*.js"])
+		.pipe(eslint())
+		.pipe(eslint.format());
+
 	// 노드 소스
 	gulp.src("es6/**/*.js") // 서브디렉토리 깊이에 상관없이 es6 아래의 모든 .js파일 선택
 		.pipe(babel()) // 위 소스를 babel에 파이프로 연결

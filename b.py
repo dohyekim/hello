@@ -5,6 +5,7 @@ import pymysql
 import re
 from pprint import pprint
 
+
 url = "https://openapi.naver.com/v1/search/blog.json"
 
 title = "파이썬"

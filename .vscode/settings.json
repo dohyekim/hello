@@ -1,10 +1,11 @@
 {
 	"python.linting.pylintEnabled": true,
-	"python.pythonPath": "/usr/bin/python3",
+	"python.pythonPath": "/usr/local/bin/python3",
 	"emmet.triggerExpansionOnTab": true,
 	"editor.wordWrap": "on",
 	"window.title": "${activeEditorLong}",
 	"editor.renderWhitespace": "all",
 	"editor.fontSize": 20,
-	"files.autoSave": "onFocusChange"
+	"files.autoSave": "onFocusChange",
+	"python.linting.enabled": true
 }

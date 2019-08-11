@@ -36,12 +36,7 @@ likeParams = {
 
 resLikecnt = requests.get(likeUrl, headers=heads, params=likeParams)
 # print(resLikecnt.url)
-jsonData = json.loads(resLikecnt.text)
-# pprint(jsonData)
-for j in jsonData['contsLike']:
-    key = str(j['CONTSID'])
-    songDic = dic[key]
-    songDic['likecnt'] = j['SUMMCNT']
+
 
 dic = sorted(dic.items(), key=lambda d: d[1]['ranking'])
 pprint(dic)

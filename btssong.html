@@ -1,0 +1,250 @@
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>네이버 뮤직</title>
+
+<link rel="stylesheet" type="text/css" href="/css/music.css?bv=20190522074440">
+<link rel="stylesheet" type="text/css" href="/css/music2.css?bv=20190522074440">
+<link rel="stylesheet" type="text/css" href="/css/popup.css?bv=20190522074440">
+
+
+
+
+
+
+	
+	
+		<script type="text/javascript" src="/js/pkg_jindo.all.js?bv=20190522074440" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/pkg_external.all.js?bv=20190522074440" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/pkg_music.all.js?bv=20190522074440" charset="utf-8"></script>
+		<script type="text/javascript" src="https://playerui.music.naver.com/js/lib/PlayerManager.js?bv=20190522074440"></script>
+	
+
+<script type="text/javascript">
+	// IE 6에서 플리커 버그를 막기 위한 코드
+	try{
+		if(navigator.appVersion.indexOf("MSIE") != -1 && navigator.userAgent.indexOf('MSIE 6') > -1){
+			document.execCommand("BackgroundImageCache", false, true);
+		}
+	}catch(e){}
+	
+	bLogin = false, bAdult = false;
+	jindo.$Fn(function() {
+		resizeToPopupContent();
+		self.focus();
+	}).attach(window, 'load');
+</script>
+
+</head>
+<body style="width:410px;height:500px;">
+
+
+
+
+<div id="pop_wrap" class="lyrics">
+		
+	<div id="pop_header">
+		<div class="sta">
+			<h1>
+				<a href="http://www.naver.com" target="_blank" class="link_naver"><span class="blind">NAVER</span></a>
+				<a href="/home/index.nhn" target="_blank" class="link_music"><span class="blind">MUSIC</span></a>
+				<span class="blind">가사보기</span>
+			</h1>
+			<a href="#" class="print" onclick="window.print();"><span class="blind">인쇄하기</span></a>
+		</div>
+	</div>
+	<div id="pop_content">
+		
+
+
+
+
+
+		<div class="section_info">
+			<div class="thumb pht95">
+				<a target="_blank" href="/album/index.nhn?albumId=3003472">	
+					<img  src="https://musicmeta-phinf.pstatic.net/album/003/003/3003472.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="MAP OF THE SOUL : PERSONA" title="MAP OF THE SOUL : PERSONA">
+					<span class="mask"></span>
+				</a>
+				<a href="#" onclick="playAlbum(3003472, this); return false;" class="btn_play"><span class="blind">재생</span></a>
+			</div>
+			<div class="dsc">				
+				<h2><span class="ico_play"><a href="#26860933" onclick="playMusic([26860933], this, 'play', [], []); return false;" title="Intro : Persona" >Intro : Persona</a></span>
+</h2>				
+				<span class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  target="_blank" title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</span> <span class="bar">|</span>	
+				<span class="album">MAP OF THE SOUL : P...</span>
+				
+				<p class="song_info">
+					
+					<span class="info"><em>작사</em> 
+						
+							<a target="_blank" href="/artist/home.nhn?artistId=2391780">
+							Hiss noise
+							</a>
+							, 
+						
+							<a target="_blank" href="/artist/home.nhn?artistId=274317">
+							RM
+							</a>
+							, 
+						
+							<a target="_blank" href="/artist/home.nhn?artistId=35315">
+							Pdogg
+							</a>
+							
+						
+					</span>
+					
+					
+					
+					<span class="info"><em>작곡</em> 
+						
+							<a target="_blank" href="/artist/home.nhn?artistId=2391780">
+							Hiss noise
+							</a>
+							, 
+						
+							<a target="_blank" href="/artist/home.nhn?artistId=274317">
+							RM
+							</a>
+							, 
+						
+							<a target="_blank" href="/artist/home.nhn?artistId=35315">
+							Pdogg
+							</a>
+							
+						
+					</span>
+					
+					
+					
+				</p>
+				
+				
+				<a target="_blank" href="/album/index.nhn?albumId=3003472" class="sprite_btns btn btn_album_info"><span class="blind">앨범정보</span></a>
+				
+				<a href="#" onclick="window.open('/lyric/lyricDeclarationForm.nhn?trackId=26860933', '', 'width=200,height=100'); return false;"  class="btn btn_report">가사오류신고</a>
+				
+			</div>
+			<div class="_layer19 layer19" style="left: 0px; top: 0px; display: none; z-index: 1000;"><p>해당 곡은 청소년 유해매체물로서 정보통신망 이용 촉진 및 정보보호 등에 관한법률 및 청소년보호법의 규정에 의하여 <strong>19세 미만의 청소년이 이용할 수 없습니다.</strong></p><p></p></div>
+		</div>
+<script type="text/javascript">
+$Fn(function() {
+	var elSongInfo = $$.getSingle("p.song_info");
+	var welSongInfo = $Element(elSongInfo);
+	var oSpanList = $$("span.info", elSongInfo);
+	var nIndex = oSpanList.length - 1;
+	var elDot = $("<span>...</span>");
+	var count = 0;
+	
+	while (welSongInfo && welSongInfo.height() > 31 && count < 30) {
+		if (elDot) {
+			$Element(elDot).leave();
+		}
+		
+		var oSpanArtistList = $$("a", oSpanList[nIndex]);
+		
+		if (oSpanArtistList.length == 0) {
+			$Element(oSpanList[nIndex]).leave();
+			nIndex = nIndex - 1;
+			oSpanArtistList = $$("a", oSpanList[nIndex]);
+		}
+		
+		if (nIndex >= 0) {
+			var elArtist = oSpanArtistList[oSpanArtistList.length - 1];
+			var oCommaList = $$("span", oSpanList[nIndex]);
+			
+			if (oCommaList.length > 0) {
+				$Element(oCommaList[oCommaList.length - 1]).leave();
+			}
+			
+			$Element(elArtist).leave();
+			$Element(elDot).appendTo(oSpanList[nIndex]);
+		} else {
+			break;
+		}
+		
+		count++;
+	}
+	
+	
+}).attach(window, "load");
+</script>
+		<div class="section_lyrics">
+								
+			<div id="lyricText" class="show_lyrics">나는 누구인가 평생 물어온 질문<br />아마 평생 정답은 찾지 못할 그 질문<br />나란 놈을 고작 말 몇 개로 답할 수 있었다면<br />신께서 그 수많은 아름다움을 다 만드시진 않았겠지<br />How you feel? 지금 기분이 어때<br />사실 난 너무 좋아 근데 조금 불편해<br />나는 내가 개인지 돼진지 뭔지도 아직 잘 모르겠는데<br />남들이 와서 진주목걸일 거네<br />칵 퉤<br /><br />예전보단 자주 웃어<br />소원했던 Superhero<br />이젠 진짜 된 것 같어<br />근데 갈수록 뭔 말들이 많어<br />누군 달리라고 누군 멈춰서라 해<br />얘는 숲을 보라고 걔는 들꽃을 보라 해<br />내 그림자, 나는 망설임이라 쓰고 불렀네<br />걘 그게 되고 나서 망설인 적이 없었네<br />무대 아래든 아님 조명 아래든 자꾸 나타나<br />아지랑이처럼 뜨겁게 자꾸 날 노려보네 (Oh shit)<br />야 이 짓을 왜 시작한 건지 벌써 잊었냐<br />넌 그냥 들어주는 누가 있단 게 막 좋았던 거야<br />가끔은 그냥 싹 다 헛소리 같아<br />취하면 나오는 거 알지.. 치기 같아<br />나 따위가 무슨 music, 나 따위가 무슨 truth<br />나 따위가 무슨 소명, 나 따위가 무슨 muse<br />내가 아는 나의 흠 어쩜 그게 사실 내 전부<br />세상은 사실 아무 관심 없어, 나의 서툼<br />이제 질리지도 않는 후회들과<br />매일 밤 징그럽게 뒹굴고<br />돌릴 길 없는 시간들을 습관처럼 비틀어도<br />그때마다 날 또 일으켜 세운 것, 최초의 질문<br />내 이름 석 자 그 가장 앞에 와야 할 But<br /><br />So I’m askin’ once again yeah<br />Who the hell am I?<br />Tell me all your names baby<br />Do you wanna die?<br />Oh do you wanna go?<br />Do you wanna fly?<br />Where’s your soul? where’s your dream?<br />Do you think you’re alive?<br /><br />My name is R<br />내가 기억하고 사람들이 아는 나<br />날 토로하기 위해 내가 스스로 만들어낸 나<br />Yeah 난 날 속여왔을지도 뻥쳐왔을지도<br />But 부끄럽지 않아 이게 내 영혼의 지도<br />Dear myself 넌 절대로 너의 온도를 잃지 마<br />따뜻히도 차갑게도 될 필요 없으니까<br />가끔은 위선적이어도 위악적이어도<br />이게 내가 걸어두고 싶은 내 방향의 척도<br />내가 되고 싶은 나, 사람들이 원하는 나<br />니가 사랑하는 나, 또 내가 빚어내는 나<br />웃고 있는 나, 가끔은 울고 있는 나<br />지금도 매분 매순간 살아 숨쉬는<br /><br />Persona<br />Who the hell am I<br />I just wanna go I just wanna fly<br />I just wanna give you all the voices till I die<br />I just wanna give you all the shoulders when you cry<br /><br />Persona<br />Who the hell am I<br />I just wanna go I just wanna fly<br />I just wanna give you all the voices till I die<br />I just wanna give you all the shoulders when you cry<br /></div>
+			
+			
+		</div>
+	</div>
+	<div id="pop_footer">
+	
+	
+		
+		
+		
+			
+			
+			
+			
+			
+		
+	
+	</div>
+</div>
+<div id="nmpPlayerLauncherSwf" style="width:0px;height:0px;border:0;padding:0;"></div>
+<script type="text/javascript">
+	lcs_do();
+</script>
+<script type="text/javascript">
+    if (!!PlayerManager) {
+        PlayerManager.init({
+            nmpFlashDivId: "nmpPlayerLauncherSwf"
+        });
+    }
+</script>
+</body>
+</html>
+

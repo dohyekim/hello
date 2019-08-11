@@ -1,0 +1,5480 @@
+
+
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+	
+
+<title>MAP OF THE SOUL : PERSONA : 
+
+			
+			
+			
+			
+			
+			
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+			
+		
+		네이버 뮤직</title>
+<link rel="stylesheet" type="text/css" href="/css/music.css?bv=20190522074440">
+<link rel="stylesheet" type="text/css" href="/css/music2.css?bv=20190522074440">
+
+
+
+
+
+
+	
+	
+		<script type="text/javascript" src="/js/pkg_jindo.all.js?bv=20190522074440" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/pkg_external.all.js?bv=20190522074440" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/pkg_music.all.js?bv=20190522074440" charset="utf-8"></script>
+		<script type="text/javascript" src="https://playerui.music.naver.com/js/lib/PlayerManager.js?bv=20190522074440"></script>
+	
+
+<script type="text/javascript">
+	document.domain ="naver.com";
+</script>
+<script type="text/javascript">
+	// 로그인 사용자 아이디
+	nhn.music.setVariable("sUserId", "");
+	// 로그인 사용자 아이디를 인코딩한 값
+	nhn.music.setVariable("sEncodedUserId", "");
+	// 그룹 아이디 여부
+	nhn.music.setVariable("bGroupId", false);
+	// 성인 여부
+	nhn.music.setVariable("bAdult", false);
+	// 본인인증 여부
+	nhn.music.setVariable("bSelfAuth", false);
+	// 청소년 여부
+	nhn.music.setVariable("bYouthByBirthDay", true);
+	// 만나이 기준 청소년 여부
+	nhn.music.setVariable("bFullAgeYouth", true);
+
+	// play서비스 가능 여부
+	nhn.music.setVariable("unplayable", false);
+
+	// 점검 여부
+	nhn.music.setVariable("underConstruction", "false");
+
+	// 이벤트팝업 유무
+	nhn.music.setVariable("hasPromotionPopup", "false");
+	
+	// 좋아요 도메인
+	
+	nhn.music.setVariable("sLikeDomain", "https://common.like.naver.com");
+
+	// 서비스 페이지에서 사용할 기타 데이터
+	nhn.music.setVariable("htPageData", {});
+	jindo.$Fn(nhn.music.initialize, nhn.music).attach(window, "load");
+</script>
+<script type="text/javascript">
+		function downloadAlbum() {
+			var trackList = $$.getSingle("div._tracklist_mytrack", nhn.music.getElement("content"));
+			var trackInfoList = trackList.getElementsByTagName("tr");
+
+			var chunk;
+			var trackId,isStreaming,isAdult;
+
+			var aTrackIdList = [], aAdultTrackIdList = [], aNotAvailableTrackIdList = [], aDRMTrackIdList = [];
+
+			for (var i=2;i<trackInfoList.length;i++) {
+				var trackData;
+
+				if($Agent().navigator().ie && $Agent().navigator().version == 9) {
+					if(trackInfoList[i].attributes["trackdata"]){
+						trackData = trackInfoList[i].attributes["trackdata"].value;
+					}
+
+				} else {
+					trackData = trackInfoList[i].trackdata;
+				}
+
+				if (trackData) {
+					chunk = trackData.split("|");
+
+					trackId = chunk[0];
+					isStreaming = chunk[2];
+					isAdult = chunk[4];
+					isDrmFree = chunk[10];
+
+					aTrackIdList.push(trackId);
+					if (isStreaming =="false") {
+						aNotAvailableTrackIdList . push(trackId);
+					}
+
+					if (isAdult == "true") {
+						aAdultTrackIdList.push(trackId);
+					}
+
+					if (isDrmFree == "false") {
+						aDRMTrackIdList.push(trackId);
+					}
+				}
+			}
+
+			nhn.music.downloadMusic(aTrackIdList, aAdultTrackIdList, aNotAvailableTrackIdList, aDRMTrackIdList);
+
+		}
+		
+		function get_obj_top(oDiv) {
+			if(oDiv.offsetParent==document.body || !oDiv.offsetParent) {
+				return oDiv.offsetTop;
+			}
+			else {
+				return oDiv.offsetTop+get_obj_top(oDiv.offsetParent);
+			}
+		}
+		
+		$Fn(function() {
+			
+			var queryString = {};
+			var chunk = ((document.location.href.toString()).split("?"))[1];
+			chunk = chunk.split("&");
+			for (var i=0;i<chunk.length;i++ )	{
+				var tmp = chunk[i].split("=");
+				queryString[tmp[0]]=tmp[1];
+			}
+
+			if (queryString["trackId"])	{
+				var tracklist = document.getElementsByTagName("table")[0];
+				var list = tracklist.getElementsByTagName("tr");
+				var posY,boxWidth,boxHeight;
+
+				for (var i=0;i<list.length ;i++ )	{
+					var trackdata = list[i].getAttribute("trackdata");
+					if (trackdata)	{
+						chunk = trackdata.split("|");
+						if (chunk[0] ==queryString["trackId"])  {
+							posY = get_obj_top(list[i]);
+							boxWidth = list[i].offsetWidth;
+							boxHeight = list[i].offsetHeight;
+
+							break;
+						}
+					}
+				}
+				
+				var clientHeight = document.body.clientHeight;
+				if(clientHeight <  (posY+boxHeight)) {
+					window.scrollTo(0,Math.round(posY - clientHeight/2));
+				}
+			}
+			
+		}).attach(window, 'load');
+	</script>
+	<script type="text/javascript">
+	nhn.music.setVariable("htPageData", {
+		"sAlbumId" : 3003472,
+		"sPlayOption" : ''
+	});
+
+	</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 메타테그 -->
+
+
+
+
+	
+
+
+
+
+
+	
+
+
+
+
+
+
+	
+
+
+
+	
+	
+	
+	
+
+
+<meta property="og:image" content="https://musicmeta-phinf.pstatic.net/album/003/003/3003472.jpg?type=r204Fll&v=20190507112428" />
+<meta property="og:type" content="article"/> 
+<meta property="og:title" content="네이버 뮤직 ::  MAP OF THE SOUL : PERSONA - 방탄소년단" />
+<meta property="og:description" content="방탄소년단, MAP OF THE SOUL : PERSONA 발매!
+글로벌 슈퍼스타 방탄소년단이 팬들에게 전하고 싶은 솔직한 이야기
+타이틀곡 ‘작은 것들을 위한 시 (Boy With Luv)&#39;, 너에 대한 관심과 사랑의 즐거움
+
+새로운 이야기의 문을 열다! 4월 12일 ‘MAP OF THE SOUL : PERSONA&#39; 발매
+
+방탄소년단은 4월 12일 미니 앨.." />
+
+<meta property="og:url" content="https://music.naver.com/album/index.nhn?albumId=3003472" />
+
+<meta property="og:article:thumbnailUrl" content="https://ssl.pstatic.net/static/music/radio/ico_radio2.png"/>
+<meta property="og:article:author" content="네이버 뮤직"/>
+<meta property="og:article:author:url" content="http://music.naver.com"/>
+
+</head>
+<body class="">
+<!-- Google Tag Manager (noscript) -->
+
+				  
+<!-- End Google Tag Manager (noscript) -->
+<div id="wrap">
+		<!-- 스킵네비게이션 -->
+		<div id="u_skip">
+			<a href="#lnb" onclick="document.getElementById('lnb').tabIndex=-1;document.getElementById('lnb').focus();return false;"><span>메인메뉴 바로가기</span></a>
+			<a href="#snb" onclick="document.getElementById('snb').tabIndex=-1;document.getElementById('snb').focus();return false;"><span>뮤직리스트 바로가기</span></a>
+			<a href="#content" onclick="document.getElementById('content').tabIndex=-1;document.getElementById('content').focus();return false;"><span>본문 바로가기</span></a>
+		</div>
+		<!-- //스킵네비게이션 -->
+		<div class="fix_conts">
+			<div id="header">
+				
+
+
+
+
+<script type="text/javascript">
+var nsc="music"; //서비스에서 사용하는 nclick service code.
+var gnb_service="music"; //서비스 명 .naver.com 이하 도메인을 기술 ex) sports.news.naver.com => sports.news
+var gnb_template="gnb_utf8"; //사용하고 있는 템플릿 명(현재 개발된 버전인 gnb_utf8로 설정)
+var gnb_logout=encodeURIComponent("https://nid.naver.com/nidlogin.logout"); //GNB에서 로그아웃 후 redirect 될 URL, encodeURIComopnent('주소')로 인코딩 필요
+var gnb_brightness=2; // 1: 어두운색 아이콘, 2: 밝은색 아이콘 + 투명도, 3: 밝은색 아이콘
+var gnb_item_hide_option=0; //0(default) : 모두 표시, 1 : 로그인버튼 숨기기, 2 : user 레이어 숨기기, 4: Naver Me 영역 숨기기, 8 : 메일알림영역 숨기기, 16 : 프로필 이미지 숨기기, 32 : 임직원혜택 보이기(숨길 영역의 값을 bit sum 하여 적용)
+</script>
+
+	
+	
+		<link rel="apple-touch-icon-precomposed" href="https://ssl.pstatic.net/static/m/music/apple-touch-icon_57X57.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://ssl.pstatic.net/static/m/music/apple-touch-icon_72X72.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://ssl.pstatic.net/static/m/music/apple-touch-icon_114X114.png" />
+	
+
+
+<script type="text/javascript">
+	window.gnbLoadFuncIndex = null;
+	var gnbLoadFuncList = [
+		function () {
+			nhn.music.my_music_menu.showListEditor('add');
+		},
+		function () {
+			nhn.music.my_music_menu.showMyList();
+		}
+		];
+	
+	function gnbLoad() {
+		if (window.gnbLoadFuncIndex !=null) {
+			gnbLoadFuncList[gnbLoadFuncIndex]();
+			window.gnbLoadFuncIndex = null;
+		}
+		jindo.$Fn(function(oEvent) {
+			var welClick = jindo.$Element(oEvent.element);
+			var elGnbWrapper = welClick.parent(function(v) {
+				return jindo.$Element(v).hasClass("gnb_wrap")
+			}, 15);
+			if (!elGnbWrapper || elGnbWrapper.length <= 0) {
+				gnbAllLayerClose();
+			}
+		}).attach(document, "click");
+		getGNB();
+	}
+
+	function goNaverSearch(){
+		var searchNaverform = document.getElementById('naverSearchForm');
+		var form = document.getElementById('baseSearchForm');
+		searchNaverform["query"].value = form["query"].value;
+		searchNaverform.action = 'https://search.naver.com/search.naver';
+		searchNaverform.target = '_blank';
+		searchNaverform.acceptCharset ="EUC-KR";
+		document.charset = "EUC-KR";
+		searchNaverform.submit();
+		document.charset = "UTF-8";
+	}
+
+	function blockChk(ascode) {
+		if(ascode == 'app') {
+			window.open("http://webmsg2.naver.com/phone_url/phone_send/send_url.php", "pop_alert",
+			"toolbar=no,scrollbars=no ,width=285,height=402,top=100,left=100");
+		}
+		else {
+			window.open("http://mobile.naver.com/service/send_url.nhn?code=" + ascode, "pop_alert",
+				"toolbar=no,scrollbars=no ,width=285,height=402,top=100,left=100");
+		}
+		return;
+	}
+
+	// Lazy loading
+	jindo.$Fn(function(){
+		jindo.$Element("autoFrame").attr("src", "/html/music_iframe.html");
+		gnbLoad();
+		//left menu bubble init
+		nhn.music.music_category_bubble.initialize({
+		     "elContainer": jindo.$$.getSingle("._music_category_bubble")
+		});			
+	}).attach(window, "load");
+</script>
+
+<div class="gnb_box">
+	<div class="gnb_wrap">
+		<div id="gnb">
+			<script type="text/javascript" charset="utf-8" src="https://ssl.pstatic.net/static.gn/templates/gnb_utf8.nhn?2019052715"></script>
+		</div>
+	</div>
+</div>
+<div id="sta">
+	<h1>
+		<a href="http://www.naver.com" class="naver N=a:STA.naverlogo" title="NAVER"><span class="blind">NAVER</span></a>
+		<a href="/home/index.nhn" class="music N=a:STA.music" title="MUSIC"><span class="blind">MUSIC</span></a>
+	</h1>
+	<div class="search">
+		<form action="/search/search.nhn" name="search" id="baseSearchForm">
+			<fieldset>
+				<legend>검색</legend>
+				<span class="green_window">
+					<input type="text" class="input_text" name="query" id="query" title="검색어 입력" value="" maxlength="50" accesskey="s">
+				</span>
+				<input type="image" src="https://ssl.pstatic.net/static/nmusic/201008/btn_search.gif" width="39" height="26" class="btn N=a:STA.search"  alt="검색">
+				<input type="image" src="https://ssl.pstatic.net/static/nmusic/201008/btn_united_search.gif" onclick="clickcr(this,'STA.nx','','',event);goNaverSearch();return false" width="57" height="26" class="btn"  alt="통합검색">
+			</fieldset>
+		</form>
+		<form id="naverSearchForm" method="get" action="" target="" style="display:none">
+			<input type="hidden" name="where" value="nexearch" />
+			<input type="hidden" name="sm" value="sta_hty.music" />
+			<input type="hidden" name="query" value="" />
+		</form>
+
+		<a href="#" title="자동완성 펼치기" class="autocomplete_btn" id="nautocomplete">
+			<img class="triangleImg" src="https://ssl.pstatic.net/static/nmusic/201008/btn_autocomplete_down.gif" width="5" height="3" alt="자동완성 펼치기">
+		</a>
+
+		<iframe title="자동완성" name="" id="autoFrame" src="about:blank" onload="nhn.music.initializeAutoComplete('https://ac.music.naver.com/ac');" width="312" height="0" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+	</div>
+</div>
+<div class="lnb" id="lnb">
+	<ul class="main_menu">
+		<li class="home"><a href="/home/index.nhn" class="N=a:LNB.home "><span class="blind">뮤직홈</span></a></li>
+		<li class="mymusic"><a href="/myMusic/recent.nhn" class="N=a:LNB.mym "><span class="blind">마이뮤직</span></a></li>
+		<li class="todaymusic"><a href="/recommend/index.nhn" class="N=a:LNB.today "><span class="blind">오늘의 뮤직</span></a></li>
+        <li class="musician"><a href="/musicianLeague/contents/home.nhn" class="N=a:LNB.league "><span class="blind">뮤지션리그</span></a></li>
+		<li class="onstage"><a href="/onStage/onStageSeason2List.nhn" class="N=a:LNB.onstage "><span class="blind">온스테이지</span></a></li>
+		<li class="buy">
+			
+			<a href="/buy/index.nhn" class="N=a:LNB.buy "><span class="blind">이용권 구매&middot;혜택</span></a>
+		</li>
+		<li class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="N=a:LNB.radio"><span class="blind">라디오</span></a></li>
+	</ul>
+	<a href="https://go.onelink.me/YA6e/29c89bc9" class="lnb_banner N=a:LNB.txt"><img src="https://music-phinf.pstatic.net/20181102_157/15411228250015gXty_PNG/wave_banner_v2_4.png"  width="190" height="33" alt=""><span class="blind">이벤트</span></a>
+</div>
+<a href="/buy/indexVibePromotion.nhn?type=college201903&utm_source=naver_music&utm_medium=web_gnb&utm_campaign=mar_promotion" class="banner_gnb" target="_blank">
+	<span class="banner_inner"><span class="blind">VIBE 뮤직앱 3개월 무료 혜택 안내. 자세히 보기</span></span>
+</a>
+
+<script type="text/javascript">
+jindo.$Fn(function() {
+	setTimeout(function() {
+		if (!nhn || !nhn.LikeIt || !nhn.LikeIt.Main) {
+			nhn.music.updateLikeListModule();
+		}
+	}, 100);
+}).attach(window, "load");
+</script>
+
+
+
+			</div>
+			<hr>
+			<div id="container">
+				<div class="container_inner">
+					<div class="snb" id="snb">
+		
+
+
+
+<script type="text/javascript">
+$Fn(function() {
+	setTimeout(function() {
+		nhn.music.setVariable('deviceToSupportAdobeFlash', 'true');
+	}, 100);
+}).attach(window, "load");
+
+function showRegularPaymentAutoDelayNoticePopup() {
+	window.open("/buy/regularPaymentAutoDelayNoticePopup.nhn", "regularPaymentAutoDelay", "width=432,height=373,scrollbars=NO,titlebar=no,resizable=no");
+}
+</script>
+
+<div class="musicplayer_btn">
+	<a href="#" onClick="nhn.music.openPlayerPopup();return false;" class="N=a:lml.player"><span class="blind">뮤직플레이어</span></a>
+</div>
+<dl class="snb_menu">
+<dt class="listen"><span class="blind">음악감상</span></dt>
+<dd>
+	<ul class="_music_category">
+	<li class="_category ">
+		<span><a href="#" class="top100" onclick="clickcr(this,'lml.top','','',event);">TOP100</a></span>
+		<ul>
+		<li><a href="/listen/top100.nhn?domain=TOTAL_V2" class="N=a:lml.topAll">종합</a></li>
+		<li><a href="/listen/top100.nhn?domain=DOMESTIC_V2" class="N=a:lml.topKor">국내</a></li>
+		<li><a href="/listen/top100.nhn?domain=OVERSEA_V2" class="N=a:lml.topFor">해외</a></li>
+		<li><a href="/chart/musicianLeague.nhn?duration=DAILY">뮤지션리그</a></li>
+		<li><a href="/listen/history/index.nhn">차트 히스토리</a></li>
+		</ul>
+	</li>
+	<li class="_category ">
+		<span><a href="#" class="newalbum" onclick="clickcr(this,'lml.rctAll','','',event);" id="recentAlbum" >최신앨범</a></span>
+		<ul>
+		<li><a href="/listen/newRelease.nhn?domain=DOMESTIC" class="N=a:lml.rctKor">국내</a></li>
+		<li><a href="/listen/newRelease.nhn?domain=OVERSEA" class="N=a:lml.rctFor">해외</a></li>
+		</ul>
+	</li>
+	<li class="_category ">
+		<span><a href="#" class="newalbum" onclick="clickcr(this,'lml.songAll','','',event);">최신곡</a></span>
+		<ul>
+		<li><a href="/listen/newTrack.nhn?domain=DOMESTIC" class="N=a:lml.songKor">국내</a></li>
+		<li><a href="/listen/newTrack.nhn?domain=OVERSEA" class="N=a:lml.songFor">해외</a></li>
+		</ul>
+	</li>
+	<!--  <li class="_category ">
+		<span><a href="#" class="goodmusic" onclick="clickcr(this,'lml.rcm','','',event);">추천음악<span class="new"><em>new</em></span></a></span>
+		<ul>
+		<li ><a href="/recommend/themeChannelList.nhn" class="N=a:lml.rcmTheme">테마채널</a></li>
+		<li ><a href="/recommend/fame.nhn" class="N=a:lml.rcmFame">명예의 전당</a></li>
+		<li ><a href="/blogdj/today.nhn">블로그 DJ</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=1" class="N=a:lml.rcmChoice">Musician's Choice</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=7" class="N=a:lml.rcmPopNews">지구촌 팝뉴스</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=4" class="N=a:lml.rcmKor">이주의 발견-국내</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=5" class="N=a:lml.rcmFor">이주의 발견-해외</a></li>
+		</ul>
+	</li>-->
+	<li class="_category ">
+		<span><a href="#" onclick="clickcr(this,'lml.kor','','',event);">국내음악</a></span>
+		<ul>
+	
+		<li><a href="/listen/genre/home.nhn?domain=DOMESTIC&genre=K01" class="N=a:lml.korBallad">발라드</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=DOMESTIC&genre=K02" class="N=a:lml.korDance">댄스</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=DOMESTIC&genre=K03" class="N=a:lml.korHiphop">힙합</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=DOMESTIC&genre=K04" class="N=a:lml.korRock">록/포크</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=DOMESTIC&genre=K05" class="N=a:lml.korTrot">트로트</a></li>
+	
+		</ul>
+	</li>
+	<li class="_category ">
+		<span><a href="#" onclick="clickcr(this,'lml.for','','',event);">해외음악</a></span>
+		<ul>
+	
+		<li><a href="/listen/genre/home.nhn?domain=OVERSEA&genre=P01" class="N=a:lml.forPop">POP</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=OVERSEA&genre=P02" class="N=a:lml.forRock">ROCK/FOLK</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=OVERSEA&genre=P03" class="N=a:lml.forHiphop">HIP-HOP</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=OVERSEA&genre=P04" class="N=a:lml.forRnb">R&B</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=OVERSEA&genre=P05" class="N=a:lml.forElec">ELECTRONICA</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=OVERSEA&genre=P06" class="N=a:lml.forJpop">J-POP</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=OVERSEA&genre=P07" class="N=a:lml.forWorld">WORLD MUSIC</a></li>
+	
+		</ul>
+	</li>
+	<li class="_category  N=a:lml.gnr">
+		<span><a href="#" onclick="clickcr(this,'lml.gnr','','',event);">기타장르</a></span>
+		<ul>
+	
+		<li><a href="/listen/genre/home.nhn?domain=ETC&genre=E01" class="N=a:lml.gnrJazz">재즈/뉴에이지</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=ETC&genre=E02" class="N=a:lml.gnrClassic">클래식</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=ETC&genre=E03" class="N=a:lml.gnrOst">OST</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=ETC&genre=E04" class="N=a:lml.gnrCcm">CCM</a></li>
+	
+		<li><a href="/listen/genre/home.nhn?domain=ETC&genre=E05" class="N=a:lml.gnrEtc">그 외</a></li>
+	
+		</ul>
+	</li>
+	<li class="_category ">
+		<span><a href="#" class="musicvideo" onclick="clickcr(this,'lml.mvd','','',event);">뮤직비디오</a></span>
+		<ul>
+		<li><a href="/video/home.nhn?domain=DOMESTIC" class="N=a:lml.mvdKor">국내</a></li>
+		<li><a href="/video/home.nhn?domain=OVERSEA" class="N=a:lml.mvdFor">해외</a></li>
+		</ul>
+	</li>
+	<li class="snb_split _category selected">
+		<!-- [D] mouseover -->
+		<span><a href="#" class="goodmusic" onclick="clickcr(this,'lml.rcm','','',event);">추천음악</a></span>
+		<ul>
+		<li ><a href="/recommend/themeChannelList.nhn" class="N=a:lml.rcmTheme">테마채널<span class="new" id="fameNewECM"><em>new</em></span></a></li>
+		<li ><a href="/recommend/fame.nhn" class="N=a:lml.rcmFame">명예의 전당</a></li>
+		<li ><a href="/blogdj/today.nhn">블로그 DJ</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=1" class="N=a:lml.rcmChoice">Musician's Choice</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=7" class="N=a:lml.rcmPopNews">지구촌 팝뉴스</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=4" class="N=a:lml.rcmKor">이주의 발견-국내</a></li>
+		<li ><a href="/recommend/todayMusicRecommendList.nhn?sectionId=5" class="N=a:lml.rcmFor">이주의 발견-해외</a></li>
+		<li ><a href="/recommend/timeLine.nhn" class="N=a:lml.rcmTimeline">시대별 음악</a></li>
+		</ul>
+	</li>
+
+	</ul>
+</dd>
+</dl>
+
+
+<dl class="_mymusic_container snb_menu mymusic" id="mymusic_container">
+<dt class="mymusic"><span class="blind">마이뮤직</span></dt>
+<dd>
+	<ul>
+	<!-- [D] 선택시 li에 selected 클래스 추가 -->
+	<li ><a href="/mymusic/mylike/track.nhn" class="like N=a:lmy.favorite">MY좋아요</a></li>
+	<li ><a href="/myMusic/recent.nhn" class="lastsong N=a:lmy.recent">최근 들은 음악</a></li>
+	<li ><a href="/myMusic/myTopMusic.nhn" class="lastsong N=a:lmy.mytop">MY TOP 30</a></li>
+	<li ><a href="/myMusic/mymp3.nhn" class="mymp3 N=a:lmy.mp3">구매한 음원</a></li>
+
+	
+	<li class="_mylist_selected mylist">
+		<span>
+			<a href="#" class="_mylist mylist N=a:lmy.list">내 리스트</a>
+			<a href="#" class="_add add N=a:lmy.add"><span class="blind">추가</span></a>
+		</span>
+		<ul class="_my_music_drop_area" id="my_music_drop_area">
+	
+		<li class="_music_my_list" style="display:none">
+			<a href="#" class="N=a:lmy.mylist"><span>{LIST_NAME}</span></a>
+			<a href="#" class="_edit edit">edit</a>
+		</li>
+		<li class="_name_editor edit" style="display:none;"><input type="text" maxlength="30" title="리스트 제목 입력"><a href="#" class="_ok">확인</a>|<a href="#" class="_cancel">취소</a></li>
+		<li class="_move_this move_this" style="display:none;"></li>
+	
+		<input class="csrfToken" id="csrfToken" type="hidden" value=""/>
+		</ul>
+	</li>
+	</ul>
+	<div class="move_mylist _move_mylist" style="display:none;">간지나는 가요</div>
+</dd>
+</dl>
+
+
+<dl class="mycash">
+<dt><span class="blind">내 이용권</span></dt>
+
+
+
+<dd class="nocash">
+	<span><a href="#" class="_login">로그인</a>하시면 내 이용권을<br> 이용하실 수 있습니다.</span>
+	<a href="/buy/index.nhn">이용권 구매하러 가기</a>
+</dd>
+
+
+
+
+<dd class="btn"><a href="/buy/buyList.nhn" class="N=a:lmc.config"><span class="blind">관리</span></a></dd>
+</dl>
+
+
+
+
+	
+	
+	
+
+<dl class="mypayment">
+	<dt><span class="blind">내 정기결제 현황</span></dt>
+	<dd class="mileage">
+	<span>정기결제 미이용 중</span>
+	
+	<a href="/buy/index.nhn">신규회원 혜택 받기!</a>
+	
+	<dd class="btn"><a href="/buy/buyList.nhn"><span class="blind">현황</span></a></dd>
+</dl>
+
+
+<dl class="mymachine">
+<dt>내 등록기기</dt>
+<dd class="btn"><a href="#" onClick="window.open('https://music.naver.com/device/initPopup.nhn','deviceInit','location=no,resizable=no,toolbar=no,scrollbars=no,width=454,height=500'); return false;">관리</a></dd>
+</dl>
+<dl class="mygift">
+	<dt>선물함</dt>
+	<dd class="btn"><a target="_blank" href="https://pay.naver.com/mygift/s">현황</a></dd>
+</dl>
+<dl class="mynaver_coin">
+<dt>내 네이버캐쉬</dt>
+<dd class="btn"><a target="_blank" href="https://pay.naver.com" >현황</a></dd>
+</dl>
+
+<div class="operateboard">
+	<a href="/notice/index.nhn" class="notice N=a:lbt.notice"><span class="blind">공지사항</span></a>
+	<span class="split"></span>
+	<a href="https://help.naver.com/support/alias/music/music_3.naver" class="faq N=a:lbt.faq" target="_blank"><span class="blind">뮤직 FAQ</span></a>
+</div>
+<div class="_music_category_bubble" id="_music_category_bubble"></div>
+
+
+
+	</div>
+	<div id="content"  >
+		<div class="spot album_end">
+						<div class="info NE=a:prf">
+							<div class="thumb pht217">
+								<a href="index.nhn?albumId=3003472" class="NPI=a:image,i:3003472">
+									<img  src="https://musicmeta-phinf.pstatic.net/album/003/003/3003472.jpg?type=r204Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r204Fll&v=20190507112428';" width="204" height="204" alt="MAP OF THE SOUL : PERSONA" title="MAP OF THE SOUL : PERSONA">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:play,i:3003472" onclick="nhn.music.playAlbum(3003472);return false;"><span class="blind">재생</span></a>
+								
+							</div>
+							 <div class="info_txt">
+								<h2>MAP OF THE SOUL : PERSONA</h2>
+								
+								<div class="star">
+									<div class="starrating-background">
+										<span class="_album_rating" style="width:90%;"><em>평점 9점</em></span>
+									</div>
+									<div class="_score score">
+										<span class="num9"><em>9</em></span><span class="dot"><em>.</em></span><span class="num0"><em>0</em></span>
+									</div>
+									<a href="#" class="btn" onclick="nhn.music.showRatingLayer(this); return false;"><span>별점주기</span></a>
+
+								</div>
+								<dl class="desc">
+							
+								<dt class="artist"><span>아티스트</span></dt>
+								<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							
+							
+								<dt class="type"><span>장르</span></dt>
+								<dd> 알앤비/어반,  랩/힙합</dd>
+							
+							
+								<dt class="date"><span>발매</span></dt>
+								<dd>2019.04.12</dd>
+							
+							
+								<dt class="company"><span>배급</span></dt>
+								<dd>Dreamus</dd>
+							
+								</dl>
+
+							
+								
+								<div class="btn_area">
+									<!-- MP3 / DRM 구매 버튼 선택 -->
+									
+									<!-- 앨범 구매인지 일반 트랙 구매인지 -->
+									
+									
+										
+											<span class="buy"><a href="#" onclick="nhn.music.openTrackBrowserDownloadPopup([26860933, 26860934, 26860936, 26860935, 26860937, 26860938, 26860939]);" class="NPI=a:allmp3,i:3003472">MP3 구매</a></span>
+											
+											
+											
+											
+										
+									
+									
+									<div class="u_likeit_list_module">
+										<a href="javascript:void(0)" class="u_likeit_list_btn" data-sid="MUSIC" data-did="MUSIC" data-cid="ALBUM_3003472" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt _cnt"></em></a>
+									</div>
+									<div class="spi_uio">
+										<a href="javascript:void(0)" title="공유하기" class="btn_share spi_btn_share naver-splugin" 
+												data-style="unity" data-title="" 
+												data-oninitialize="splugin_oninitialize();">공유하기</a>
+									</div>
+									
+								</div>
+								
+							 </div>
+						</div>
+						<div class="other_info NE=a:art">
+						
+							
+								<h3>이 앨범의 아티스트</h3>
+								<dl>
+						
+							
+							
+								<dt><a href="/artist/home.nhn?artistId=143179" class="NPI=a:name,i:143179" title="방탄소년단">방탄소년단</a></dt>
+								<dd class="thumb_img">
+									<a href="/artist/home.nhn?artistId=143179" class="thumb pht60 NPI=a:image,i:143179">
+										<img  src="https://musicmeta-phinf.pstatic.net/artist/000/143/143179.jpg?type=r60Fll&v=20190510170707" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/artist/000/000/0.jpg?type=r60Fll&v=20190510170707';" alt="" title="">
+										<span class="mask2"></span>
+									</a>
+								</dd>
+							
+						
+								<dd class="desc">
+									<a href="/artist/album.nhn?artistId=143179" class="NPI=a:album,i:143179">앨범 37</a>
+									<span>|</span>
+									<a href="/artist/track.nhn?artistId=143179" class="NPI=a:track,i:143179">곡  240</a>
+								</dd>
+							
+								
+									<dd class="listen"><span class="btn_major"><a href="#" onClick="nhn.music.playRepresentativeMusic('artist' ,143179,this);return false" class="NPI=a:allsong,i:143179"><span></span>대표곡듣기</a></span></dd>
+								
+								
+							
+								</dl>
+								<ul>
+								
+								<li>
+									
+										
+											<span class="ico_play"><a href="#" onClick="nhn.music.playMusic([16091695], this, 'play', [],[]);return false;" class="NPI=a:play,r:1,i:16091695" title="봄날">봄날</a></span>
+										
+										
+									
+							     </li>
+								
+								<li>
+									
+										
+											<span class="ico_play"><a href="#" onClick="nhn.music.playMusic([18971432], this, 'play', [],[]);return false;" class="NPI=a:play,r:2,i:18971432" title="DNA">DNA</a></span>
+										
+										
+									
+							     </li>
+								
+								<li>
+									
+										
+											<span class="ico_play"><a href="#" onClick="nhn.music.playMusic([7745218], this, 'play', [],[]);return false;" class="NPI=a:play,r:3,i:7745218" title="피 땀 눈물">피 땀 눈물</a></span>
+										
+										
+									
+							     </li>
+								
+								<li>
+									
+										
+											<span class="ico_play"><a href="#" onClick="nhn.music.playMusic([21328111], this, 'play', [],[]);return false;" class="NPI=a:play,r:4,i:21328111" title="FAKE LOVE">FAKE LOVE</a></span>
+										
+										
+									
+							     </li>
+								
+								<li>
+									
+										
+											<span class="ico_play"><a href="#" onClick="nhn.music.playMusic([21615201], this, 'play', [],[]);return false;" class="NPI=a:play,r:5,i:21615201" title="IDOL">IDOL</a></span>
+										
+										
+									
+							     </li>
+								
+								</ul>
+							
+							
+						
+						</div>
+					</div>
+					
+					
+					
+					<!-- 앨범단위 구매 / 기존 구매 -->
+					
+						
+						
+							
+							
+							
+							
+							
+							
+							
+						
+					
+					
+					<!-- 곡 단위 구매 코드는 주석 처리 -->
+
+
+<!-- 							<div class="service_dsc"> -->
+<!-- 								<p> -->
+<!-- 									<strong class="t1"><span class="c2">곡 단위</span> MP3 구매</strong> -->
+<!-- 									<span class="t2">해당 앨범은 곡 단위 MP3구매만 가능하며, 이용권은 사용하실 수 없습니다.</span> -->
+<!-- 								</p> -->
+<!-- 							</div> -->
+
+						
+					<div class="section  NE=a:trl" style="z-index: 10">
+						<div class="section_tit">
+							<h3 class="song"><span>곡</span></h3>
+							<span class="desc type_num">(7)</span>
+						</div>
+						
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+	
+		
+		
+		
+
+		
+	
+
+	
+
+	
+
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+<!-- tracklist 검사하면서 각 변수값 설정 -->
+
+
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+
+
+
+<!-- 트랙 리스트 윗부분 -->
+<div  class="_tracklist_mytrack tracklist_table " artistdata="[{\&quot;26860933\&quot;:[[\&quot;143179\&quot;,\&quot;\uBC29\uD0C4\uC18C\uB144\uB2E8\&quot;]]},{\&quot;26860934\&quot;:[[\&quot;143179\&quot;,\&quot;\uBC29\uD0C4\uC18C\uB144\uB2E8\&quot;],[\&quot;418229\&quot;,\&quot;Halsey\&quot;]]},{\&quot;26860936\&quot;:[[\&quot;143179\&quot;,\&quot;\uBC29\uD0C4\uC18C\uB144\uB2E8\&quot;]]},{\&quot;26860935\&quot;:[[\&quot;143179\&quot;,\&quot;\uBC29\uD0C4\uC18C\uB144\uB2E8\&quot;]]},{\&quot;26860937\&quot;:[[\&quot;143179\&quot;,\&quot;\uBC29\uD0C4\uC18C\uB144\uB2E8\&quot;]]},{\&quot;26860938\&quot;:[[\&quot;143179\&quot;,\&quot;\uBC29\uD0C4\uC18C\uB144\uB2E8\&quot;]]},{\&quot;26860939\&quot;:[[\&quot;143179\&quot;,\&quot;\uBC29\uD0C4\uC18C\uB144\uB2E8\&quot;]]}]">
+
+	<div class="btn_area">
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+	
+		<span class="listen_all"><a href="#" class="_listen_all NPI=a:tall" title="전체듣기"><span></span>전체듣기</a></span>
+		<span class="listen"><a href="#" class="_listen NPI=a:tlisten"><span></span>듣기</a></span>
+		<span class="add"><a href="#" class="_add_item NPI=a:tlist"><span></span>재생목록 추가</a></span>
+	
+	
+
+
+
+<!-- MP3 / DRM 구매 버튼 선택 -->
+
+
+
+	<span class="buy"><a href="#" class="_global_buy_mp3 NPI=a:tbuy">MP3 구매</a></span>
+	
+	
+	
+	
+
+
+
+
+
+	
+	
+		<span class="get"><a href="#" class="_t_scrap_item  NPI=a:tput">내 리스트에 담기</a></span>
+	
+
+	<span class="send"><a href="#" class="_t_send">보내기</a></span>
+
+    
+    
+
+
+
+
+
+		
+
+    
+
+		
+			
+	
+	</div>
+
+    
+
+
+
+
+	
+
+	
+
+	
+	<table border="0" summary="트랙 리스트">
+	<colgroup>
+
+	<col width="35">
+
+
+	<col width="30">
+
+
+
+
+	<col>
+
+	<col width="23%">
+
+
+
+
+
+	<col width="37">
+
+
+	<col width="47">
+
+
+	<col width="27">
+
+
+	<col width="27">
+
+
+	<col width="27">
+
+
+
+
+	<col width="37">
+
+
+
+	<col width="69">
+
+
+	</colgroup>
+
+	<thead>
+	<tr>
+
+	<th class=" _chk_header chk"><input type="checkbox" class="_chkbox_all input_chk NPI=a:checkall" title="전체선택"></th>
+
+
+	<th class=" _order_header order NPI=a:snum"><span>번호</span></th>
+
+
+
+
+	<th class=" _title_header title NPI=a:strack"><span>곡명</span></th>
+
+	<th class=" _artist_header artist NPI=a:sartist"><span>아티스트</span></th>
+
+
+
+
+
+	<th class="like"><span>좋아요</span></th>
+
+
+	<th class="popular"><span>인기도</span></th>
+
+
+	<th class="video"><span>뮤직비디오</span></th>
+
+
+	<th class="lyric"><span>가사</span></th>
+
+
+	<th class="get"><span>담기</span></th>
+
+
+
+	<th class="radio"><span>라디오</span></th>
+
+
+	<th class="buy"><span>구매</span></th>
+
+
+	</tr>
+	</thead>
+
+	<tbody >
+
+
+
+
+
+							<tr class="_tracklist_move {TRACK_TYPE}" style="display:none;"  trackdata="{TRACK_DATA}">
+
+
+						
+							<td class="chk"><input type="checkbox" title="선택" class="_chkbox_item input_chk {TRACK_CHECK_NCLICKS}" {TRACK_CHECK_DISABLE}> </td>
+						
+						
+							<td class="order">{TRACK_NUM}</td>
+						
+							<td class="name">
+
+								{PLAY_TOGGLE}
+								{ADD_TOGGLE}
+
+
+								<span class="_ico_title ico_title" {TITLE_ICO_STYLE}><img height="18" width="23" alt="TITLE" src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif"></span>
+								<span class="_ico_19 ico19" {19_ICO_STYLE}><img height="18" width="13" src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif"></span>
+
+
+								{TRACK_SONG_NAME}
+
+							</td>
+
+							<td class="_artist artist {NO_ELL}">
+
+
+                                   {ARTIST}
+
+							</td>
+
+						
+                        
+                        	<td class="like">
+								<div class="u_likeit_list_module">
+									<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:1,i:" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+								</div>
+                        	</td>
+                        
+						
+							<td class="video">{MUSIC_VIDEO}</td>
+						
+						
+							<td class="lyric">{LYRIC}</td>
+						
+						
+							<td class="get">{SCRAP_ROW}</td>
+						
+						
+						
+							<td class="radio">{RADIO}</td>
+						
+
+						
+							<td class="buy">
+
+								{MP3_BUY_LAYER_BTN}
+
+								<div style="display:none;" class="_buy_layer buy_layer">
+									<ul>
+
+									<li>{MP3_BUY_LIST}</li>
+									<li>{MUSIC_SPRING}</li>
+									<li>{BELL_SOUND}</li>
+									<li>{CONNECTION_SOUND}</li>
+
+									</ul>
+									<span class="bg"></span>
+								</div>
+							</td>
+						
+
+						
+							</tr>
+
+
+
+
+
+
+
+
+
+	<tr class="_tracklist_move data1  "
+		
+        trackdata="26860933|248577|true|true|false|true|false|false|0|true|true|false|false">
+
+	<td class="chk"><input type="checkbox" class="_chkbox_item _disc_1 input_chk NPI=a:check,r:1,i:26860933" title="선택" test="false" ></td>
+
+
+	<td class="order">1</td>
+
+
+
+
+	<td class="name">
+	
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+		<a href="#" class="_play_ico ico_listen NPI=a:play,r:1,i:26860933"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="듣기" title="듣기"></a>
+		<a href="#" class="_add_ico ico_add NPI=a:plus,r:1,i:26860933"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="재생목록에 추가" title="재생목록에 추가"></a>
+		
+		
+		
+		
+		 <a href="#26860933" class="_title title NPI=a:track,r:1,i:26860933"  title="Intro : Persona" ><span class="ellipsis">Intro : Persona</span></a>
+		
+	
+	
+
+
+	</td>
+
+
+
+	<td class="_artist artist">
+
+	
+	
+		<a href="/artist/home.nhn?artistId=143179" class="_artist NPI=a:artist,r:1,i:143179" title="방탄소년단">
+		<span class="ellipsis" >
+			
+			
+			방탄소년단
+		</span>
+		</a>
+	
+
+	</td>
+
+
+
+
+
+
+
+
+	<td class="like">
+		<div class="u_likeit_list_module">
+			<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:1,i:26860933" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_26860933" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+		</div>
+	</td>
+
+
+	<td class="popular">
+		<div class="popular_gauge" title="인기도">
+			<span style="width:20%;"><em>2</em></span>
+		</div>
+	</td>
+
+
+	<td class="video"><a href="#248577" title="뮤직비디오"  class="_musicvideo NPI=a:movie,r:1,i:248577"><span>뮤직비디오</span></a></td>
+
+
+	<td class="lyric"><a href="#" class="_lyric NPI=a:lyric,r:1,i:26860933" title="가사"><span>가사</span></a></td>
+
+
+	<td class="get"><a href="#" class="_scrap NPI=a:put,r:1,i:26860933" title="내 리스트에 담기"><span>담기</span></a></td>
+
+
+
+
+
+
+    
+		<td class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn?radioType=track&seed=26860933', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="NPI=a:radio,r:1,i:26860933"><span>라디오</span></a></td>
+	
+	
+
+	 
+
+
+
+	<td class="buy">
+	
+				<a href="javascript:void(0)" class="_buy NPI=a:buy,r:1,i:26860933"><span>구매</span></a>
+								<div style="display: none;" class="_buy_layer buy_layer">
+									<ul>
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                            <li><a href="#" onMouseOver="nhn.music.drawAirDownloadButton(this, 'list', [26860933], false);"
+                                                                   class="_buy_mp3 NPI=a:mp3,r:1,i:26860933"><strong>MP3구매</strong></a></li>
+                                                        
+                                                        
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                        
+								
+									<li><a href="javascript:void(0)" class="_music_spring NPI=a:bgm,r:1,i:26860933">뮤직샘</a></li>
+									
+								
+									</ul>
+									<span class="bg"></span>
+								</div>
+	</td>
+
+
+	</tr>
+	
+
+
+
+
+
+	<tr class="_tracklist_move data0  "
+		
+        trackdata="26860934|249206|true|true|false|true|false|false|0|true|true|false|false">
+
+	<td class="chk"><input type="checkbox" class="_chkbox_item _disc_1 input_chk NPI=a:check,r:2,i:26860934" title="선택" test="false" ></td>
+
+
+	<td class="order">2</td>
+
+
+
+
+	<td class="name">
+	
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+		<a href="#" class="_play_ico ico_listen NPI=a:play,r:2,i:26860934"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="듣기" title="듣기"></a>
+		<a href="#" class="_add_ico ico_add NPI=a:plus,r:2,i:26860934"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="재생목록에 추가" title="재생목록에 추가"></a>
+		<span class="_ico_title ico_title"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="23" height="18" alt="타이틀" title="타이틀"></span>
+		
+		
+		<strong>
+		 <a href="#26860934" class="_title title NPI=a:track,r:2,i:26860934"  title="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)" ><span class="ellipsis">작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)</span></a>
+		</strong>
+	
+	
+
+
+	</td>
+
+
+
+
+	<td class="_artist artist no_ell2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		
+			
+			
+			
+			
+				 <a href="javascript:void(0);"  title="" alt="" class="NPI=a:layerbtn,r:2">방탄소년단</a> 
+				
+			
+		
+		
+	
+
+
+
+
+
+
+</td>
+
+
+
+
+
+
+
+	<td class="like">
+		<div class="u_likeit_list_module">
+			<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:2,i:26860934" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_26860934" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+		</div>
+	</td>
+
+
+	<td class="popular">
+		<div class="popular_gauge" title="인기도">
+			<span style="width:100%;"><em>10</em></span>
+		</div>
+	</td>
+
+
+	<td class="video"><a href="#249206" title="뮤직비디오"  class="_musicvideo NPI=a:movie,r:2,i:249206"><span>뮤직비디오</span></a></td>
+
+
+	<td class="lyric"><a href="#" class="_lyric NPI=a:lyric,r:2,i:26860934" title="가사"><span>가사</span></a></td>
+
+
+	<td class="get"><a href="#" class="_scrap NPI=a:put,r:2,i:26860934" title="내 리스트에 담기"><span>담기</span></a></td>
+
+
+
+
+
+
+    
+		<td class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn?radioType=track&seed=26860934', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="NPI=a:radio,r:2,i:26860934"><span>라디오</span></a></td>
+	
+	
+
+	 
+
+
+
+	<td class="buy">
+	
+				<a href="javascript:void(0)" class="_buy NPI=a:buy,r:2,i:26860934"><span>구매</span></a>
+								<div style="display: none;" class="_buy_layer buy_layer">
+									<ul>
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                            <li><a href="#" onMouseOver="nhn.music.drawAirDownloadButton(this, 'list', [26860934], false);"
+                                                                   class="_buy_mp3 NPI=a:mp3,r:2,i:26860934"><strong>MP3구매</strong></a></li>
+                                                        
+                                                        
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                        
+								
+									<li><a href="javascript:void(0)" class="_music_spring NPI=a:bgm,r:2,i:26860934">뮤직샘</a></li>
+									
+								
+									</ul>
+									<span class="bg"></span>
+								</div>
+	</td>
+
+
+	</tr>
+	
+
+
+
+
+
+	<tr class="_tracklist_move data1  "
+		
+        trackdata="26860936|0|true|true|false|true|false|false|0|true|true|false|false">
+
+	<td class="chk"><input type="checkbox" class="_chkbox_item _disc_1 input_chk NPI=a:check,r:3,i:26860936" title="선택" test="false" ></td>
+
+
+	<td class="order">3</td>
+
+
+
+
+	<td class="name">
+	
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+		<a href="#" class="_play_ico ico_listen NPI=a:play,r:3,i:26860936"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="듣기" title="듣기"></a>
+		<a href="#" class="_add_ico ico_add NPI=a:plus,r:3,i:26860936"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="재생목록에 추가" title="재생목록에 추가"></a>
+		
+		
+		
+		
+		 <a href="#26860936" class="_title title NPI=a:track,r:3,i:26860936"  title="소우주 (Mikrokosmos)" ><span class="ellipsis">소우주 (Mikrokosmos)</span></a>
+		
+	
+	
+
+
+	</td>
+
+
+
+	<td class="_artist artist">
+
+	
+	
+		<a href="/artist/home.nhn?artistId=143179" class="_artist NPI=a:artist,r:3,i:143179" title="방탄소년단">
+		<span class="ellipsis" >
+			
+			
+			방탄소년단
+		</span>
+		</a>
+	
+
+	</td>
+
+
+
+
+
+
+
+
+	<td class="like">
+		<div class="u_likeit_list_module">
+			<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:3,i:26860936" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_26860936" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+		</div>
+	</td>
+
+
+	<td class="popular">
+		<div class="popular_gauge" title="인기도">
+			<span style="width:50%;"><em>5</em></span>
+		</div>
+	</td>
+
+
+	<td class="video"><span>뮤직비디오</span></td>
+
+
+	<td class="lyric"><a href="#" class="_lyric NPI=a:lyric,r:3,i:26860936" title="가사"><span>가사</span></a></td>
+
+
+	<td class="get"><a href="#" class="_scrap NPI=a:put,r:3,i:26860936" title="내 리스트에 담기"><span>담기</span></a></td>
+
+
+
+
+
+
+    
+		<td class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn?radioType=track&seed=26860936', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="NPI=a:radio,r:3,i:26860936"><span>라디오</span></a></td>
+	
+	
+
+	 
+
+
+
+	<td class="buy">
+	
+				<a href="javascript:void(0)" class="_buy NPI=a:buy,r:3,i:26860936"><span>구매</span></a>
+								<div style="display: none;" class="_buy_layer buy_layer">
+									<ul>
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                            <li><a href="#" onMouseOver="nhn.music.drawAirDownloadButton(this, 'list', [26860936], false);"
+                                                                   class="_buy_mp3 NPI=a:mp3,r:3,i:26860936"><strong>MP3구매</strong></a></li>
+                                                        
+                                                        
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                        
+								
+									<li><a href="javascript:void(0)" class="_music_spring NPI=a:bgm,r:3,i:26860936">뮤직샘</a></li>
+									
+								
+									</ul>
+									<span class="bg"></span>
+								</div>
+	</td>
+
+
+	</tr>
+	
+
+
+
+
+
+	<tr class="_tracklist_move data0  "
+		
+        trackdata="26860935|0|true|true|false|true|false|false|0|true|true|false|false">
+
+	<td class="chk"><input type="checkbox" class="_chkbox_item _disc_1 input_chk NPI=a:check,r:4,i:26860935" title="선택" test="false" ></td>
+
+
+	<td class="order">4</td>
+
+
+
+
+	<td class="name">
+	
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+		<a href="#" class="_play_ico ico_listen NPI=a:play,r:4,i:26860935"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="듣기" title="듣기"></a>
+		<a href="#" class="_add_ico ico_add NPI=a:plus,r:4,i:26860935"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="재생목록에 추가" title="재생목록에 추가"></a>
+		
+		
+		
+		
+		 <a href="#26860935" class="_title title NPI=a:track,r:4,i:26860935"  title="Make It Right" ><span class="ellipsis">Make It Right</span></a>
+		
+	
+	
+
+
+	</td>
+
+
+
+	<td class="_artist artist">
+
+	
+	
+		<a href="/artist/home.nhn?artistId=143179" class="_artist NPI=a:artist,r:4,i:143179" title="방탄소년단">
+		<span class="ellipsis" >
+			
+			
+			방탄소년단
+		</span>
+		</a>
+	
+
+	</td>
+
+
+
+
+
+
+
+
+	<td class="like">
+		<div class="u_likeit_list_module">
+			<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:4,i:26860935" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_26860935" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+		</div>
+	</td>
+
+
+	<td class="popular">
+		<div class="popular_gauge" title="인기도">
+			<span style="width:40%;"><em>4</em></span>
+		</div>
+	</td>
+
+
+	<td class="video"><span>뮤직비디오</span></td>
+
+
+	<td class="lyric"><a href="#" class="_lyric NPI=a:lyric,r:4,i:26860935" title="가사"><span>가사</span></a></td>
+
+
+	<td class="get"><a href="#" class="_scrap NPI=a:put,r:4,i:26860935" title="내 리스트에 담기"><span>담기</span></a></td>
+
+
+
+
+
+
+    
+		<td class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn?radioType=track&seed=26860935', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="NPI=a:radio,r:4,i:26860935"><span>라디오</span></a></td>
+	
+	
+
+	 
+
+
+
+	<td class="buy">
+	
+				<a href="javascript:void(0)" class="_buy NPI=a:buy,r:4,i:26860935"><span>구매</span></a>
+								<div style="display: none;" class="_buy_layer buy_layer">
+									<ul>
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                            <li><a href="#" onMouseOver="nhn.music.drawAirDownloadButton(this, 'list', [26860935], false);"
+                                                                   class="_buy_mp3 NPI=a:mp3,r:4,i:26860935"><strong>MP3구매</strong></a></li>
+                                                        
+                                                        
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                        
+								
+									<li><a href="javascript:void(0)" class="_music_spring NPI=a:bgm,r:4,i:26860935">뮤직샘</a></li>
+									
+								
+									</ul>
+									<span class="bg"></span>
+								</div>
+	</td>
+
+
+	</tr>
+	
+
+
+
+
+
+	<tr class="_tracklist_move data1  "
+		
+        trackdata="26860937|0|true|true|false|true|false|false|0|true|true|false|false">
+
+	<td class="chk"><input type="checkbox" class="_chkbox_item _disc_1 input_chk NPI=a:check,r:5,i:26860937" title="선택" test="false" ></td>
+
+
+	<td class="order">5</td>
+
+
+
+
+	<td class="name">
+	
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+		<a href="#" class="_play_ico ico_listen NPI=a:play,r:5,i:26860937"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="듣기" title="듣기"></a>
+		<a href="#" class="_add_ico ico_add NPI=a:plus,r:5,i:26860937"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="재생목록에 추가" title="재생목록에 추가"></a>
+		
+		
+		
+		
+		 <a href="#26860937" class="_title title NPI=a:track,r:5,i:26860937"  title="HOME" ><span class="ellipsis">HOME</span></a>
+		
+	
+	
+
+
+	</td>
+
+
+
+	<td class="_artist artist">
+
+	
+	
+		<a href="/artist/home.nhn?artistId=143179" class="_artist NPI=a:artist,r:5,i:143179" title="방탄소년단">
+		<span class="ellipsis" >
+			
+			
+			방탄소년단
+		</span>
+		</a>
+	
+
+	</td>
+
+
+
+
+
+
+
+
+	<td class="like">
+		<div class="u_likeit_list_module">
+			<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:5,i:26860937" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_26860937" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+		</div>
+	</td>
+
+
+	<td class="popular">
+		<div class="popular_gauge" title="인기도">
+			<span style="width:30%;"><em>3</em></span>
+		</div>
+	</td>
+
+
+	<td class="video"><span>뮤직비디오</span></td>
+
+
+	<td class="lyric"><a href="#" class="_lyric NPI=a:lyric,r:5,i:26860937" title="가사"><span>가사</span></a></td>
+
+
+	<td class="get"><a href="#" class="_scrap NPI=a:put,r:5,i:26860937" title="내 리스트에 담기"><span>담기</span></a></td>
+
+
+
+
+
+
+    
+		<td class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn?radioType=track&seed=26860937', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="NPI=a:radio,r:5,i:26860937"><span>라디오</span></a></td>
+	
+	
+
+	 
+
+
+
+	<td class="buy">
+	
+				<a href="javascript:void(0)" class="_buy NPI=a:buy,r:5,i:26860937"><span>구매</span></a>
+								<div style="display: none;" class="_buy_layer buy_layer">
+									<ul>
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                            <li><a href="#" onMouseOver="nhn.music.drawAirDownloadButton(this, 'list', [26860937], false);"
+                                                                   class="_buy_mp3 NPI=a:mp3,r:5,i:26860937"><strong>MP3구매</strong></a></li>
+                                                        
+                                                        
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                        
+								
+									<li><a href="javascript:void(0)" class="_music_spring NPI=a:bgm,r:5,i:26860937">뮤직샘</a></li>
+									
+								
+									</ul>
+									<span class="bg"></span>
+								</div>
+	</td>
+
+
+	</tr>
+	
+
+
+
+
+
+	<tr class="_tracklist_move data0  "
+		
+        trackdata="26860938|0|true|true|false|true|false|false|0|true|true|false|false">
+
+	<td class="chk"><input type="checkbox" class="_chkbox_item _disc_1 input_chk NPI=a:check,r:6,i:26860938" title="선택" test="false" ></td>
+
+
+	<td class="order">6</td>
+
+
+
+
+	<td class="name">
+	
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+		<a href="#" class="_play_ico ico_listen NPI=a:play,r:6,i:26860938"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="듣기" title="듣기"></a>
+		<a href="#" class="_add_ico ico_add NPI=a:plus,r:6,i:26860938"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="재생목록에 추가" title="재생목록에 추가"></a>
+		
+		
+		
+		
+		 <a href="#26860938" class="_title title NPI=a:track,r:6,i:26860938"  title="Jamais Vu" ><span class="ellipsis">Jamais Vu</span></a>
+		
+	
+	
+
+
+	</td>
+
+
+
+	<td class="_artist artist">
+
+	
+	
+		<a href="/artist/home.nhn?artistId=143179" class="_artist NPI=a:artist,r:6,i:143179" title="방탄소년단">
+		<span class="ellipsis" >
+			
+			
+			방탄소년단
+		</span>
+		</a>
+	
+
+	</td>
+
+
+
+
+
+
+
+
+	<td class="like">
+		<div class="u_likeit_list_module">
+			<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:6,i:26860938" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_26860938" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+		</div>
+	</td>
+
+
+	<td class="popular">
+		<div class="popular_gauge" title="인기도">
+			<span style="width:30%;"><em>3</em></span>
+		</div>
+	</td>
+
+
+	<td class="video"><span>뮤직비디오</span></td>
+
+
+	<td class="lyric"><a href="#" class="_lyric NPI=a:lyric,r:6,i:26860938" title="가사"><span>가사</span></a></td>
+
+
+	<td class="get"><a href="#" class="_scrap NPI=a:put,r:6,i:26860938" title="내 리스트에 담기"><span>담기</span></a></td>
+
+
+
+
+
+
+    
+		<td class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn?radioType=track&seed=26860938', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="NPI=a:radio,r:6,i:26860938"><span>라디오</span></a></td>
+	
+	
+
+	 
+
+
+
+	<td class="buy">
+	
+				<a href="javascript:void(0)" class="_buy NPI=a:buy,r:6,i:26860938"><span>구매</span></a>
+								<div style="display: none;" class="_buy_layer buy_layer">
+									<ul>
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                            <li><a href="#" onMouseOver="nhn.music.drawAirDownloadButton(this, 'list', [26860938], false);"
+                                                                   class="_buy_mp3 NPI=a:mp3,r:6,i:26860938"><strong>MP3구매</strong></a></li>
+                                                        
+                                                        
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                        
+								
+									<li><a href="javascript:void(0)" class="_music_spring NPI=a:bgm,r:6,i:26860938">뮤직샘</a></li>
+									
+								
+									</ul>
+									<span class="bg"></span>
+								</div>
+	</td>
+
+
+	</tr>
+	
+
+
+
+
+
+	<tr class="_tracklist_move data1   last"
+		
+        trackdata="26860939|0|true|true|false|true|false|false|0|true|true|false|false">
+
+	<td class="chk"><input type="checkbox" class="_chkbox_item _disc_1 input_chk NPI=a:check,r:7,i:26860939" title="선택" test="false" ></td>
+
+
+	<td class="order">7</td>
+
+
+
+
+	<td class="name">
+	
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+		<a href="#" class="_play_ico ico_listen NPI=a:play,r:7,i:26860939"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="듣기" title="듣기"></a>
+		<a href="#" class="_add_ico ico_add NPI=a:plus,r:7,i:26860939"><img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="18" height="18" alt="재생목록에 추가" title="재생목록에 추가"></a>
+		
+		
+		
+		
+		 <a href="#26860939" class="_title title NPI=a:track,r:7,i:26860939"  title="Dionysus" ><span class="ellipsis">Dionysus</span></a>
+		
+	
+	
+
+
+	</td>
+
+
+
+	<td class="_artist artist">
+
+	
+	
+		<a href="/artist/home.nhn?artistId=143179" class="_artist NPI=a:artist,r:7,i:143179" title="방탄소년단">
+		<span class="ellipsis" >
+			
+			
+			방탄소년단
+		</span>
+		</a>
+	
+
+	</td>
+
+
+
+
+
+
+
+
+	<td class="like">
+		<div class="u_likeit_list_module">
+			<a href="javascript:void(0)" title="좋아요" class="u_likeit_list_btn u_type_img NPI=a:favo,r:7,i:26860939" data-sid="MUSIC" data-did="MUSIC" data-cid="TRACK_26860939" data-likeit="0"><span class="u_ico"></span><em class="u_txt"></em><em class="u_cnt"></em></a>
+		</div>
+	</td>
+
+
+	<td class="popular">
+		<div class="popular_gauge" title="인기도">
+			<span style="width:30%;"><em>3</em></span>
+		</div>
+	</td>
+
+
+	<td class="video"><span>뮤직비디오</span></td>
+
+
+	<td class="lyric"><a href="#" class="_lyric NPI=a:lyric,r:7,i:26860939" title="가사"><span>가사</span></a></td>
+
+
+	<td class="get"><a href="#" class="_scrap NPI=a:put,r:7,i:26860939" title="내 리스트에 담기"><span>담기</span></a></td>
+
+
+
+
+
+
+    
+		<td class="radio"><a href="#" onclick="window.open('https://player.music.naver.com/radio.nhn?radioType=track&seed=26860939', 'pop_alert', 'toolbar=no,scrollbars=no,width=710,height=382')" class="NPI=a:radio,r:7,i:26860939"><span>라디오</span></a></td>
+	
+	
+
+	 
+
+
+
+	<td class="buy">
+	
+				<a href="javascript:void(0)" class="_buy NPI=a:buy,r:7,i:26860939"><span>구매</span></a>
+								<div style="display: none;" class="_buy_layer buy_layer">
+									<ul>
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                            <li><a href="#" onMouseOver="nhn.music.drawAirDownloadButton(this, 'list', [26860939], false);"
+                                                                   class="_buy_mp3 NPI=a:mp3,r:7,i:26860939"><strong>MP3구매</strong></a></li>
+                                                        
+                                                        
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                        
+								
+									<li><a href="javascript:void(0)" class="_music_spring NPI=a:bgm,r:7,i:26860939">뮤직샘</a></li>
+									
+								
+									</ul>
+									<span class="bg"></span>
+								</div>
+	</td>
+
+
+	</tr>
+	
+
+
+
+
+	</table>
+
+
+</div>
+
+
+
+					</div>
+				
+				
+				
+				
+					
+						
+					
+				
+					
+						
+					
+				
+					
+						
+					
+				
+					
+						
+					
+				
+					
+						
+					
+				
+					
+						
+					
+				
+					
+						
+					
+				
+					
+					<div class="section">
+						<div class="section_tit">
+							<h3 class="song_info"><span>곡 정보</span></h3>
+						</div>
+						
+						
+						
+						
+						<div class="song_info_lst">
+						
+						
+							
+							
+							
+							<ol class="song_info_ol">
+						
+						
+							<li>
+								<em class="num">1</em>
+								<p>
+									<span class="tit">Intro : Persona</span>
+									
+										<span class="info"><em>작사</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2391780">Hiss noise</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+										<span class="info"><em>작곡</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2391780">Hiss noise</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+								</p>
+							</li>
+						
+						
+						
+						
+						
+						
+							<li>
+								<em class="num">2</em>
+								<p>
+									<span class="tit">작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)</span>
+									
+										<span class="info"><em>작사</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=483022">Melanie Joy Fontana</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1619229">Michel 'Lindgren' Schulz</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=41755">방시혁</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1733674">Emily Weisband</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=418229">Halsey</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+										<span class="info"><em>작곡</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=483022">Melanie Joy Fontana</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1619229">Michel 'Lindgren' Schulz</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=41755">방시혁</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1733674">Emily Weisband</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=418229">Halsey</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+								</p>
+							</li>
+						
+						
+						
+						
+						
+						
+							<li>
+								<em class="num">3</em>
+								<p>
+									<span class="tit">소우주 (Mikrokosmos)</span>
+									
+										<span class="info"><em>작사</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856884">Matty Thomson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856885">Max Lynedoch Graham</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856886">Marcus McCoan</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856887">Ryan Lawrie</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856888">Camilla Anne Stewart</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856890">“DJ Swivel” Young</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2261820">Candace Nicole Sosa</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=483022">Melanie Joy Fontana</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1619229">Michel 'Lindgren' Schulz</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+										<span class="info"><em>작곡</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856884">Matty Thomson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856885">Max Lynedoch Graham</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856886">Marcus McCoan</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856887">Ryan Lawrie</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856888">Camilla Anne Stewart</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856890">“DJ Swivel” Young</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2261820">Candace Nicole Sosa</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=483022">Melanie Joy Fontana</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1619229">Michel 'Lindgren' Schulz</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+								</p>
+							</li>
+						
+						
+						
+						
+						
+						
+							<li>
+								<em class="num">4</em>
+								<p>
+									<span class="tit">Make It Right</span>
+									
+										<span class="info"><em>작사</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1462200">Fred Gibson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=162587">Ed Sheeran</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856891">Benjy Gibson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856892">Jo Hill</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+										<span class="info"><em>작곡</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=1462200">Fred Gibson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=162587">Ed Sheeran</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856891">Benjy Gibson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856892">Jo Hill</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+								</p>
+							</li>
+						
+						
+						
+						
+						
+						
+							<li>
+								<em class="num">5</em>
+								<p>
+									<span class="tit">HOME</span>
+									
+										<span class="info"><em>작사</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=163812">Lauren Dyson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2416726">Tushar Apte</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=624736">Krysta Youngs</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2413822">Julia Ross</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=45879">정바비</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2391775">송재경</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=640857">ADORA</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+										<span class="info"><em>작곡</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=163812">Lauren Dyson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2416726">Tushar Apte</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=624736">Krysta Youngs</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2413822">Julia Ross</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=45879">정바비</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2391775">송재경</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=640857">ADORA</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+								</p>
+							</li>
+						
+						
+						
+						
+						
+						
+							<li>
+								<em class="num">6</em>
+								<p>
+									<span class="tit">Jamais Vu</span>
+									
+										<span class="info"><em>작사</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856886">Marcus McCoan</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=863723">Owen Roberts</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856884">Matty Thomson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856885">Max Lynedoch Graham</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856888">Camilla Anne Stewart</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=41755">방시혁</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+										<span class="info"><em>작곡</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856886">Marcus McCoan</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=863723">Owen Roberts</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856884">Matty Thomson</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856885">Max Lynedoch Graham</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856888">Camilla Anne Stewart</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=41755">방시혁</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+								</p>
+							</li>
+						
+						
+						
+						
+						
+						
+							<li>
+								<em class="num">7</em>
+								<p>
+									<span class="tit">Dionysus</span>
+									
+										<span class="info"><em>작사</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856893">Supereme Boi</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2391781">Roman Campolo</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+										<span class="info"><em>작곡</em> 
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=35315">Pdogg</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274322">제이홉</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2856893">Supereme Boi</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274317">RM</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=274318">슈가</a>, 
+												
+												
+											
+										
+											
+												
+													<a href="/artist/home.nhn?artistId=2391781">Roman Campolo</a>
+												
+												
+											
+										
+										</span>
+									
+									
+									
+								</p>
+							</li>
+						
+						
+						
+						
+						</div>
+						
+						<!--[AU#4] 펼쳐보기 버튼용 API 적용 -->
+						<a href="#" class="more open" onclick="toggleTrackContent(this); return false;">펼쳐보기</a>
+						<!--[/AU#4]-->
+						
+					</div>
+					<script type="text/javascript">
+						$Fn(function() {
+							var oOlList = $$("ol.song_info_ol");
+							
+							$A(oOlList).forEach(function(v, i) {
+								var oChangeSizeIndex = $A();
+								var oLiList = $$("li", v);
+								
+								$A(oLiList).forEach(function(vv, ii) {
+									if (ii % 2 == 0 && oLiList[ii + 1] != null) {
+										if (($Element(vv).height()) > 0 && ($Element(vv).height() >= $Element(oLiList[ii + 1]).height()))
+										$Element(oLiList[ii + 1]).attr("style", "height:" + $Element(vv).height() + "px");
+									}
+								});
+							});
+							
+							
+							$Element($$.getSingle("div.song_info_lst")).attr("style", getTrackContentHeightAttr());
+							
+							
+						}).attach(window, "load");
+						
+						function toggleTrackContent(elClick, bDisplayDisc) {
+							var welButton = $Element(elClick);
+							var welContent = $Element(elClick).prev();
+
+							if(welContent){
+								if (welContent.attr("style") != null && welContent.attr("style") != "" && welContent.attr("style") != " ") {
+									welContent.attr("style", " ");
+								} else {
+									welContent.attr("style", getTrackContentHeightAttr());
+								}
+							}
+							if(welButton.hasClass("open")){
+								welButton.removeClass("open").removeClass("NPI=a:close").addClass("close").addClass("NPI=a:open").text(nhn.music.getMessage("M0038"));
+							}else{
+								welButton.removeClass("close").removeClass("NPI=a:open").addClass("open").addClass("NPI=a:close").text(nhn.music.getMessage("M0037"));
+							}
+							
+							return false;
+						}
+						
+						function getTrackContentHeightAttr() {
+							var elOl = $$("ol.song_info_ol")[0];
+							var oLiList = $$("li", $$("ol.song_info_ol")[0]);
+							var elLastLi = (oLiList.length > 6 ? $$("li", $$("ol.song_info_ol")[0])[6] : $$("li", $$("ol.song_info_ol")[0])[oLiList.length - 1])
+							var nHeight = $Element(elLastLi).offset().top - $Element(oLiList[0]).offset().top;
+
+							
+							
+							return "height:" + nHeight + "px;margin-bottom:20px;";
+						}
+					</script>
+					
+				
+
+				
+					<div class="section NE=a:dsc">
+						<div class="section_tit">
+							<h3 class="intro_album"><span>앨범소개</span></h3>
+						</div>
+						<p class="_description_section intro_desc">
+							방탄소년단, MAP OF THE SOUL : PERSONA 발매!<br />글로벌 슈퍼스타 방탄소년단이 팬들에게 전하고 싶은 솔직한 이야기<br />타이틀곡 ‘작은 것들을 위한 시 (Boy With Luv)&#39;, 너에 대한 관심과 사랑의 즐거움<br /><br />새로운 이야기의 문을 열다! 4월 12일 ‘MAP OF THE SOUL : PERSONA&#39; 발매<br /><br />방탄소년단은 4월 12일 미니 앨범 ‘MAP OF THE SOUL : PERSONA&#39;를 발매한다. <br />지난 2년 6개월 동안 ‘LOVE YOURSELF&#39; 시리즈를 통해 ‘나 자신을 사랑하는 것이 진정한 사랑의 시작&#39;이라는 메시지를 전해온 방탄소년단은 글로벌 슈퍼스타가 된 지금의 위치에서 자신들이 얻은 힘, 그 힘의 근원과 그늘, 그리고 더 나아가 그 힘을 통해 나아가야 할 내일에 대해 이야기하려 한다. 이는 자신들의 내면 속으로 들어가 길을 찾는 과정이기도 하다.<br /><br />앨범 활동은 물론 전 세계를 무대로 투어를 펼치며, 수많은 팬들의 환호와 사랑을 받고 있는 방탄소년단은 그 고민의 시작점에서 ‘MAP OF THE SOUL&#39; 연작의 첫 작품 ‘PERSONA&#39; 앨범을 통해 ‘너에 대해 알고 싶다&#39;는 관심을 드러낸다.<br /><br />UN연설을 통해 이미 ‘Speak Yourself&#39; 라고 전 세계의 청소년들에게 따뜻한 손길을 건넨 바 있는 방탄소년단은 전 세계 아미(ARMY)들과 함께 데뷔 후 2080일간의 추억을 기록하는 ‘아미피디아(ARMYPEDIA)&#39; 캠페인 영상에서 그 관심을 구체화한 바 있다. &quot;아미피디아를 하며 올려주신 많은 개인적인 이야기들을 보면서 &#39;아미들은 이렇게 생각하고 살아가고 있구나&#39;라는 걸 조금이라도 더 알게 되었다&quot;며 &quot;이런 느낌들이 이번 앨범에서도 이어지게 될 것 같다. 지금 저희가 느끼는 솔직한 감정들, 여러분에게 전하고 싶은 말들을 이번 앨범에 담았다&quot;라고 밝혔다.<br /><br />방탄소년단의 페르소나, 내 진짜 모습을 찾기 위한 여정의 시작<br /><br />‘MAP OF THE SOUL : PERSONA&#39;에서 방탄소년단은 ‘세상에 대한 관심과 사랑의 즐거움&#39;을 이야기 한다. 지금껏 본인들의 이야기를 하며 이 자리까지 온 방탄소년단은 이제 본인들이 지금의 자리에 올 수 있게 해 준 사람들 한 명 한 명의 사연이 궁금하다.<br /><br />‘MAP OF THE SOUL : PERSONA&#39;의 출발점인 ‘Intro : Persona&#39;는 ‘나는 누구인가&#39;라는 평생 물어온 질문을 다시 던진다. ‘태어난 나&#39;와 ‘스스로 만들어낸 나&#39; 사이에서 나의 진짜 모습이 무엇인지를 묻는다.<br /><br />타이틀곡 ‘작은 것들을 위한 시 (Boy With Luv)&#39;는 부제 ‘Boy With Luv&#39;에서 알 수 있듯이 2014년 2월 발표한 ‘상남자 (Boy In Luv)&#39;와 맞닿아있다. ‘상남자&#39;가 어린 시절의 치기 어린 사랑을 이야기했다면, ‘작은 것들을 위한 시 (Boy With Luv)&#39;는 사소한 일상과 행복을 알아가는 작은 것들에 즐거움을 느끼며, 그것을 지키는 것이 진짜 사랑이고, 진짜 힘이라는 내용이다. 세계의 평화, 거대한 질서 등이 아닌, ‘너에 대한 관심과 사랑, 작고 소박한 사랑의 즐거움&#39;을 노래한다.<br />특히, 세계적인 가수 ‘할시(Halsey)&#39;가 피처링으로 참여해 사랑의 기쁨과 즐거움에서 오는 설렘의 감정을 다채롭게 표현했으며, 멤버들의 표정과 연기를 많이 볼 수 있도록 퍼포먼스를 구성했다. <br /><br />타이틀곡 ‘작은 것들을 위한 시 (Boy With Luv)&#39;의 뮤직비디오는 마치 한편의 뮤지컬 영화를 보는 듯 이국적이면서 화려한 세트를 오가며 펼쳐지는 멤버들의 매력적인 퍼포먼스가 더욱 돋보인다.<br />4개 버전으로 구성된 앨범 커버는 각기 다른 하트 모양의 선 그래픽으로, 사랑으로 일렁이는 감정을 표현했다. 앨범 콘셉트 포토는 ‘사랑&#39;에서 파생되는 다양한 감정의 모습들을 비주얼과 표정, 제스처 등으로 구성되었다.<br /><br />세상에 말을 건네고, 소통하고 싶은 방탄소년단<br /><br />총 7개의 트랙이 수록된 이번 앨범에서 방탄소년단은 보다 넓어진 세상에서 겪는 내면의 이야기와 세상에 대한 생각을 진솔하게 풀어낸다.<br /><br />나를 둘러싼 세계에 대한 인간적인 관심에서 출발한 ‘소우주 (Mikrokosmos)&#39;는 도시의 밤에 반짝이는 불빛, 그 빛이 말해주는 것은 사람 한 명 한 명 그 자체로 소중한 별이자, 그 안에 자신만의 광활한 우주를 담고 있다는 내용을 담았다. 세계적인 싱어송라이터 ‘에드 시런(Ed Sheeran)&#39;이 참여한 ‘Make It Right&#39;는 RM의 짜임새 있는 가사로 듣는 이로 하여금 현실 세계의 영웅의 사랑과 치유 과정에 대한 서사를 느낄 수 있게 한다. ‘HOME&#39;은 전 세계를 무대로 활동하고 있는 방탄소년단이 힘들고 외로울 때 돌아가고 싶은 ‘집(Home)&#39;을 팬들이 있는 곳으로 표현했다.<br /><br />이외에도 제이홉, 진, 정국으로 구성된 새로운 조합의 유닛 곡 ‘Jamais Vu&#39;, 처음부터 끝까지 신나게 달리듯 힘있고 강렬한 비트와 더불어 진의 로킹(Rocking)한 애드리브 보컬이 인상적인 방탄소년단표 힙합 곡 ‘Dionysus&#39;가 수록됐다.<br /><br />-------------------------------------------------------------------------------------------------------------<br /><br />1. Intro : Persona<br />방탄소년단의 ‘Skool Luv Affair&#39; 앨범의 인트로 ‘Skool Luv Affair&#39;의 비트를 샘플링해 만들었다. RM의 솔로곡으로 경쾌하고 로킹(Rocking)한 기타 사운드와 트랩(Trap) 장르의 힙합 리듬을 기반으로 한 힙합 곡이다. ‘나는 누구인가&#39; 라는 주제를 바탕으로 풀어나가는 RM의 화려한 래핑과 노래 중간중간 등장하는 오르간 사운드가 돋보인다. 과거의 ‘Skool Luv Affair&#39;와 현재의 ‘Persona&#39;를 비교해 듣는 것 또한 주요한 감상 포인트이다.<br /><br />2. 작은 것들을 위한 시 (Boy With Luv) feat. Halsey<br />키치한 사운드를 표방하는 펑크 팝(Funk Pop) 장르의 곡으로, 그동안 방탄소년단이 보여주었던 음악 스타일보다 좀 더 편안하고 듣기 쉬운 멜로디로 구성되었다. 최근 미국 빌보드의 메인 싱글 차트인 ‘HOT 100&#39; 1위를 기록한 세계적인 가수 ‘할시(Halsey)&#39;가 피처링으로 참여해 곡을 다채롭게 만들어주었다. 이 곡은 ‘너에 대한 관심과 사랑, 작고 소박한 사랑의 즐거움&#39;이라는 내용을 담았다.<br />어린 시절의 치기 어린 사랑에서 벗어나 너의 사소한 일상과 행복을 알아가는 것에 즐거움을 느끼고, 그것을 지키는 것이 진짜 사랑이며 진짜 힘이라고 이야기한다.<br /><br />3. 소우주 (Mikrokosmos) <br />4분의 3박자의 뉴 웨이브를 기반으로 한 록 팝(Rock Pop) 장르이다. 그동안 방탄소년단이 선보인 적 없는 독특한 리듬으로, 콘서트에서 팬들과 함께 무대를 즐길 수 있는 신나는 곡이다. 이 곡은 사람에 대한 인간적인 관심에서 출발해 도시의 밤에 반짝이는 불빛, 그 빛이 말해주는 것은 사람 한 명 한 명이 소중한 별이자 그 안에 자신만의 광활한 우주를 담고 있는 ‘소우주(Mikrokosmos)&#39;라며, 사람들에 대한 따뜻한 시선과 찬사를 표현하며 용기와 위안을 주는 메시지를 담았다.<br /><br />4. Make It Right<br />‘Make It Right&#39;는 세계적인 싱어송라이터 ‘에드 시런(Ed Sheeran)&#39;이 참여한 곡으로, 아련하면서도 세련된 감성이 진하게 묻어난 팝(Pop) 장르이다. 팔세토 창법을 기반으로 한 가성을 통해 잔잔하고 섬세한 보컬이 매력적인 곡이다. RM의 짜임새 있는 가사는 듣는 이로 하여금 현실 세계의 영웅의 사랑과 치유 과정에 대한 서사를 느낄 수 있게 한다.<br /><br />5. HOME<br />90년대 올드스쿨 사운드와 트랩(Trap) 리듬이 합쳐진 힙합 곡이다. 통통 튀는 리드 신스(Lead Synth)라인과 멜로디가 매력적이다. 전 세계를 무대로 활동하고 있는 방탄소년단이 힘들고 외로울 때 돌아가고 싶은 ‘집(Home)&#39;을 팬들이 있는 곳으로 표현했다. 팬들에 대한 고마움과 동시에 팬들이 곧 안식처임을 이야기하고 있다.<br /><br />6. Jamais Vu<br />‘Jamais Vu&#39;는 제이홉, 진, 정국으로 구성된 새로운 조합의 유닛 곡이다. 아련한 느낌의 브리티시 팝(British Pop) 감성에 진과 정국의 보컬이 만나 호소력 있고 진정성 있게 다가온다. 이미 경험하거나 전에 알고 있던 것들이지만 마치 처음 경험하는 것처럼 생소하게 느껴지는 ‘미시감&#39;을 뜻하는 프랑스어 ‘Jamais Vu&#39;가 곡의 제목으로 쓰였다. ‘괜찮지만 괜찮지 않아, 익숙하다고 혼잣말 했지만 늘 처음인 것처럼 아파&#39;, ‘또 다시 뛰고, 또 넘어지고 수없이 반복되어도 난 또 뛸 거라고&#39; 등 의도치 않게 발생하는 작은 실수들, 시행착오들이 있겠지만 그래도 변함없이 다시 뛰고 계속 달릴 것이라는 내용을 담았다.<br /><br />7. Dionysus<br />‘호르몬 전쟁&#39;, ‘진격의 방탄&#39; 이후 오랜만에 선보이는 방탄소년단표 올드 스쿨 힙합 곡이다. 90년대의 힙합 그루브와 메탈 느낌의 기타 사운드가 만난 랩 록(Rap Rock) 장르의 곡이다. 창작의 즐거움과 고통, 그것들을 거쳐서 아티스트가 된 지금, 노래와 춤으로 세상과 소통하고 싶다는 내용을 담았다. 특히, 제이홉이 송 라이트 전반을 담당해 탑라이너로서 한 뼘 성장한 모습을 보여준다. 처음부터 끝까지 신나게 달리듯 힘있고 강렬한 비트와 더불어 후반부에는 진의 로킹(Rocking)한 애드리브 보컬이 인상적인 감상포인트이다.<br />
+							<br><br>
+						</p>
+						<!--[AU#4] 펼쳐보기 버튼용 API 적용 -->
+						<a href="#" class="more open" onclick="nhn.music.toggleDescriptionContent(this); return false;">펼쳐보기</a>
+						<!--[/AU#4]-->
+					</div>
+				
+
+				
+						<div class="section NE=a:mvl">
+							<div class="section_tit">
+								<h3 class="musicvideo"><span>뮤직비디오</span></h3>
+								<span class="desc type_num">(5)</span>
+							</div>
+
+							<ul class="_resizable_view_3 lst_default4 lst_default4_close">
+							
+							<li style="width:19.9%;">
+								<div class="thumb pht124">
+									<a href="#"  onClick="nhn.music.openMusicVideoPopup(249206, false);return false;" class="NPI=a:image,r:1,i:249206">
+										<img  src="https://musicmeta-phinf.pstatic.net/video/000/249/249206.jpg?type=w147&v=20190412175910" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/video/000/000/0.jpg?type=w147&v=20190412175910';" width="147" height="83" alt="" title="">
+										<span class="mask"></span>
+										<strong></strong>
+									</a>
+								</div>
+								<dl class="lst_desc ">
+								<dt><a href="#" class="NPI=a:name,r:1,i:249206" onClick="nhn.music.openMusicVideoPopup(249206, false);return false;" title="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official MV)" alt="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official MV)">작은 것들을 위한 시 (Boy With Luv) (Fe..</a><span class="split">|</span><strong class="txt">정규</strong></dt>
+								<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:1,i:143179" >방탄소년단</a>, <a href="https://music.naver.com/artist/home.nhn?artistId=418229"  title="Halsey" alt="Halsey" class="NPI=a:artist,r:1,i:418229" >Hals..</a>
+		
+	
+
+
+
+
+
+
+</dd>
+								<dd class="date">2019.04.12</dd>
+								</dl>
+							</li>
+							
+							<li style="width:19.9%;">
+								<div class="thumb pht124">
+									<a href="#"  onClick="nhn.music.openMusicVideoPopup(249111, false);return false;" class="NPI=a:image,r:2,i:249111">
+										<img  src="https://musicmeta-phinf.pstatic.net/video/000/249/249111.jpg?type=w147&v=20190412164616" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/video/000/000/0.jpg?type=w147&v=20190412164616';" width="147" height="83" alt="" title="">
+										<span class="mask"></span>
+										<strong>00:28</strong>
+									</a>
+								</div>
+								<dl class="lst_desc ">
+								<dt><a href="#" class="NPI=a:name,r:2,i:249111" onClick="nhn.music.openMusicVideoPopup(249111, false);return false;" title="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official Teaser 2)" alt="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official Teaser 2)">작은 것들을 위한 시 (Boy With Luv) (Fe..</a><span class="split">|</span><strong class="txt">정규</strong></dt>
+								<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:2,i:143179" >방탄소년단</a>, <a href="https://music.naver.com/artist/home.nhn?artistId=418229"  title="Halsey" alt="Halsey" class="NPI=a:artist,r:2,i:418229" >Hals..</a>
+		
+	
+
+
+
+
+
+
+</dd>
+								<dd class="date">2019.04.11</dd>
+								</dl>
+							</li>
+							
+							<li style="width:19.9%;">
+								<div class="thumb pht124">
+									<a href="#"  onClick="nhn.music.openMusicVideoPopup(248967, false);return false;" class="NPI=a:image,r:3,i:248967">
+										<img  src="https://musicmeta-phinf.pstatic.net/video/000/248/248967.jpg?type=w147&v=20190412164548" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/video/000/000/0.jpg?type=w147&v=20190412164548';" width="147" height="83" alt="" title="">
+										<span class="mask"></span>
+										<strong>00:46</strong>
+									</a>
+								</div>
+								<dl class="lst_desc ">
+								<dt><a href="#" class="NPI=a:name,r:3,i:248967" onClick="nhn.music.openMusicVideoPopup(248967, false);return false;" title="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official Teaser 1)" alt="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official Teaser 1)">작은 것들을 위한 시 (Boy With Luv) (Fe..</a><span class="split">|</span><strong class="txt">정규</strong></dt>
+								<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:3,i:143179" >방탄소년단</a>, <a href="https://music.naver.com/artist/home.nhn?artistId=418229"  title="Halsey" alt="Halsey" class="NPI=a:artist,r:3,i:418229" >Hals..</a>
+		
+	
+
+
+
+
+
+
+</dd>
+								<dd class="date">2019.04.08</dd>
+								</dl>
+							</li>
+							
+							<li style="width:19.9%;">
+								<div class="thumb pht124">
+									<a href="#"  onClick="nhn.music.openMusicVideoPopup(248577, false);return false;" class="NPI=a:image,r:4,i:248577">
+										<img  src="https://musicmeta-phinf.pstatic.net/video/000/248/248577.jpg?type=w147&v=20190412164456" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/video/000/000/0.jpg?type=w147&v=20190412164456';" width="147" height="83" alt="" title="">
+										<span class="mask"></span>
+										<strong>02:58</strong>
+									</a>
+								</div>
+								<dl class="lst_desc ">
+								<dt><a href="#" class="NPI=a:name,r:4,i:248577" onClick="nhn.music.openMusicVideoPopup(248577, false);return false;" title="MAP OF THE SOUL : PERSONA 'Persona' Comeback Trailer" alt="MAP OF THE SOUL : PERSONA 'Persona' Comeback Trailer">MAP OF THE SOUL : PERSONA 'Per..</a><span class="split">|</span><strong class="txt">정규</strong></dt>
+								<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:4,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+								<dd class="date">2019.03.28</dd>
+								</dl>
+							</li>
+							
+							<li style="width:19.9%;">
+								<div class="thumb pht124">
+									<a href="#"  onClick="nhn.music.openMusicVideoPopup(250164, false);return false;" class="NPI=a:image,r:5,i:250164">
+										<img  src="https://musicmeta-phinf.pstatic.net/video/000/250/250164.jpg?type=w147&v=20190429120103" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/video/000/000/0.jpg?type=w147&v=20190429120103';" width="147" height="83" alt="" title="">
+										<span class="mask"></span>
+										<strong></strong>
+									</a>
+								</div>
+								<dl class="lst_desc ">
+								<dt><a href="#" class="NPI=a:name,r:5,i:250164" onClick="nhn.music.openMusicVideoPopup(250164, false);return false;" title="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official MV) ('ARMY With Luv' Ver.)" alt="작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey) (Official MV) ('ARMY With Luv' Ver.)">작은 것들을 위한 시 (Boy With Luv) (Fe..</a></dt>
+								<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:5,i:143179" >방탄소년단</a>, <a href="https://music.naver.com/artist/home.nhn?artistId=418229"  title="Halsey" alt="Halsey" class="NPI=a:artist,r:5,i:418229" >Hals..</a>
+		
+	
+
+
+
+
+
+
+</dd>
+								<dd class="date">2019.04.29</dd>
+								</dl>
+							</li>
+							
+							</ul>
+							<a href="#" class="_expand_for_resize more open" onclick="nhn.music.toggleMusicVideoContent(this); return false;">펼쳐보기</a>
+							<!-- 닫기 버튼
+							<a href="#" class="more close">닫기</a>
+							-->
+						</div>
+				
+
+				
+				
+				
+						
+						<div class="section NE=a:oth">
+							<div class="section_tit">
+								<h3 class="artist_otheralbum"><span>이 아티스트의 다른 앨범</span></h3>
+								<span class="desc type_txt">
+									<span>|</span>
+									<a class="name" href="/artist/home.nhn?artistId=143179">방탄소년단</a>
+									<em>(36)</em>
+								</span>
+							</div>
+							<ul class="_resizable_view_1 lst_default_v2">
+								
+								
+									
+									
+										
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2585249" class="NPI=a:image,r:1,i:2585249">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/585/2585249.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:1,i:2585249" onclick="nhn.music.playAlbum(2585249);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2585249" title="FAKE LOVE / Airplane pt.2" alt="FAKE LOVE / Airplane pt.2" class="NPI=a:name,r:1,i:2585249">FAKE LOVE / Airplane..</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:1,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2018.11.07</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2508125" class="NPI=a:image,r:2,i:2508125">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/508/2508125.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:2,i:2508125" onclick="nhn.music.playAlbum(2508125);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2508125" title="LOVE YOURSELF 結 ‘Answer'" alt="LOVE YOURSELF &#32080; &lsquo;Answer'" class="NPI=a:name,r:2,i:2508125">LOVE YOURSELF 結 ‘Ans..</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:2,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2018.08.24</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2462229" class="NPI=a:image,r:3,i:2462229">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/462/2462229.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:3,i:2462229" onclick="nhn.music.playAlbum(2462229);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2462229" title="FAKE LOVE (Rocking Vibe Mix)" alt="FAKE LOVE (Rocking Vibe Mix)" class="NPI=a:name,r:3,i:2462229">FAKE LOVE (Rocking V..</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:3,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2018.06.04</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2456867" class="NPI=a:image,r:4,i:2456867">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/456/2456867.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:4,i:2456867" onclick="nhn.music.playAlbum(2456867);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2456867" title="LOVE YOURSELF 轉 'Tear'" alt="LOVE YOURSELF &#36681; 'Tear'" class="NPI=a:name,r:4,i:2456867">LOVE YOURSELF 轉 'Tea..</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:4,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2018.05.18</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2441954" class="NPI=a:image,r:5,i:2441954">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/441/2441954.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:5,i:2441954" onclick="nhn.music.playAlbum(2441954);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2441954" title="FACE YOURSELF" alt="FACE YOURSELF" class="NPI=a:name,r:5,i:2441954">FACE YOURSELF</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:5,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2018.04.04</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;display:none">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2288019" class="NPI=a:image,r:6,i:2288019">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/288/2288019.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:6,i:2288019" onclick="nhn.music.playAlbum(2288019);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2288019" title="MIC Drop/DNA/Crystal Snow" alt="MIC Drop/DNA/Crystal Snow" class="NPI=a:name,r:6,i:2288019">MIC Drop/DNA/Crystal..</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:6,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2017.12.06</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;display:none">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2284895" class="NPI=a:image,r:7,i:2284895">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/284/2284895.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:7,i:2284895" onclick="nhn.music.playAlbum(2284895);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2284895" title="MIC Drop (Steve Aoki Remix) (Feat. Desiigner)" alt="MIC Drop (Steve Aoki Remix) (Feat. Desiigner)" class="NPI=a:name,r:7,i:2284895">MIC Drop (Steve Aoki..</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:7,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2017.11.24</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+									
+									
+										
+										
+											
+										<li style="width:19.9%;display:none">
+											<div class="thumb pht95">
+												<a href="/album/index.nhn?albumId=2188602" class="NPI=a:image,r:8,i:2188602">
+													<img lazySrc="https://musicmeta-phinf.pstatic.net/album/002/188/2188602.jpg?type=r95Fll&v=20190507112428" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190507112428';" width="95" height="95" alt="" title="">
+													<span class="mask"></span>
+												</a>
+												<a href="#" class="btn_play NPI=a:all,r:8,i:2188602" onclick="nhn.music.playAlbum(2188602);return false;"><span class="blind">재생</span></a>
+												
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+											</div>
+											<dl class="lst_desc ">
+											<dt>
+											
+											<a href="/album/index.nhn?albumId=2188602" title="LOVE YOURSELF 承 'Her'" alt="LOVE YOURSELF &#25215; 'Her'" class="NPI=a:name,r:8,i:2188602">LOVE YOURSELF 承 'Her..</a></dt>
+											<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:8,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+</dd>
+											<dd class="date">2017.09.18</dd>
+											</dl>
+										</li>
+											
+										
+									
+								
+							</ul>
+							<a href="/artist/album.nhn?artistId=143179" class="more NPI=a:more">앨범 더보기</a>
+						</div>
+						
+				
+				
+
+
+
+
+
+				
+					<div class="section NE=a:htr">
+						<div class="section_tit">
+							<h3 class="new_album"><span>주목받는 최신앨범</span></h3>
+							<span class="desc type_txt"><span>|</span>국내<em>&gt;</em><a href="/listen/genre/newRelease.nhn?genre=K01" class="NPI=a:genre,i:K01">발라드</a></span>
+						</div>
+						<ul class="_resizable_view_4 lst_default_v2">
+					
+						<li style="width:19.9%;">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3059374" class="NPI=a:image,r:1,i:3059374">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/059/3059374.jpg?type=r95Fll&v=20190527120036" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120036" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120036';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:1,i:3059374" onclick="nhn.music.playAlbum(3059374);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3059374" title="Sometimes" alt="Sometimes" class="NPI=a:name,r:1,i:3059374">Sometimes</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=2385954"  title="미야오" alt="미야오" class="NPI=a:artist,r:1,i:2385954" >미야오</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						<li style="width:19.9%;">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3060814" class="NPI=a:image,r:2,i:3060814">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/060/3060814.jpg?type=r95Fll&v=20190527140122" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527140122" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527140122';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:2,i:3060814" onclick="nhn.music.playAlbum(3060814);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3060814" title="소년테잎" alt="&#49548;&#45380;&#53580;&#51086;" class="NPI=a:name,r:2,i:3060814">소년테잎</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=2698758"  title="경제환" alt="경제환" class="NPI=a:artist,r:2,i:2698758" >경제환</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						<li style="width:19.9%;">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3059349" class="NPI=a:image,r:3,i:3059349">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/059/3059349.jpg?type=r95Fll&v=20190527120036" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120036" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120036';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:3,i:3059349" onclick="nhn.music.playAlbum(3059349);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3059349" title="Universe" alt="Universe" class="NPI=a:name,r:3,i:3059349">Universe</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=243152"  title="로이도(Roydo)" alt="로이도(Roydo)" class="NPI=a:artist,r:3,i:243152" >로이도(Roydo..</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						<li style="width:19.9%;">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3059182" class="NPI=a:image,r:4,i:3059182">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/059/3059182.jpg?type=r95Fll&v=20190527115953" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527115953" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527115953';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:4,i:3059182" onclick="nhn.music.playAlbum(3059182);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3059182" title="Soapy" alt="Soapy" class="NPI=a:name,r:4,i:3059182">Soapy</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=479462"  title="차콜(Charcoal)" alt="차콜(Charcoal)" class="NPI=a:artist,r:4,i:479462" >차콜(Charco..</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						<li style="width:19.9%;">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3059122" class="NPI=a:image,r:5,i:3059122">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/059/3059122.jpg?type=r95Fll&v=20190527151843" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527151843" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527151843';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:5,i:3059122" onclick="nhn.music.playAlbum(3059122);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3059122" title="Moonlight" alt="Moonlight" class="NPI=a:name,r:5,i:3059122">Moonlight</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=2897214"  title="Moon" alt="Moon" class="NPI=a:artist,r:5,i:2897214" >Moon</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						<li style="width:19.9%;display:none">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3059259" class="NPI=a:image,r:6,i:3059259">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/059/3059259.jpg?type=r95Fll&v=20190527120014" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120014" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120014';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:6,i:3059259" onclick="nhn.music.playAlbum(3059259);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3059259" title="사랑에 빠진 것 같아 (prod. WORMZVIILA)" alt="&#49324;&#46993;&#50640; &#48736;&#51652; &#44163; &#44057;&#50500; (prod. WORMZVIILA)" class="NPI=a:name,r:6,i:3059259">사랑에 빠진 것 같아 (prod. W..</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=2826038"  title="해디" alt="해디" class="NPI=a:artist,r:6,i:2826038" >해디</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						<li style="width:19.9%;display:none">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3059296" class="NPI=a:image,r:7,i:3059296">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/059/3059296.jpg?type=r95Fll&v=20190527131751" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527131751" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527131751';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:7,i:3059296" onclick="nhn.music.playAlbum(3059296);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3059296" title="꽃꽂이_아네모네" alt="&#44867;&#44866;&#51060;_&#50500;&#45348;&#47784;&#45348;" class="NPI=a:name,r:7,i:3059296">꽃꽂이_아네모네</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=2668577"  title="미소지음(MISOZIUM)" alt="미소지음(MISOZIUM)" class="NPI=a:artist,r:7,i:2668577" >미소지음(MISO..</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						<li style="width:19.9%;display:none">
+							<div class="thumb pht95">
+								<a href="/album/index.nhn?albumId=3059403" class="NPI=a:image,r:8,i:3059403">
+									<img lazySrc="https://musicmeta-phinf.pstatic.net/album/003/059/3059403.jpg?type=r95Fll&v=20190527120052" src="https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120052" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/000/000/0.jpg?type=r95Fll&v=20190527120052';" width="95" height="95" alt="" title="">
+									<span class="mask"></span>
+								</a>
+								<a href="#" class="btn_play NPI=a:all,r:8,i:3059403" onclick="nhn.music.playAlbum(3059403);return false;"><span class="blind">재생</span></a>
+							</div>
+							<dl class="lst_desc ">
+							<dt>
+							
+							<a href="/album/index.nhn?albumId=3059403" title="이제 안녕 그때" alt="&#51060;&#51228; &#50504;&#45397; &#44536;&#46412;" class="NPI=a:name,r:8,i:3059403">이제 안녕 그때</a></dt>
+							<dd class="artist">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=2408527"  title="kumira" alt="kumira" class="NPI=a:artist,r:8,i:2408527" >kumira</a>
+		
+	
+
+
+
+
+
+
+</dd>
+							<dd class="date">2019.05.27</dd>
+							</dl>
+						</li>
+					
+						</ul>
+						<a href="/listen/genre/newRelease.nhn?genre=K01" class="more NPI=a:more,i:K01">앨범 더보기</a>
+					</div>
+				
+
+				
+					<div class="section img_bnr">
+						<a href="https://music.naver.com/buy/indexVibePromotion.nhn?type=college201903"><img src="https://music-phinf.pstatic.net/20190510_136/1557453227361P5OF1_JPEG/3.jpg" alt="VIBE"></a>
+					</div>
+				
+
+					<div class="section">
+						<div class="section_reply">
+							<script type="text/template" id="commentCountSimple">
+								<h5 class="album_reply"><span class="tit">앨범 한마디</span><span class="desc type_num">({=count})</span></h5>
+							</script>
+							
+<link rel="stylesheet" type="text/css" href="/css/comment3.css?bv=20190522074440">
+
+<div id="cbox_module"></div>
+<script type="text/javascript">
+	window.fInitCBox = function () {
+		sps.config.option({
+		  	  lkey : 'uayEhCGZZ03o7NuYR3PqaBnYsW7Hic_CZPU6n2alU_d_DHu3PPcfiA'
+			, objectId : '3003472'
+			, ticket : 'music2'
+			, formation : ['count', 'write', 'list' , 'page' ]
+			, maxDepth : 2
+			, pageSize : 10
+			, useSocialComment : false
+			, enableSpotLight : true
+			, pwBlockUrl : 'https://commentbox.naver.com/not_available.nhn'
+			, pwReportUrl : 'https://commentbox.naver.com/report.nhn'
+			, isLogin : false
+			, descs : [ 'textCount', 'socialComment' ]
+			, enableMultiLine : true
+			, useRecommendArea : true	
+			, commands : [ 'author','recommend','discommend','reply', 'report' , 'delete' ]
+			, me2dayDefaultImageUrl : 'https://ssl.pstatic.net/static/common/comment/img_default_profile.gif'
+			, profileHome : 'https://commentbox.naver.com/redirect.nhn'
+			, useProfile : true
+			, profileHttpUrl : {
+                blogHttpPhinfRoot : 'http://blogpfthumb.phinf.naver.net',
+                blogHttpImgRootStartPattern : 'http://blogthumb'
+			}
+			, profileHttpsUrl : {
+                blogHttpsPhinfRoot : 'https://blogpfthumb-phinf.pstatic.net',
+                blogHttpsImgRoot : 'https://blogthumb.pstatic.net'
+            }
+		});
+		sps.config.template("countSimple", "commentCountSimple");
+		sps.core.initialize();
+	};
+</script>
+
+
+	
+	
+		<script type="text/javascript">
+			$Fn(function() {
+				jindo.LazyLoading.load("/js/cbox.namespace.all.include.js?bv=20190522074440", fInitCBox);
+			}).attach(window, 'load');	
+		</script>
+	
+
+
+						</div>
+					</div>
+
+<textarea id="sourceContents" style="display:none;" >	
+<div style="overflow:hidden;width:578px;margin:0 0 30px 1px;">
+	<a href="https://music.naver.com/album/index.nhn?albumId=3003472" style="color:#06c;">[앨범] MAP OF THE SOUL : PERSONA</a>
+	<div style="margin-top:23px;">
+		<div style="float:left;position:relative;margin:2px 27px 0 2px;">
+			<a href="https://music.naver.com/album/index.nhn?albumId=3003472" title="MAP OF THE SOUL : PERSONA">
+				<img src="https://musicmeta-phinf.pstatic.net/album/003/003/3003472.jpg?type=r95Fll&v=20190507112428" width="95" height="95">
+			</a>
+		</div>
+		<dl style="line-height:20px;">
+		<dt style="margin-bottom:11px;"><a href="https://music.naver.com/album/index.nhn?albumId=3003472" style="font-family:'나눔고딕',NanumGothic;font-size:16px;color:#121212;font-weight:bold;">MAP OF THE SOUL : PERSONA</a></dt>
+		<dd style="color:#383838;">아티스트 : 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		<a href="https://music.naver.com/artist/home.nhn?artistId=143179"  title="방탄소년단" alt="방탄소년단" class="NPI=a:artist,r:,i:143179" >방탄소년단</a>
+		
+	
+
+
+
+
+
+
+<br>
+장르 :  알앤비/어반,  랩/힙합<br>
+발매 : 2019.04.12</dd>
+		</dl>
+	</div>
+</div>
+</textarea>	
+
+<script type="text/javascript">
+var oMusicSpiV2 = null;
+jindo.$Fn(function() {
+	oMusicSpiV2 = new naver.music.MusicSpiV2({
+		"sSpiJsUrl": "https://ssl.pstatic.net/spi/js/release/ko_KR/splugin.js",
+		"nSourceForm" : 2
+	});
+}).attach(window, "load");
+function splugin_oninitialize() {
+	if (oMusicSpiV2 == null) { return {}; }
+	return oMusicSpiV2.makeShareHtData();
+}
+</script>
+		<div class="shadow"></div>
+	</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div id="footer">
+		
+
+	
+	<div class="NE=a:fot">
+		<ul>
+		<li class="first"><a href="javascript:void(0)" onclick="openViewTermPopup();">뮤직 이용약관</a></li>
+		<li><a href="https://m.music.naver.com/app/ticket/purchasePolicy.nhn?serviceName=vibePurchase" target="_blank">VIBE 이용약관</a></li>
+		<li><a href="http://www.naver.com/rules/service.html" class="NPI=a:agreement">네이버 이용약관</a></li>
+		<li><a href="http://www.naver.com/rules/privacy.html"  class="private NPI=a:privacy"><strong>개인정보 처리방침</strong></a></li>
+		<li><a href="http://www.naver.com/rules/disclaimer.html" class="NPI=a:policy">책임의 한계와 법적고지</a></li>
+		<li><a href="https://help.naver.com/support/service/main.nhn?serviceNo=572" target="_blank">뮤직 고객센터</a></li>
+		<li><a href="https://help.naver.com/support/contents/contents.nhn?serviceNo=572&categoryNo=1674" target="_blank">결제/환불 문의</a></li>
+		<li><a href="https://help.pay.naver.com/mail/form.nhn?alias=checkout_accuse">결제도용신고</a></li>
+		</ul>
+
+		<a href="http://www.navercorp.com/" target="_blank" class="link NPI=a:nhncorp">&copy; NAVER Corp.</a>
+		<address>
+                       사업자등록번호 : <em>220-81-62517</em><span class="split"></span>통신판매업신고번호 : 제<em>2006</em>-경기성남-<em>0692</em>호<span class="split"></span><em>네이버(주)</em> 대표이사 한성숙<span class="split"></span><a href="http://www.ftc.go.kr/info/bizinfo/communicationView.jsp?apv_perm_no=2006378010630200692&area1=&area2=&currpage=1&searchKey=04&searchVal=2208162517&stdate=&enddate=" target="_blank">사업자정보 확인</a><span class="split"></span>경기도 성남시 분당구 불정로 6 <em>네이버 그린팩토리</em> 463-867<span class="split"></span>대표전화 : <em>1588-3820</em><span class="split"></span>이메일 : <a href="mailto:ccnaver@naver.com">ccnaver@naver.com</a><span class="split"></span>호스팅 서비스 제공 : NAVER Business Platform
+		</address>
+		<p class="info">본 콘텐츠의 저작권은 저작권자에 있으며,이를 무단 이용하는 경우 저작권법 등에 따라 법적책임을 질 수 있습니다.</p>
+	</div>
+	<div id="nmpPlayerLauncherSwf" style="width:0px;height:0px;border:0;padding:0;"></div>
+	<script type="text/javascript">
+        /**
+         *  player manager 초기화
+         */
+        if (!!window.PlayerManager) {
+            window.PlayerManager.init({
+                nmpFlashDivId: "nmpPlayerLauncherSwf"
+            });
+		}
+
+		function openViewTermPopup() {
+			nhn.music.openPopupUrl("/buy/viewTermPopup.nhn", "viewTerm", ["width=485,height=510,menubar=no,toolbar=no,location=no,status=no,scrollbars=no"]);
+		}
+
+	</script>
+
+	</div>
+
+	
+
+	<!-- 뮤지션리그 header 툴팁 -->
+	
+
+
+	
+<!-- [D]dimd 레이어 -->
+<script type="text/template" id="musicianleague_dimmed_layer">
+<div class="ly_dim" style="height:100%; display:block;"></div>
+</script>
+
+<!-- [D]소셜플러그인 레이어 -->
+<script type="text/template" id="musicianleague_social_layer">
+<div class="ly_sbcr" style="top:418px; display:block;">
+    <strong class="h_tit">공유하기</strong>
+    <ul class="ly_sns">
+    <li class="shr_kakao">
+        <a href="#">
+        <em class="sns_ic"></em>
+        <strong class="sns_name">카카오톡</strong>
+        </a>
+    </li>
+    <li class="shr_line">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">라인</strong>
+        </a>
+    </li>
+    <li class="shr_kakaostory">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">카카오스토리</strong>
+        </a>
+    </li>
+    <li class="shr_facebook">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">페이스북</strong>
+        </a>
+    </li>
+    <li class="shr_cafe">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">카페</strong>
+        </a>
+    </li>
+    <li class="shr_band">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">밴드</strong>
+        </a>
+    </li>
+    <li class="shr_blog">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">블로그</strong>
+        </a>
+    </li>
+    <li class="shr_google">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">구글플러스</strong>
+        </a>
+    </li>
+    <li class="shr_mail">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">메일</strong>
+        </a>
+    </li>
+    <li class="shr_memo">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">메모</strong>
+        </a>
+    </li>
+    <li class="shr_twitter">
+        <a href="#">
+            <em class="sns_ic"></em>
+            <strong class="sns_name">트위터</strong>
+        </a>
+    </li>
+    </ul>
+    <a href="#" class="btn_clse">닫기</a>
+</div>
+</script>
+
+
+	<!-- Flash plugins 탐지 모듈 -->
+	
+
+	<div id="flash_active_guide" class="chrome_chk" style="display: none;">
+		<div class="txt"><span class="blind">플래시가 원활하게 동작하지 않을 시 설정 변경 방법 안내</span>
+			<a href="https://help.naver.com/support/contents/contents.nhn?serviceNo=572&categoryNo=16748" class="link" target="_blank"><span class="blind">자세히보기</span></a>
+		</div>
+		<p>
+			<input type="checkbox" id="chrome_chk_ck">
+			<label for="chrome_chk_ck">오늘 하루 다시보지 않기<span></span></label>
+		</p>
+	</div>
+	<style type="text/css">
+		.chrome_chk .txt,.chrome_chk p label span{background:url(https://ssl.pstatic.net/static/music/images/bg_chrome_flash_v3.png) no-repeat}
+		.chrome_chk{position:fixed;bottom:0;z-index:1000;width:100%;height:54px;background:#e5f4fd;border-top:1px solid #cfe2ef;font-family:'나눔고딕',NanumGothic}
+		.chrome_chk .txt{position:absolute;top:5px;left:50%;width:628px;height:49px;margin-left:-314px;background-position:0 0;text-align:right}
+		.chrome_chk .link{display:inline-block;width:68px;height:14px;margin-top:16px}
+		.chrome_chk p{padding:17px 18px 0 0;text-align:right}
+		.chrome_chk input[type=checkbox]{vertical-align:middle}
+		.chrome_chk p label{display:inline-block;color:#5e6a71;font-size:12px;line-height:19px;vertical-align:middle;cursor:pointer}
+		.chrome_chk p label span{display:inline-block;width:19px;height:19px;margin:-2px 0 0 14px;background-position:-782px 0;vertical-align:middle}
+		.chrome_chk.mini{height:51px}
+		.chrome_chk.mini .txt{top:14px;left:13px;width:342px;height:23px;margin-left:0;background-position:0 -77px}
+		.chrome_chk.mini .link{width:305px;height:23px;margin-top:0}
+		.chrome_chk.mini p label{font-size:11px}
+		.chrome_chk.mini p label span{width:11px;height:11px;margin-left:12px;background-position:-789px -89px}
+		.chrome_chk.mini p{padding:17px 13px 0 0}
+	</style>
+	<div id="flash_plugins_detect" style="width:0px;height:0px">
+	</div>
+	<script type="text/javascript" src="/flash/music_flash_plugins_detect/FlashPluginsDetect.js"></script>
+	<script type="text/javascript">
+		(function () {
+			if ((jindo.$Agent().os().mac && jindo.$Agent().navigator().safari && jindo.$Agent().navigator().version >= 10)
+                || (jindo.$Agent().navigator().chrome && jindo.$Agent().navigator().version >= 55)) {
+
+				if (jindo.$Cookie().get("music_flash_plugins_detect_161202") == "disable") {
+					return ;
+				}
+
+				flashPluginsDetect({
+					flashElementId: 'flash_plugins_detect',
+					flashObjectJsUrl: '/js/flashObject.js',
+					flashPluginActivatedSwfUrl: '/flash/music_flash_plugins_detect/FlashPluginActivated.swf',
+					flashDetectTimeout: 2000,
+					flashHeight: 1,
+					flashWidth: 1
+				}, function() {
+				}, function() {
+					jindo.$Element("flash_active_guide").show();
+				});
+
+
+				jindo.$Element("chrome_chk_ck").attach("click", function(we) {
+					we.stop();
+
+					jindo.$Element("flash_active_guide").hide();
+					if (!!jindo.$Element("chrome_chk_ck").attr("checked")) {
+						jindo.$Cookie().set("music_flash_plugins_detect_161202", "disable", 1);
+					}
+				});
+			}
+		})();
+	</script>
+
+
+	<!-- footer 위치 하단 고정을 위해 wrap height 동적 조정 -->
+	
+
+<script type="text/javascript">
+initializeBrowser = function(){
+    var welWrap = jindo.$Element("wrap");
+    if (!welWrap) {
+        return false;
+    }
+    var nHeaderHeight = jindo.$Element("header").height();
+    var nSNBHeight = jindo.$Element(jindo.$$.getSingle("div.snb")).height();
+    var nMinHeight = nHeaderHeight + nSNBHeight;
+    var nFooterHeight = jindo.$Element("footer").height();
+
+    var fResize = function(){
+        var nDocClientHeight = jindo.$Document().clientSize().height;
+        welWrap.height(nDocClientHeight - (nFooterHeight));
+        if(welWrap.height() <= nMinHeight){
+            welWrap.height(nMinHeight);
+        }
+    }
+    fResize();
+    jindo.$Fn(fResize, this).attach(window, "resize");
+};
+
+jindo.$Fn(initializeBrowser, this).attach(window, "load");
+</script>
+
+<script type="text/javascript">
+	var nsc = "music.album";
+	var ccsrv="cc.naver.com";
+	var nclk_evt = 3;
+	var nclkMaxDepth = 9;
+	nclk_do();
+</script>
+
+
+<script type="text/javascript" src="/js/gtag.js"></script>
+<script type="text/javascript">
+	lcs_do();
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'UA-132321908-1');
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MJ897DJ');</script>
+<!-- End Google Tag Manager -->
+<!-- Twitter universal website tag code -->
+<script>
+	!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+	},s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='//static.ads-twitter.com/uwt.js',
+			a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+	// Insert Twitter Pixel ID and Standard Event data below
+	twq('init','o0zq4');
+	twq('track','PageView');
+</script>
+<!-- End Twitter universal website tag code -->
+<script type="text/javascript">
+	$Fn(function(e){
+		var imgs = document.getElementsByTagName("img");
+		var img = null;
+		var lazySrc = null;
+		for (var i = 0, len=imgs.length; i<len; i++) {
+			img = imgs[i];
+			lazySrc = null;
+
+
+			lazySrc = img.getAttribute("lazySrc");
+			if (lazySrc != null  &&  lazySrc != img.src) {
+				//img.onerror = function() { img.src = "https://musicmeta-phinf.pstatic.net/music/lazy.gif";}
+				img.src = lazySrc;
+
+			}
+		}
+		//for (var i = 0; i < 4; i++) {setTimeout(fImgLoad, 0);}
+	}).attach(window, 'domready');
+</script>
+
+
+<style type="text/css">
+	tr.track_bar { border-bottom:solid #c3c3c3 2px; }
+</style>
+
+<div class="_edit_layer layer_edit" style="z-index:1000;display:none">
+	<div class="bg">
+	</div>
+	<div class="btn">
+	    <span class="_rename"><a href="#" class="N=a:lmy.rename">이름 바꾸기</a></span>
+	    <span class="_remove"><a href="#" class="N=a:lmy.del">리스트 삭제</a></span>
+	</div>
+</div>
+
+<div class="_send_layer send_layer" style="z-index:1000;left:100px;top:100px;display:none;">
+	<ul>
+	<li><a href="#" class="_send_to_blog">블로그로 보내기</a></li>
+	<li><a href="#" class="_send_to_cafe">카페로 보내기</a></li>
+	</ul>
+	<span class="bg"></span>
+</div>
+
+<!-- [AU#23] 드래그 레이어 마크업 변경 -->
+<div id="au_multi_drag" class="trackmove" style="z-index:1000; display:none;"></div>
+<div id="au_single_drag" class="trackmove_solo" style="z-index:1000; display:none;"></div>
+<!--// [AU#23] 드래그 레이어 마크업 변경 -->
+
+<div style="z-index: 1000; display: none; overflow: visible;" class="_tracklist_layer tracklist_layer">
+	<h3 class="{=TYPE}"><span class="blind">내 리스트에 담기</span></h3>
+	<div class="_movethis movethis" style="display:none">
+		{=DESC}
+	</div>
+	<div class="scrollbar-noscript" id="scroll">
+		<div class="_scrollbar_box scrollbar-box">
+			<div class="_scrollbar_content scrollbar-content" style="top: 0px;">
+				<ul>
+				<li style="display: none;" class="_edit_for_scrap_layer edit"><input type="text" title="리스트 제목 입력"><a href="#" class="_ok">확인</a>|<a href="#" class="_cancel">취소</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="scrollbar-v">
+			<div class="scrollbar-track rollover">
+				<div class="scrollbar-thumb S99332383 rollover" style="top: 0px;"></div>
+			</div>
+		</div>
+	</div>
+	<div class="_btn_area btn_area" style="display: none;">
+		<a class="_copy copy" href="#"><span class="blind">복사</span></a>
+		<a class="_move move" href="#"><span class="blind">이동</span></a>
+	</div>
+	<a class="_add_list add_list" href="#"><span class="blind">리스트 추가</span></a>
+	<span class="bg"></span>
+</div>
+
+<div class="_tracklist_layer_tl_s tracklist_layer tl_s" style="z-index:1000; display:none;">
+	<h3 class="get"><span class="blind">내 리스트에 담기</span></h3>
+	<div class="_movethis movethis" style="display:none">
+		{=DESC}
+	</div>
+	<div id="scroll_tl" class="scrollbar-noscript">
+		<div class="_scrollbar_box scrollbar-box">
+			<div class="_scrollbar_content scrollbar-content">
+				<ul>
+					<li class="_tracklist_item_scrap">
+						<a href="#" id="{=ID}">{=VALUE}</a>
+					</li>
+					<li class="_edit_for_scrap_layer edit" style="display:none">
+						<input type="text" title="리스트 제목 입력"><a class="_ok" href="#">확인</a>|<a class="_cancel" href="#">취소</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="scrollbar-v">
+			<div class="scrollbar-track">
+				<div class="scrollbar-thumb"></div>
+			</div>
+		</div>
+	</div>
+	<a href="#" class="_add_list add_list"><span class="blind">리스트 추가</span></a>
+	<span class="bg"></span>
+</div>
+
+<div class="_star_rating_layer starscore_layer" style="z-index:1000;position:absolute;left:-1000px;top:-1000px;">
+	<strong class="dsc1">별을 클릭하여 앨범을 평가해 주세요.</strong>
+	<div class="star">
+		<div class="_star_rating starrating-background">
+			<span style="width:100%;"><em>평점 10점</em></span>
+		</div>
+		<div class="_score score">
+			<span class="num10"><em>10</em></span>
+			<span class="total">총점 10점</span>
+		</div>
+	</div>
+	<a href="#" class="_ok btn_ok N=a:prf.rate,i:3003472">확인</a>
+	<a href="#" class="_close btn_close">닫기</a>
+	<div class="layer_shadow"></div>
+</div>
+
+<!--[AU_SUS#1]-->
+<div class="_tracklist_layer_artists tracklist_layer artists" style="left:100px;top:200px; display:none;z-index:1000;">
+	<div id="scroll_tl_artist" class="scrollbar-noscript">
+		<div class="scrollbar-box">
+			<div class="scrollbar-content">
+				<ul>
+				<li></li>
+				</ul>
+			</div>
+		</div>
+		<div class="scrollbar-v">
+			<div class="scrollbar-track">
+				<div class="scrollbar-thumb"></div>
+			</div>
+		</div>
+	</div>
+	<span class="_artist_bg bg"></span>
+	<span class="_artist_bg_btm bg_btm"></span>	
+</div>
+<!--[/AU_SUS#1]-->
+
+<div class="_layer19 layer19" style="left:400px;top:400px;display:none;z-index: 1000">
+	<p><!-- [AU#18] 곡 외에도 뮤비의 경우도 있는 관계로 커스터마이징 가능한 형태로 변경 -->
+		{=ADULT_GUIDE}
+		<!--// [AU#18] 곡 외에도 뮤비의 경우도 있는 관계로 커스터마이징 가능한 형태로 변경 -->
+	</p>
+	<a href="#" class="_btn_close btn_close"><span class="blind">닫기</span></a>
+</div>
+<script type="text/template" id="template_data">
+	<div class="_music_video_item">
+		<li style="width:19.9%;">
+			<div class="thumb pht124">
+				<a href="#" class="NPI=a:image,r:{=INDEX},i:{=ID}" onclick="nhn.music.openMusicVideoPopup({=ID}, false);return false;" title="{=TOOLTIP}">
+				<img src="{=PATH}" width="147" height="110" title="{=TOOLTIP}">
+				<span class="mask"></span>
+				<strong>{=TIME}</strong></a>
+				{=STICKER}
+			</div>
+			<dl class="lst_desc dsc_tp2">
+				<dt>
+					{if HASHD}<img src="https://ssl.pstatic.net/static/nmusic/201008/blank.gif" width="23" height="15" alt="HD" class="ico_hd">{/if}
+					<a class="NPI=a:song,r:{=INDEX},i:{=ID}" href="#" onclick="nhn.music.openMusicVideoPopup({=ID}, false);return false;" title="{=TOOLTIP}"> {=TOOLTIP} </a>
+					{if ISADULT}<span class="ico19" onmouseover="nhn.music.showAdultGuide(this, 'movie');" onmouseout="nhn.music.hideAdultGuide();">19</span>{/if}
+					{if KMRBGRADE}
+						{if KMRBGRADE == '18'}<span class="ico18" onmouseover="nhn.music.showKmrbAdultGuide(this, 'movie','18');" onmouseout="nhn.music.hideAdultGuide();">18</span>
+						{elseif KMRBGRADE == 'ALL'}<span class="ico_all">ALL</span>
+						{elseif KMRBGRADE == '15'}<span class="ico15" >15</span>
+						{elseif KMRBGRADE == '12'}<span class="ico12" >12</span>
+						{/if}
+					{/if}
+				</dt>
+				<dd class="artist">{=ARTISTINFO}</dd>
+				<dd class="date">{=DATE}</dd>
+			</dl>
+		</li>
+	</div>
+	<!--TPL:SEPARATOR-->
+	<div class="_album_item">
+		<li style="width:19.9%;">
+			<div class="thumb pht95">
+				<a class="NPI=a:image,r:{=INDEX},i:{=ID}" href="/album/index.nhn?albumId={=ID}" title="{=TOOLTIP}"><img src="{=PATH}" onerror="this.onerror=null;this.src='https://musicmeta-phinf.pstatic.net/album/95/000/000/0.jpg';" height="95" width="95" alt="{=TOOLTIP}" title="{=TOOLTIP}"><span class="mask"></span></a><a href="#" class="btn_play NPI=a:playall,r:{=INDEX},i:{=ID}" onclick="nhn.music.playAlbum({=ID});return false;" title="재생"><span class="blind" title="재생">재생</span></a>{=STICKER}
+			</div>
+			<dl class="lst_desc">
+			<dt><a class="NPI=a:album,r:{=INDEX},i:{=ID}" href="/album/index.nhn?albumId={=ID}" title="{=TOOLTIP}">{=TITLE}</a></dt>
+			<dd class="artist">{=ARTISTINFO}</dd>
+			<dd class="date">{=DATE}</dd>
+			</dl>
+		</li>
+	</div>
+	<!--TPL:SEPARATOR-->
+	<div class="_sticker">
+		<strong class="_recommend badge ico_recomm"><span class="blind">네이버 추천</span></strong>
+		<strong class="_today_music badge ico_tm"><span class="blind">오늘의 뮤직</span></strong>
+		<strong class="_special badge ico_sp"><span class="blind">뮤직 스페셜</span></strong>
+		<strong class="_hot badge ico_hot"><span class="blind">HOT</span></strong>
+		<strong class="_event badge ico_event"><span class="blind">EVENT</span></strong>
+		<strong class="_pre_open badge ico_open"><span class="blind">선공개</span></strong>
+		<strong class="_concert badge ico_concert"><span class="blind">콘서트</span></strong>
+		<strong class="_teaser badge ico_teaser"><span class="blind">티저</span></strong>
+		<strong class="_making badge ico_making"><span class="blind">메이킹</span></strong>
+		<strong class="_free badge ico_free"><span class="blind">FREE</span></strong>
+		<strong class="_exclusive badge ico_monopoly"><span class="blind">독점</span></strong>
+	</div>
+	<!--TPL:SEPARATOR-->
+	<div class="_artist_link">
+		<a class="NPI=a:artist,r:{=INDEX},i:{=ARTIST_ID}" href="/artist/home.nhn?artistId={=ARTIST_ID}" title="{=TOOLTIP}">{=ARTIST}</a>
+	</div>
+	<!--TPL:SEPARATOR-->
+	<div class="_artist_various">
+		<span alt="{=TOOLTIP}" title="{=TOOLTIP}">Various Artists</span>
+	</div>
+</script>
+<div id="template_container" style="height:0px;display:none;"></div>
+
+<div class="_layer_renewalpopup layer_dwldpopup" style="display:none;">
+	<div class="dwldpopup_cont">
+		<div class="blind">
+			<h3>새로워진 뮤직 다운로드 매니저</h3>
+			<p>맥OS, 크롬, 사파리 등 모든 OS/브라우저를 지원합니다. 다양한 환경에서 음악을 다운로드 하세요.</p>
+		</div>
+		<p class="blind">PC에서만 듣던 네이버 뮤직을 이제는 스마트폰에서도 마음껏 즐길 수 있습니다.</p>
+		<a href="/notice/index.nhn?link=/nboard2/read/1100001003/10000000000024582489" class="viewmore" title="뮤직 다운로드 매니저 자세히 보기"><span class="blind">뮤직 다운로드 매니저 자세히 보기</span></a>
+		<a href="#" class="_close close" title="닫기"><span class="blind">닫기</span></a>
+	</div>
+	<span class="mask"></span>
+</div>
+<!-- 뮤직 모바일 앱 출시
+<div class="layer_mobilepopup" style="display:none;">
+	<div class="mobilepopup_cont">
+		<div class="blind">
+			<h3>뮤직 모바일 앱 출시!</h3>
+			<p>이제, 아이폰에서도 마음껏 즐긴다! 언제어디서나 원하는 모든 곡을 스마트폰에서 바로바로</p>
+		</div>
+		<p class="blind">PC에서만 듣던 네이버 뮤직을 이제는 스마트폰에서도 마음껏 즐길 수 있습니다.</p>
+		<a href="/notice/index.nhn?link=/nboard2/read/1100001003/10000000000023439486" class="viewmore" title="자세히 보기"><span class="blind">자세히 보기</span></a>
+		<p class="blind">체크아웃으로 스마트폰 무제한 이용권을 구매하면 월 3천원에 모든곡을 듣고, 다운로드 받을 수 있습니다.</p>
+		<a href="/buy/index.nhn " class="viewmore2" title="자세히 보기"><span class="blind">자세히 보기</span></a>
+		<a href="#" class="_close close" title="닫기"><span class="blind">닫기</span></a>
+	</div>	
+	<span class="mask"></span>
+</div>
+-->
+
+  
+		<div style="display:none; z-index:1000;" class="favorite_layer _favorite_layer">
+			<p>{FAVORITE_ADD_NOTICE}<br>
+			<a class="_my_music_link" href="#">마이뮤직 &gt; 관심 음악</a>에서 확인하실 수 있습니다.</p>
+			<a class="btn_close" href="#" onclick="nhn.music.hideLayer(); return false;">닫기</a>
+			<div class="layer_shadow"></div>
+		</div> 		
+
+<div id="activeX" style="display:none"></div>
+
+<div id="airDownloaderLauncher" style="position:absolute; left:-100px; top:-100px; width:0px; height:0px; z-index:100" onMouseOver="nhn.music.activateDownloadButton();" onMouseOut="nhn.music.deactivateDownloadButton();" onClick="nhn.music.alertDownloadOnMobileDevice();">
+    <script type="text/javascript">
+		var airDonwloaderObj = {};
+		airDonwloaderObj.wmode = "transparent";
+		airDonwloaderObj.flashVars = "applicationFileURL=https://idownload.music.naver.com/downloadManager/NaverMusicDownloadManager_1.3.0.air&launcherType=simple&buttonTransparency=0";
+		nhn.FlashObject.show("/flash/NaverMusicDownloaderLauncher.swf?bv=20190522074440", "NaverMusicDownloaderLauncher", "100%", "100%", airDonwloaderObj);
+
+		function _navermusic_pepper_lconnection_open() {
+			window.open('/html/pepperConnectionInfoPopup.html','pop_alert','toolbar=no,scrollbars=no ,width=606,height=440');
+			return false;
+		}
+
+        function getNidToken(){
+            jindo.$Ajax("/download/getToken.nhn", {
+                "method" : 'get',
+                "type" : 'xhr',
+                "onload": function(oResponse){
+                    setNidToken(oResponse.text());
+                }
+            }).request();
+        }
+
+        function setNidToken(sNidResult) {
+            jindo.$Ajax("/download/tokenLog.nhn?token="+sNidResult, {
+                "method" : 'get',
+                "type" : 'xhr'
+            }).request();
+            nhn.FlashObject.find("NaverMusicDownloaderLauncher").setNidToken(sNidResult);
+        }
+
+        function getNidAuthkey(){
+            jindo.$Ajax("/download/getAuthkey.nhn", {
+                "method" : 'get',
+                "type" : 'xhr',
+                "onload": function(oResponse){
+                    setNidAuthkey(oResponse.text());
+                }
+            }).request();
+        }
+
+        function setNidAuthkey(sNidResult) {
+            jindo.$Ajax("/download/tokenLog.nhn?token="+sNidResult, {
+                "method" : 'get',
+                "type" : 'xhr'
+            }).request();
+            nhn.FlashObject.find("NaverMusicDownloaderLauncher").setNidAuthkey(sNidResult);
+        }
+	</script>
+</div>
+
+</body>
+</html>

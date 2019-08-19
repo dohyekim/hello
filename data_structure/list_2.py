@@ -12,3 +12,4 @@ def solution(L, x):
         else:
             L.insert(idx, x)
             return L
+

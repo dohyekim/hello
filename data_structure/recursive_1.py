@@ -26,3 +26,11 @@ def solution_for(x):
             b = (a + c)
             answer = b
     return answer
+
+    def solution(x):
+    answer = 0
+    if x <= 1:
+        answer = x
+    else:
+        answer = solution(x-1) + solution(x-2)
+    return answer

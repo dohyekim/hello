@@ -13,3 +13,28 @@ def solution(L, x):
             L.insert(idx, x)
             return L
 
+# ==============================Refac==========================
+def solution(L, x):
+    length = len(L)
+    for idx, l in enumerate(L):
+        if x <= l:
+            L.insert(idx, x)
+            break
+        else:
+            if idx == (length - 1):
+                L.append(x)
+                break
+    return L
+
+# 혹은 
+
+def solution(L, x):
+    length = len(L)
+    for idx, l in enumerate(L):
+        if x <= l:
+            L.insert(idx, x)
+            break
+    if len(L) == length:
+        L.append(x)
+    return L
+    

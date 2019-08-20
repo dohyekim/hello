@@ -19,7 +19,6 @@ def solution_for(x):
     for i in range(x+1):
         if i < 2:
             answer = i
-            print("iiii> ",i)
         else:
             c = a
             a = b
@@ -27,10 +26,26 @@ def solution_for(x):
             answer = b
     return answer
 
-    def solution(x):
+#  ===============Refac한 두 가지 코드=============
+def solution(x):
+    # answer = 0
+    a = 0
+    b = 1
+    if x < 2:
+        print(x)
+        return x
+    for i in range(2,x+1):
+        a, b = b, a+b
+    return b
+
+def solution(x):
     answer = 0
-    if x <= 1:
-        answer = x
-    else:
-        answer = solution(x-1) + solution(x-2)
-    return answer
+    a = 0
+    b = 1
+
+    for i in range(x+1):
+        if i < 2:
+            b = i
+        else:
+            a, b = b, a+b
+    return b

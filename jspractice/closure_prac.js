@@ -46,3 +46,21 @@ console.log("title >>", title); //title >> 엑시트
 console.log(ghost.get_title()); //Ghost in the Shell
 
 
+
+
+let arr = [];
+for (let i = 0; i < 5; i++) {
+    arr[i] = function() {
+        return i;
+    }
+}
+console.log("Arr>", arr) //Arr> [ [Function], [Function], [Function], [Function], [Function] ]
+
+for (let index in arr) {
+    console.log(arr[index]());
+}
+// 0
+// 1
+// 2
+// 3
+// 4

@@ -2,8 +2,8 @@ const cards = [];
 for (let suit of ['H','C','D','S'])
 	for(let value=1; value<=13; value++)
 		cards.push({suit, value});
-
-	// console.log(cards)
+		// cards.push({suit: suit, value: value});
+	console.log(cards)
 
 // [ { suit: 'H', value: 1 },
 //   { suit: 'H', value: 2 },
@@ -59,23 +59,52 @@ for (let suit of ['H','C','D','S'])
 //   { suit: 'S', value: 13 } ]
 
 
-const cards2 = cards.filter(c => c.value === 2);
-console.log(cards2)
-	// [ { suit: 'H', value: 2 },
- //  { suit: 'C', value: 2 },
- //  { suit: 'D', value: 2 },
- // { suit: 'S', value: 2 } ])
+const suits = { 'H': '\u2665', 'C':'\u2663', 'D':'\u2666', 'S':'\u2660' }
+const values = { 1:'A', 11:'J', 12:'Q', 13:'K'};
 
- //reduce
- const arr = [5,7,2,4];
- const sum = arr.reduce((a,x) => a += x, 0)
- console.log(sum) //18
- console.log(arr) //[5,7,2,4];
+function cardToString(c) {
+	for (let i = 2; i < 11; i++) {
+		values[i]=i};
 
- const arr2 = [5,7,2,4];
- const sum2 = arr2.reduce((a,x) => a +=x);
- console.log(sum2) //18
+	return values[c.value] + suits[c.suit];
+	
+}
+let valtwo = cards.filter(c => c.value === 2).map(cardToString);
+console.log(valtwo); //[ '2♥', '2♣', '2♦', '2♠' ]
+let suitheart = cards.filter(c => c.suit === 'H' && c.value >= 11).map(cardToString); 
+console.log(suitheart); //[ 'J♥', 'Q♥', 'K♥' ]
 
+//reduce
+const arr = [5,7,2,4];
+const sum = arr.reduce((a,x) => a += x, 0)
+const sum2 = arr.reduce((a,x) => a +=x);
+
+console.log(sum) //18
+console.log(arr) //[5,7,2,4];
+console.log(sum2) //18
+
+const words = ["Beachball", "Rodeo", "Angel", "Aardvark", "Xylophone", "November", "Chocolate", "Papaya",
+				"Uniform", "Joker", "Clover", "Bali"];
+const alphabetical = words.reduce( (a,x) => {
+	if (!a[x[0]]) {
+		a[x[0]] = [];
+	}
+	a[x[0]].push(x);
+	return a
+}, {});
+console.log(alphabetical);
+// { B: [ 'Beachball', 'Bali' ],
+//   R: [ 'Rodeo' ],
+//   A: [ 'Angel', 'Aardvark' ],
+//   X: [ 'Xylophone' ],
+//   N: [ 'November' ],
+//   C: [ 'Chocolate', 'Clover' ],
+//   P: [ 'Papaya' ],
+//   U: [ 'Uniform' ],
+//   J: [ 'Joker' ] }
+
+const longWords = words.reduce( (a, x) => x.length>6 ? a+" "+x : a, "").trim();
+console.log(longWords); //Beachball Aardvark Xylophone November Chocolate Uniform
 
 
 

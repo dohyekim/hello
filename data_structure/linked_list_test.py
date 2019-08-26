@@ -72,7 +72,27 @@ class LinkedList:
         self.nodeCount = self.nodeCount - 1
         return curr.data
         
-
+# refac
+    def popAt(self, pos):
+        if pos < 1 or pos > self.nodeCount:
+            raise IndexError
+        # 삭제하려는 node가 첫번째 node인 경우
+        if pos == 1:
+            curr = self.getAt(1)
+            self.head = curr.next
+            # 삭제하려는 node가 유일 node인 경우
+            if self.nodeCount == 1:
+                self.tail = None
+        else:
+            prev = self.getAt(pos-1)
+            curr = self.getAt(pos)
+            prev.next = curr.next
+            # 삭제하려는 node가 마지막 node인 경우
+            if pos == self.nodeCount:
+                self.tail = prev
+        self.nodeCount = self.nodeCount - 1
+        return curr.data
+        
 
     def traverse(self):
         result = []

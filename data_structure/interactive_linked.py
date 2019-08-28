@@ -12,7 +12,6 @@ class LinkedList:
         self.head = None
         self.tail = None
 
-
     def getAt(self, pos):
         if pos < 1 or pos > self.nodeCount:
             return None
@@ -24,6 +23,22 @@ class LinkedList:
             i += 1
 
         return curr
+    
+    
+
+    def __repr__(self):
+        if self.nodeCount == 0:
+            return 'LinkedList: empty'
+
+        s = ''
+        curr = self.head
+        while curr is not None:
+            s += repr(curr.data)
+            if curr.next is not None:
+                s += ' -> '
+            curr = curr.next
+        return s
+
 
 
     def insertAt(self, pos, newNode):
@@ -72,7 +87,7 @@ class LinkedList:
         self.nodeCount = self.nodeCount - 1
         return curr.data
         
-# refac
+refac
     def popAt(self, pos):
         if pos < 1 or pos > self.nodeCount:
             raise IndexError
@@ -93,15 +108,6 @@ class LinkedList:
         self.nodeCount = self.nodeCount - 1
         return curr.data
         
-
-    def traverse(self):
-        result = []
-        curr = self.head
-        while curr is not None:
-            result.append(curr.data)
-            curr = curr.next
-        return result
-
 
 def solution(x):
     return 0

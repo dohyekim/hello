@@ -18,6 +18,16 @@ class DoublyLinkedList:
         self.tail.next = None
 
 
+    def traverse(self):
+        result = []
+        curr = self.head
+        while curr.next.next:
+            curr = curr.next
+            result.append(curr.data)
+        return result
+
+
+
     def reverse(self):
         result = []
         curr = self.tail.prev
@@ -57,6 +67,28 @@ class DoublyLinkedList:
         self.nodeCount += 1
         return True
 
+    def insertBefore(self, next, newNode):
+        prev = next.prev
+        newNode.next = next
+        newNode.prev = prev
+        prev.next = newNode
+        next.prev = newNode
+        self.nodeCount += 1
+        return True
+
+    def __repr__(self):
+        
+        if self.nodeCount == 0:
+            return "Empty"
+        
+        s = ''
+        curr = self.head
+        while curr is not None:
+            s += repr(curr.data)
+            if curr.next is not None:
+                s += ' => '
+            curr = curr.next
+        return s
 
     def insertAt(self, pos, newNode):
         if pos < 1 or pos > self.nodeCount + 1:
@@ -65,6 +97,37 @@ class DoublyLinkedList:
         prev = self.getAt(pos - 1)
         return self.insertAfter(prev, newNode)
 
+
+    def popAfter(self, prev):
+        next = prev.next
+        prev.next = next.next
+        next.next.prev = prev
+        self.nodeCount -= 1
+        return next.data
+
+    def concat(self, L):
+        if self.nodeCount == 0 and L.nodeCount != 0:
+            
+        else:   
+            self.tail.prev.next = L.head.next
+            L.head.next.prev = self.tail.prev
+        return self
+
+    def popBefore(self, next):
+        prev = next.prev
+        next.prev = prev.prev
+        prev.prev.next = next
+        self.nodeCount -= 1
+        return prev.data        
+
+
+    def popAt(self, pos):
+        if pos < 1 or pos > self.nodeCount:
+            raise IndexError
+        curr = self.getAt(pos)
+        prev = curr.prev
+        self.popAfter(prev)
+        return curr.data
 
 def solution(x):
     return 0
@@ -80,3 +143,11 @@ L.insertAt(1,a)
 L.insertAt(2,b)
 L.insertAt(3,c)
 L.insertAt(4, d)
+
+L2 = DoublyLinkedList()
+L2.insertAt(1, Node(1))
+L2.insertAt(2, Node(2))
+L2.insertAt(3, Node(3))
+L2.insertAt(4, Node(4))
+
+L3 = DoublyLinkedList()

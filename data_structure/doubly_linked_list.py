@@ -106,13 +106,12 @@ class DoublyLinkedList:
         return next.data
 
     def concat(self, L):
-        if self.nodeCount == 0 and L.nodeCount != 0:
-            
-        else:   
-            self.tail.prev.next = L.head.next
-            L.head.next.prev = self.tail.prev
+        self.tail.prev.next = L.head.next
+        L.head.next.prev = self.tail.prev
+        self.tail = L.tail
+        self.nodeCount += L.nodeCount
         return self
-
+        
     def popBefore(self, next):
         prev = next.prev
         next.prev = prev.prev

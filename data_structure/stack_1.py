@@ -64,4 +64,4 @@ def solution(expr):
                 t = S.pop()
                 if t != match[c]:
                     return False
-    return True
+    return S.isEmpty()

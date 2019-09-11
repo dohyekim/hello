@@ -1,7 +1,7 @@
 from doublylinkedlist import Node
 from doublylinkedlist import DoublyLinkedList
 
-
+# Stack 1
 class ArrayStack:
 
 	def __init__(self):
@@ -65,3 +65,4 @@ def solution(expr):
                 if t != match[c]:
                     return False
     return S.isEmpty()
+

@@ -1,14 +1,3 @@
-match = {
-    ')': '(',
-    '}': '{',
-    ']': '['
-}
-
-a = ')'
-if a in match:
-    print(a)
-    print(match[a])
-    print("ddd")
-
-
-print("Hello World!")
+a = 1
+if type(a) == int:
+    print("this is int")

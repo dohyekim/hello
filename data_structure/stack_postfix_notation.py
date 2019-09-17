@@ -36,20 +36,20 @@ def solution(S):
                 opStack.push(x)
             else:
                 if (prec[opStack.peek()] >= prec[x]):
-                    last = str(opStack.pop())
-                    answer += last
-                else:
-                    opStack.push(x)
+                    answer += opStack.pop()
+                opStack.push(x)
         elif x == ')': # )인 경우
             while not opStack.isEmpty():
                 last = opStack.pop()
                 if last != '(':
                     answer += last
+                else:
+                    break
         else: # 알파벳인 경우
-            answer += str(x)
+            answer += x
         
-        while not opStack.isEmpty():
-            answer += str(opStack.pop())
-            
+    while not opStack.isEmpty():
+        answer += opStack.pop()
+        
         
     return answer
